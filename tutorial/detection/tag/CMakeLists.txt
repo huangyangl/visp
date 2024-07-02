@@ -10,6 +10,7 @@ set(tutorial_cpp
   tutorial-apriltag-detector-live-rgbd-realsense.cpp
   tutorial-apriltag-detector-live-rgbd-structure-core.cpp
   tutorial-apriltag-detector-live-T265-realsense.cpp
+  tutorial-apriltag-detector-live-rgbd-realsense-d455.cpp
 )
 
 set(tutorial_data "${CMAKE_CURRENT_SOURCE_DIR}/AprilTag.pgm")

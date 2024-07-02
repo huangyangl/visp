@@ -1,42 +1,5 @@
-/****************************************************************************
- *
- * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
- *
- * This software is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * See the file LICENSE.txt at the root directory of this source
- * distribution for additional information about the GNU GPL.
- *
- * For using ViSP with software that can not be combined with the GNU
- * GPL, please contact Inria about acquiring a ViSP Professional
- * Edition License.
- *
- * See https://visp.inria.fr for more information.
- *
- * This software was developed at:
- * Inria Rennes - Bretagne Atlantique
- * Campus Universitaire de Beaulieu
- * 35042 Rennes Cedex
- * France
- *
- * If you have questions regarding the use of this file, please contact
- * Inria at visp@inria.fr
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- * Description:
- * Example that shows how to do visual servoing with a drone equipped with a Pixhawk.
- *
-*****************************************************************************/
-
 #include <iostream>
-
 #include <visp3/core/vpConfig.h>
-
 // Check if std:c++17 or higher
 #if defined(VISP_HAVE_MAVSDK) && ((__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L))) && \
   defined(VISP_HAVE_REALSENSE2) && defined(VISP_HAVE_PUGIXML)
@@ -65,52 +28,49 @@
 #include <visp3/visual_features/vpFeatureVanishingPoint.h>
 #include <visp3/vs/vpServo.h>
 #include <visp3/vs/vpServoDisplay.h>
-
 //rtsp server 20240618
 #include <opencv2/opencv.hpp>
 
 // Comment next line to disable sending commands to the robot
 #define CONTROL_UAV
-#define HAVE_DISP_DEV
+#define HAVE_DISP_DEV  //显示或关闭显示功能！！！！！！！！！！！！！！！！！！！！
 
 bool compareImagePoint(std::pair<size_t, vpImagePoint> p1, std::pair<size_t, vpImagePoint> p2)
 {
   return (p1.second.get_v() < p2.second.get_v());
 };
 
-/*!
- * \example servoPixhawkDroneIBVS.cpp
- *
- * Example that shows how to how to achieve an image-based visual servo a drone
- * equipped with a Pixhawk connected to a Jetson TX2. An Intel Realsense camera
- * is also attached to the drone and connected to the Jetson. The drone is localized
- * thanks to Qualisys Mocap. Communication between the Jetson and the Pixhawk
- * is based on Mavlink using MAVSDK 3rd party.
- *
- * This program makes the drone detect and follow an AprilTag from the 36h11 family.
- *
- * \warning this program does no sensing or avoiding of obstacles, the drone
- * will collide with any objects in the way! Make sure the drone has about
- * 3-4 meters of free space around it before starting the program.
- *
- */
 int main(int argc, char **argv)
 {
+  //IBVS误差曲线图像：rtsp推流
+  vpImage<vpRGBa> overlayImg(480, 640);
+#if defined(VISP_HAVE_X11)
+  vpDisplayX display2;
+#elif defined(VISP_HAVE_GTK)
+  vpDisplayGTK display2;
+#elif defined(VISP_HAVE_GDI)
+  vpDisplayGDI display2;
+#elif defined(HAVE_OPENCV_HIGHGUI)
+  vpDisplayOpenCV display2;
+#endif
+  display2.display(overlayImg);
+  display2.init(overlayImg, 100, 300, "overlayImg");//窗口位置[100, 300]
+
   std::cout << "argc: " <<argc<< std::endl;
   std::cout << "argv: " <<argv<< std::endl;
 
   //rtsp part 1/3
-  bool rtsp_enable =false;
+  bool rtsp_enable = true;//rtsp推流开关！！！！！！！！！！！！！！！！！！！！！！！！！！
   std::string rtsp_server_url = "rtsp://127.0.0.1:554/live/0";
   std::stringstream command;
-  command << "ffmpeg ";
+  command << "ffmpeg -loglevel error ";//log打印等级设置为：有报错时才打印到窗口
   // inputfile options
   command << "-y "  // overwrite output files
   << "-an " // disable audio
   << "-f rawvideo " // force format to rawvideo
   << "-vcodec rawvideo "  // force video rawvideo ('copy' to copy stream)
-  << "-pix_fmt gray "  // set pixel format to bgr24 or gray //灰度流和彩色流这个参数要变一变不然会显示异常！！！！！！！！！
-  << "-s 640x480 "  // set frame size (WxH or abbreviation)
+  << "-pix_fmt bgr24 "  // set pixel format to bgr24 or gray //灰度流和彩色流这个参数要变一变不然会显示异常！！！！！！！！！
+  << "-s 640x480 "  // set frame size (WxH or abbreviation)  640x480
   << "-r 10 "; // set frame rate (Hz value, fraction or abbreviation)
   command << "-i - ";
   // outputfile options
@@ -119,8 +79,8 @@ int main(int argc, char **argv)
   << "-pix_fmt yuv420p "  // set pixel format to yuv420p
   << "-tune:v zerolatency "
   << "-preset ultrafast " // set the libx264 encoding preset to ultrafast
-  << "-f rtsp " // force format to flv for rtmp, rtsp for rtsp
-  << rtsp_server_url;
+  << "-f rtsp "; // force format to flv for rtmp, rtsp for rtsp
+  command << rtsp_server_url;
   FILE *fp = nullptr;
   bool rtsp_flag = true;
   try {
@@ -200,51 +160,33 @@ int main(int argc, char **argv)
       return EXIT_FAILURE;
     }
 
-    std::cout << std::endl
-      << "WARNING:" << std::endl
-      << " - This program does no sensing or avoiding of obstacles, " << std::endl//这里例程没有避障功能请确保安全飞行！
-      << "   the drone WILL collide with any objects in the way! Make sure the " << std::endl
-      << "   drone has approximately 3 meters of free space on all sides." << std::endl
-      << " - The drone uses a forward-facing camera for Apriltag detection," << std::endl
-      << "   make sure the drone flies  above a non-uniform flooring," << std::endl
-      << "   or its movement will be inacurate and dangerous !" << std::endl
-      << std::endl;
-
     // Connect to the drone
     vpRobotMavsdk drone(opt_connecting_info);//新建一个udp,tcp连接
 
     if (drone.isRunning()) {//连接成功
       vpRealSense2 rs;
-
       std::string product_line = rs.getProductLine();//获取相机信息
       if (opt_verbose) {
         std::cout << "Product line: " << product_line << std::endl;
       }
-
       if (product_line == "T200") {
         std::cout << "This example doesn't support T200 product line family !" << std::endl;
         return EXIT_SUCCESS;
       }
       rs2::config config;
-
       config.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_RGBA8, acq_fps);//配置相机
       config.enable_stream(RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16, acq_fps);
       config.enable_stream(RS2_STREAM_INFRARED, 640, 480, RS2_FORMAT_Y8, acq_fps);
-
       rs.open(config);//启动相机
       vpCameraParameters cam = rs.getCameraParameters(RS2_STREAM_COLOR);//获取相机 内参
-
       if (opt_verbose) {
         cam.printParameters();
       }
-
 #ifdef CONTROL_UAV//这个宏定义是本例程中所有控制飞机指令的 使能
-      drone.doFlatTrim(); // Flat trim calibration  //自动校正加速度计和陀螺仪，应该禁用掉！！！！！！！！！
+      //drone.doFlatTrim(); // Flat trim calibration  //自动校正加速度计和陀螺仪
       drone.takeOff(false,15,true); // Take off  //起飞，takeOff包含了：guided -> 解锁 -> 起飞 -> 位置保持！！！！！！！！！
 #endif
-
-      vpImage<unsigned char> I(rs.getIntrinsics(RS2_STREAM_COLOR).height, rs.getIntrinsics(RS2_STREAM_COLOR).width);//定义用于二维码检测的 灰度图
-
+      vpImage<unsigned char> I(rs.getIntrinsics(RS2_STREAM_COLOR).height, rs.getIntrinsics(RS2_STREAM_COLOR).width);//定义用于二维码检测的灰度图
 #if defined(VISP_HAVE_X11)
       vpDisplayX display;
 #elif defined(VISP_HAVE_GTK)
@@ -256,12 +198,12 @@ int main(int argc, char **argv)
 #endif
 
 #if defined(HAVE_DISP_DEV)        
-      int orig_displayX = 100;//结果图像的【尺寸】
+      int orig_displayX = 100;//图窗的位置
       int orig_displayY = 100;
       display.init(I, orig_displayX, orig_displayY, "DRONE VIEW");
       vpDisplay::display(I);
       vpDisplay::flush(I);
-      vpPlot plotter(1, 700, 700, orig_displayX + static_cast<int>(I.getWidth()) + 20, orig_displayY,"Visual servoing tasks");//定义一个绘画工具
+      vpPlot plotter(1, 480, 640, orig_displayX + static_cast<int>(I.getWidth()) + 20, orig_displayY,"Visual servoing tasks");//定义一个绘画工具
 #endif
       double time_since_last_display = vpTime::measureTimeMs();//上次显示结果图的 时间
       unsigned int iter = 0;
@@ -278,74 +220,41 @@ int main(int argc, char **argv)
 
       // double lambda = 0.5;
       vpAdaptiveGain lambda = vpAdaptiveGain(1.5, 0.7, 30);//xyz维度各自的lambda值，是IBVS理论中的一个参数！！！！！！！！！
-      task.setServo(vpServo::EYEINHAND_L_cVe_eJe);//设置视觉伺服系统为 eye in hand 模式，这个模式需要提前知道cVe，eJe矩阵的值！
-      task.setInteractionMatrixType(vpServo::CURRENT);//设置IBVS中雅可比矩阵J的计算方式为:CURRENT，矩阵J的计算方式可以参考我的博客
+      task.setServo(vpServo::EYEINHAND_L_cVe_eJe);//设置视觉伺服系统为 eye in hand 模式
+      task.setInteractionMatrixType(vpServo::CURRENT);//设置IBVS中雅可比矩阵J的计算方式为:CURRENT
       task.setLambda(lambda);
 
-      //! [DJI-F450 cMe]
-      /*
-       * In the following section, (c1) is an intermediate frame attached to the camera
-       * that has axis aligned with the FLU body frame. The real camera frame is denoted (c).
-       * The FLU body-frame of the drone denoted (e) is the one in which we need to convert
-       * every velocity command computed by visual servoing.
-       *
-       * We can easily estimate the homogeneous matrix between (c1) and (c) where
-       * in our case we have -10 degrees around X camera axis.
-       * Then for the transformation between (e) and (c1) frames we can consider only translations.
-       *
-       * Using those matrices, we can in the end obtain the homogeneous matrix between (c) and (e) frames.
-       * This homogeneous matrix is then used to compute the velocity twist matrix cVe.
-       */
-      vpRxyzVector c1_rxyz_c(vpMath::rad(-10.0), vpMath::rad(0), 0);
-      vpRotationMatrix c1Rc(c1_rxyz_c); // Rotation between (c1) and (c)  //c->c1的3d空间坐标旋转矩阵
-      vpHomogeneousMatrix c1Mc(vpTranslationVector(), c1Rc); // Homogeneous matrix between (c1) and (c) //c->c1的2d图像(平面)坐标旋转矩阵，即单应矩阵
+      //! [compute cMe]
+      vpRxyzVector c1TOc_xyz(vpMath::rad(-10.0), vpMath::rad(0), 0); // c1 ~> c 的xyz轴旋转量  ！！！！！！！！！！！！！！！！！！
+      vpRotationMatrix c1Rc(c1TOc_xyz); // 旋转矩阵：c -> c1 
+      vpRotationMatrix cRc1 = c1Rc.inverse(); // 旋转矩阵：c1 -> c, 旋转矩阵是正交的，因此 c1Rc^-1==c1Rc^T
+      vpHomogeneousMatrix cMc1(vpTranslationVector(), cRc1); // 齐次变换矩阵：c1 -> c
+      vpRotationMatrix c1Re { 1, 0, 0, 0, 0, 1, 0, -1, 0 }; // 旋转矩阵：e -> c1 ！！！！！！！！！！！！！！
+      vpTranslationVector e0_c1(0, -0.03, -0.07); // 平移关系：e系原点在c1系中的坐标  ！！！！！！！！！！！！！！
+      vpHomogeneousMatrix c1Me(e0_c1, c1Re); // 齐次变换矩阵：e -> c1
+      vpHomogeneousMatrix cMe = cMc1 * c1Me; // 齐次变换矩阵：e -> c
+      vpVelocityTwistMatrix cVe(cMe);  // 伺服系统控制量Vc=[vx,vy,vz,wx,wy,wz]的坐标变换矩阵：e -> c，从飞机机体系FRD到相机系RDF
+      //! [compute cMe]
 
-      vpRotationMatrix c1Re { 1, 0, 0, 0, 0, 1, 0, -1, 0 };     // Rotation between (c1) and (e)  //c1和e的旋转关系
-      vpTranslationVector c1te(0, -0.03, -0.07);             // Translation between (c1) and (e)  //c1和e的平移关系，
-      vpHomogeneousMatrix c1Me(c1te, c1Re);                  // Homogeneous matrix between (c1) and (e)  //c1与e的单应矩阵
-
-      vpHomogeneousMatrix cMe = c1Mc.inverse() * c1Me;       // Homogeneous matrix between (c) and (e)  //c与e的单应矩阵
-
-      vpVelocityTwistMatrix cVe(cMe);  //伺服系统控制量V的坐标转换矩阵：c -> e，从相机系到FLU系！！而为什么通过视觉伺服计算得到的ve却是飞机机体系FRD下的量？？why？？？？？
-      //! [DJI-F450 cMe]
       task.set_cVe(cVe);
 
       vpMatrix eJe(6, 4, 0);//哪些速度自由度是可控的！！！！！！！！！！！！
-
-      eJe[0][0] = 1;//vx
-      eJe[1][1] = 1;//vy
-      eJe[2][2] = 1;//vz
-      eJe[5][3] = 1;//wz
-      
-      // 打印cVe，eJe
-      /*
-        cVe: 
-        1  0  0  0  0.03  0.07
-        0  0.1736481777  0.984807753  -0.07414598804  0  0
-        0  -0.984807753  0.1736481777  0.01738886015  0  0
-        0  0  0  1  0  0
-        0  0  0  0  0.1736481777  0.984807753
-        0  0  0  0  -0.984807753  0.1736481777
-        eJe: 
-        1  0  0  0
-        0  1  0  0
-        0  0  1  0
-        0  0  0  0
-        0  0  0  0
-        0  0  0  1
-       */
+      eJe[0][0] = 1;//vx可控
+      eJe[1][1] = 1;//vy可控
+      eJe[2][2] = 1;//vz可控
+      eJe[5][3] = 1;//wz可控
 
       // Desired distance to the target
       double Z_d = (opt_has_distance_to_tag ? opt_distance_to_tag : 1.); //相机到二维码的 期望控制距离！！！！！！！！！！
 
-      // Define the desired polygon corresponding the the AprilTag CLOCKWISE  //定义一个以 4个点表示的顺时针包裹 AprilTag 的多边形
-      double X[4] = { tagSize / 2., tagSize / 2., -tagSize / 2., -tagSize / 2. }; //定义4个【相机坐标系下的视觉特征期望值】，Z轴的值无需！！！！！！！！！！！
+      // Define the desired polygon corresponding the the AprilTag CLOCKWISE  //视觉特征期望值！！！！！！！！！！！
+      double X[4] = { tagSize / 2., tagSize / 2., -tagSize / 2., -tagSize / 2. }; //定义4个【相机系下的特征点期望值】！！！！！！！！！！！
       double Y[4] = { tagSize / 2., -tagSize / 2., -tagSize / 2., tagSize / 2. };
       std::vector<vpPoint> vec_P, vec_P_d;
-      vpHomogeneousMatrix cdMo(0, 0, Z_d, 0, 0, 0);//定义相机坐标系与检测目标(AprilTag)机体系的期望位置关系（坐标转换矩阵、单应矩阵）！！！！
+      vpHomogeneousMatrix cdMo(0, 0, Z_d, 0, 0, 0);//AprilTag机体系到相机系的【期望齐次变换矩阵】！！！！！！！！！
       for (int i = 0; i < 4; i++) {
-        vpPoint P_d(X[i], Y[i], 0);//相机坐标系下的视觉特征期望值！！！！！！
-        P_d.track(cdMo); //根据【相机坐标系下的视觉特征期望值】和 cdMo 计算得到【图像坐标系下的视觉特征期望值】，结果保存在 P_d 的祖父类 pTracker 的 cP 中！！！！！！！！！
+        vpPoint P_d(X[i], Y[i], 0);//相机系下的视觉特征期望值！！！！！！
+        P_d.track(cdMo); //计算【图像系下的视觉特征期望值】，结果保存在 P_d 的祖父类 pTracker 的 cP 中！！！！！！！！！
         vec_P_d.push_back(P_d);//视觉特征期望值向量！！！！！！！！！！
       }
       // 关于visp中矩的使用描述请参考类vpMomentObject中的注释和例子
@@ -444,7 +353,7 @@ int main(int argc, char **argv)
           vpDisplay::displayText(I, 40, 20, ss.str(), vpColor::red);
         }
 #endif
-        //主要循环逻辑
+        //主要逻辑
         if (detector.getNbObjects() != 0) {//检测到AprilTags！！！！！！！！！！！
 
           // Update current points used to compute the moments
@@ -553,10 +462,10 @@ int main(int argc, char **argv)
           std::cout << sserr.str() << std::endl;
           
 #ifdef CONTROL_UAV
-          drone.stopMoving(); // In this case, we stop the drone  //没有检测到AprilTags则停止飞行防止时空！！
+          drone.stopMoving(); // In this case, we stop the drone  //没有检测到AprilTags则停止飞行防止失控！！
 #endif
         }
-        //主要循环逻辑 end
+        //主要逻辑 end
 #if defined(HAVE_DISP_DEV)  
         if (condition) {//绘制误差曲线！！！！！！！！！！！！！！
           {
@@ -610,20 +519,31 @@ int main(int argc, char **argv)
                 pclose(fp);
               }
             }
-            else
+            else//推流
             {
-              if (fp != nullptr)
-              {
-	              cv::Mat frame;
-                vpImageConvert::convert(I, frame);
-                if(frame.empty()) continue;
-                fwrite(frame.data, sizeof(char), frame.total() * frame.elemSize(), fp);
-              }
-              else
-              {
-                std::cout << "fp open fail..." << std::endl;
-                pclose(fp);
-              }
+              //识别结果
+              vpImage<vpRGBa> Ioverlay;
+              vpDisplay::getImage(I, Ioverlay);//获取识别结果图像
+              cv::Mat frame;
+              vpImageConvert::convert(Ioverlay, frame);
+
+              //IBVS误差曲线
+              vpImage<vpRGBa> I_plot;
+              plotter.getImage(I_plot);//获取当前误差曲线图像
+
+              //将误差曲线和识别结果进行图像叠加显示
+              cv::Mat frame_plot;
+              cv::Mat frame_overlay;
+              vpImageConvert::convert(I_plot, frame_plot);
+              cv::addWeighted(frame, 0.6, frame_plot, 0.4, 0, frame_overlay);//opencv中的图像叠加
+              vpImageConvert::convert(frame_overlay, overlayImg);
+              display2.display(overlayImg);
+              display2.flush(overlayImg);
+
+              //rtsp推流
+              cv::Mat frame_rtsp = frame_overlay;
+              if(!frame_rtsp.empty()) 
+                fwrite(frame_rtsp.data, sizeof(char), frame_rtsp.total() * frame_rtsp.elemSize(), fp);
             }
           }
         }

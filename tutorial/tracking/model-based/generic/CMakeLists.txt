@@ -11,6 +11,7 @@ set(tutorial_cpp
   tutorial-mb-generic-tracker-full.cpp
   tutorial-mb-generic-tracker-save.cpp
   tutorial-mb-generic-tracker-read.cpp
+  tutorial-mb-generic-tracker-d455.cpp
 )
 
 foreach(cpp ${tutorial_cpp})

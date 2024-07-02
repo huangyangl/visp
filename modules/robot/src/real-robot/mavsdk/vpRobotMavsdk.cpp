@@ -141,7 +141,7 @@ private:
 
                                       // Unsubscribe again as we only want to find one system.
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-                                          passthrough.unsubscribe_message(handle);
+                                          passthrough.unsubscribe_message(MAVLINK_MSG_ID_HEARTBEAT,handle);
 #else
                                           passthrough.subscribe_message_async(MAVLINK_MSG_ID_HEARTBEAT, nullptr);
 #endif
@@ -237,6 +237,7 @@ public:
     m_action = std::make_shared<mavsdk::Action>(m_system);
     m_telemetry = std::make_shared<mavsdk::Telemetry>(m_system);
     m_offboard = std::make_shared<mavsdk::Offboard>(m_system);
+
   }
 
   bool hasFlyingCapability(MAV_TYPE mav_type)
@@ -431,15 +432,17 @@ public:
 
   bool takeControl()
   {
+    //注意：对于px4为Offboard模式，Ardupilot为guided模式，并且mavsdk1.4不支持guided模式!!!
+
     if (m_verbose) {
       std::cout << "Starting offboard mode..." << std::endl;
     }
-
+    //将飞控设置为Offboard或guided模式
     if (m_telemetry.get()->flight_mode() != mavsdk::Telemetry::FlightMode::Offboard) {
       const mavsdk::Offboard::VelocityBodyYawspeed stay {};
-      m_offboard.get()->set_velocity_body(stay);
+      m_offboard.get()->set_velocity_body(stay);//设置前先让飞机保持不动！
 
-      mavsdk::Offboard::Result offboard_result = m_offboard.get()->start();
+      mavsdk::Offboard::Result offboard_result = m_offboard.get()->start();//设置为Offboard
       if (offboard_result != mavsdk::Offboard::Result::Success) {
         std::cerr << "Offboard mode failed: " << offboard_result << std::endl;
         return false;
@@ -448,18 +451,18 @@ public:
     else if (m_verbose) {
       std::cout << "Already in offboard mode" << std::endl;
     }
-
+    // 等待飞控被设置为Offboard或guided模式，等待3s
     // Wait to ensure offboard mode active in telemetry
     double t = vpTime::measureTimeMs();
     while (m_telemetry.get()->flight_mode() != mavsdk::Telemetry::FlightMode::Offboard) {
-      if (vpTime::measureTimeMs() - t > 3. * 1000.) {
+      if (vpTime::measureTimeMs() - t > 3. * 1000.) {//等待3秒
         std::cout << "Time out received in takeControl()" << std::endl;
         break;
       }
     };
 
     if (m_verbose) {
-      std::cout << "Offboard mode started" << std::endl;
+      std::cout << "Offboard(guided) mode started" << std::endl;
     }
     return true;
   }
@@ -472,17 +475,19 @@ public:
 
   bool takeOff(bool interactive, int timeout_sec, bool use_gps)
   {
+    //判断是否具备起飞能力 00
     if (!m_has_flying_capability) {
       std::cerr << "Warning: Cannot takeoff this non flying vehicle" << std::endl;
       return true;
     }
 
+    //判断起飞资格，interactive缺省为true 01
     bool authorize_takeoff = false;
 
-    if (!interactive) {
+    if (!interactive) {//如果设置为【不交互】，直接给起飞资格 01.1
       authorize_takeoff = true;
     }
-    else {
+    else {//如果设置为【交互】，判断是否guided模式再给起飞资格 01.2
       if (m_telemetry.get()->flight_mode() == mavsdk::Telemetry::FlightMode::Offboard) {
         authorize_takeoff = true;
       }
@@ -499,20 +504,20 @@ public:
         }
       }
     }
-
-    if (m_telemetry.get()->in_air()) {
+    //判断是否已在空中 02
+    if (m_telemetry.get()->in_air()) {//已在空中 02.1
       std::cerr << "Cannot take off as the robot is already flying." << std::endl;
       return true;
     }
-    else if (authorize_takeoff) {
+    else if (authorize_takeoff) {//起飞 02.2
    // Arm vehicle
-      if (!arm()) {
+      if (!arm()) {//解锁！！
         return false;
       }
 
       vpTime::wait(2000);
 
-      if (interactive) {
+      if (interactive) {//让用户确认是否已解锁
         std::string answer;
         while (answer != "Y" && answer != "y" && answer != "N" && answer != "n") {
           std::cout << "If vehicle armed ? (y/n)" << std::endl;
@@ -526,7 +531,7 @@ public:
       }
 
       // Takeoff
-      if (m_telemetry.get()->gps_info().fix_type == mavsdk::Telemetry::FixType::NoGps || !use_gps) {
+      if (m_telemetry.get()->gps_info().fix_type == mavsdk::Telemetry::FixType::NoGps || !use_gps) {//不使用GPS
         // No GPS connected.
         // When using odometry from MoCap, Action::takeoff() behavior is to takeoff at 0,0,0,alt
         // that is weird when the drone is not placed at 0,0,0.
@@ -559,7 +564,7 @@ public:
         // Possibility is to use set_position_velocity_ned(); to speed up takeoff
 
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-        Telemetry::LandedStateHandle handle = m_telemetry.get()->subscribe_landed_state(
+        mavsdk::Telemetry::LandedStateHandle handle = m_telemetry.get()->subscribe_landed_state(
             [this, &in_air_promise, &handle](mavsdk::Telemetry::LandedState state) {
               if (state == mavsdk::Telemetry::LandedState::InAir) {
                 std::cout << "Drone is taking off\n.";
@@ -591,8 +596,8 @@ public:
         auto takeoff_finished_future = takeoff_finished_promise.get_future();
 
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-        auto handle_odom = m_telemetry.get()->subscribe_odometry(
-            [this, &takeoff_finished_promise, &handle, &Z_init](mavsdk::Telemetry::Odometry odom) {
+        mavsdk::Telemetry::OdometryHandle handle_odom = m_telemetry.get()->subscribe_odometry(
+            [this, &takeoff_finished_promise, &handle_odom, &Z_init](mavsdk::Telemetry::Odometry odom) {
               if (odom.position_body.z_m < 0.90 * (Z_init - m_takeoffAlt) + m_position_incertitude) {
                 std::cout << "Takeoff altitude reached\n.";
                 m_telemetry.get()->unsubscribe_odometry(handle_odom);
@@ -612,39 +617,42 @@ public:
         if (takeoff_finished_future.wait_for(seconds(timeout_sec)) == std::future_status::timeout) {
           std::cerr << "Takeoff failed:  altitude not reached.\n";
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-          m_telemetry.get()->unsubscribe_odometry(handle);
+          m_telemetry.get()->unsubscribe_odometry(handle_odom);
 #else
           m_telemetry.get()->subscribe_odometry(nullptr);
 #endif
           return false;
         }
       }
-      else {
+      else {//使用GPS
      // GPS connected, we use Action::takeoff()
         std::cout << "---- DEBUG: GPS detected: use action::takeoff()" << std::endl;
 
-        mavsdk::Telemetry::Odometry odom = m_telemetry.get()->odometry();
-        double Z_init = odom.position_body.z_m;
-
-        m_action.get()->set_takeoff_altitude(m_takeoffAlt);
-        const auto takeoff_result = m_action.get()->takeoff();
+        double pos_d = m_telemetry.get()->position_velocity_ned().position.down_m;//当前ned高度
+        double Z_init = -pos_d;//用当前相对高度去初始化
+        std::cout << "current pos_d: "<<pos_d<<std::endl;
+        m_action.get()->set_takeoff_altitude(m_takeoffAlt);//设置起飞高度
+        //起飞！！！！！！
+        const auto takeoff_result = m_action.get()->takeoff();//注意takeoff()是阻塞的，什么是阻塞：线程阻塞通常是指一个线程在执行过程中暂停，以等待某个条件的触发。
         if (takeoff_result != mavsdk::Action::Result::Success) {
           std::cerr << "Takeoff failed: " << takeoff_result << '\n';
           return false;
         }
-
-        auto in_air_promise = std::promise<void> {};
+        //异步编程相关的操作：关于std::promise和std::future的用法请参考：百度
+        auto in_air_promise = std::promise<void> {};//用于判断起飞时间是否超时
         auto in_air_future = in_air_promise.get_future();
-#if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-        Telemetry::LandedStateHandle handle = m_telemetry.get()->subscribe_landed_state(
+#if (VISP_HAVE_MAVSDK_VERSION > 0x010412)//mavsdk版本>1.4.12
+        //订阅【landed state 】更新提醒服务：landed state一旦更新就会执行其中的匿名函数！landed state可用于判断飞机在【空中】还是在【地上】
+        //enum LandedState：Unknown，OnGround，InAir，TakingOff，Landing
+        mavsdk::Telemetry::LandedStateHandle handle = m_telemetry.get()->subscribe_landed_state(
             [this, &in_air_promise, &handle](mavsdk::Telemetry::LandedState state) {
               if (state == mavsdk::Telemetry::LandedState::InAir) {
-                std::cout << "Taking off has finished\n.";
-                m_telemetry.get()->unsubscribe_landed_state(handle);
+                std::cout << "Taking off...\n";
+                m_telemetry.get()->unsubscribe_landed_state(handle);//与subscribe_xx成对出现，任务完成后取消之前的订阅服务！
                 in_air_promise.set_value();
               }
             });
-#else
+#else//mavsdk版本<=1.4.12
         m_telemetry.get()->subscribe_landed_state([this, &in_air_promise](mavsdk::Telemetry::LandedState state) {
           if (state == mavsdk::Telemetry::LandedState::InAir) {
             std::cout << "Taking off has finished\n.";
@@ -654,7 +662,8 @@ public:
           std::cout << "state: " << state << std::endl;
         });
 #endif
-        if (in_air_future.wait_for(seconds(timeout_sec)) == std::future_status::timeout) {
+        //in_air_future.wait_for(seconds(timeout_sec))：将当前线程阻塞 timeout_sec 秒
+        if (in_air_future.wait_for(seconds(timeout_sec)) == std::future_status::timeout) {//起飞时间已超时
           // Add check with Altitude
           std::cerr << "Takeoff timed out.\n";
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
@@ -663,35 +672,37 @@ public:
           m_telemetry.get()->subscribe_landed_state(nullptr);
 #endif
         }
+
         // Add check with Altitude
         auto takeoff_finished_promise = std::promise<void> {};
         auto takeoff_finished_future = takeoff_finished_promise.get_future();
 
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-        auto handle_odom = m_telemetry.get()->subscribe_odometry(
-            [this, &takeoff_finished_promise, &handle, &Z_init](mavsdk::Telemetry::Odometry odom) {
-              if (odom.position_body.z_m < 0.90 * (Z_init - m_takeoffAlt) + m_position_incertitude) {
-                std::cout << "Takeoff altitude reached\n.";
-                m_telemetry.get()->unsubscribe_odometry(handle_odom);
+        mavsdk::Telemetry::PositionVelocityNedHandle handle_alt = m_telemetry.get()->subscribe_position_velocity_ned(//订阅【位置更新提醒(回调)】
+            [this, &takeoff_finished_promise, &handle_alt, &Z_init](mavsdk::Telemetry::PositionVelocityNed pos_vel) {
+              if (abs(-pos_vel.position.down_m-Z_init-m_takeoffAlt) < m_position_incertitude) {
+                std::cout << "Takeoff altitude reached.\n";
+                m_telemetry.get()->unsubscribe_position_velocity_ned(handle_alt);
                 takeoff_finished_promise.set_value();
               }
             });
 #else
-        m_telemetry.get()->subscribe_odometry(
-            [this, &takeoff_finished_promise, &Z_init](mavsdk::Telemetry::Odometry odom) {
-              if (odom.position_body.z_m < 0.90 * (Z_init - m_takeoffAlt) + m_position_incertitude) {
+        m_telemetry.get()->subscribe_position_velocity_ned(
+            [this, &takeoff_finished_promise, &Z_init](mavsdk::Telemetry::PositionVelocityNed pos_vel) {
+              if (abs(-pos_vel.position.down_m-Z_init-m_takeoffAlt) < m_position_incertitude) {
                 std::cout << "Takeoff altitude reached\n.";
-                m_telemetry.get()->subscribe_odometry(nullptr);
+                m_telemetry.get()->unsubscribe_position_velocity_ned(nullptr);
                 takeoff_finished_promise.set_value();
               }
             });
 #endif
         if (takeoff_finished_future.wait_for(seconds(timeout_sec)) == std::future_status::timeout) {
           std::cerr << "Takeoff failed:  altitude not reached.\n";
+
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-          m_telemetry.get()->unsubscribe_odometry(handle);
+          m_telemetry.get()->unsubscribe_position_velocity_ned(handle_alt);
 #else
-          m_telemetry.get()->subscribe_odometry(nullptr);
+          m_telemetry.get()->unsubscribe_position_velocity_ned(nullptr);
 #endif
           return false;
         }
@@ -709,7 +720,7 @@ public:
       return true;
     }
     // Takeoff
-    if (!use_buildin) {
+    if (0) {//!use_buildin
       // No GPS connected.
       // When using odometry from MoCap, Action::takeoff() behavior is to
       // takeoff at 0,0,0,alt that is weird when the drone is not placed at
@@ -743,8 +754,8 @@ public:
       auto landing_finished_future = landing_finished_promise.get_future();
 
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-      auto handle_odom = m_telemetry.get()->subscribe_odometry(
-          [this, &landing_finished_promise, &success, &handle](mavsdk::Telemetry::Odometry odom) {
+      mavsdk::Telemetry::OdometryHandle handle_odom = m_telemetry.get()->subscribe_odometry(
+          [this, &landing_finished_promise, &success, &handle_odom](mavsdk::Telemetry::Odometry odom) {
             if (odom.position_body.z_m > -0.15) {
               std::cout << "Landing altitude reached \n.";
 
@@ -825,8 +836,8 @@ public:
       auto position_reached_future = position_reached_promise.get_future();
 
 #if (VISP_HAVE_MAVSDK_VERSION > 0x010412)
-      auto handle_odom = m_telemetry.get()->subscribe_odometry(
-          [this, &position_reached_promise, &handle, &position_target](mavsdk::Telemetry::Odometry odom) {
+      mavsdk::Telemetry::OdometryHandle handle_odom = m_telemetry.get()->subscribe_odometry(
+          [this, &position_reached_promise, &handle_odom, &position_target](mavsdk::Telemetry::Odometry odom) {
             vpQuaternionVector q { odom.q.x, odom.q.y, odom.q.z, odom.q.w };
             vpRotationMatrix R(q);
             vpRxyzVector rxyz(R);
@@ -1091,7 +1102,10 @@ public:
 private:
   //*** Attributes ***//
   std::string m_address {}; ///< Ip address of the robot to discover on the network
-  mavsdk::Mavsdk m_mavsdk {};
+  //mavsdk::Mavsdk m_mavsdk {};
+  // treat m_mavsdk as a GCS
+  // debug 20240611
+  mavsdk::Mavsdk m_mavsdk{mavsdk::Mavsdk::Configuration{mavsdk::Mavsdk::ComponentType::CompanionComputer}};
   std::shared_ptr<mavsdk::System> m_system;
   std::shared_ptr<mavsdk::Action> m_action;
   std::shared_ptr<mavsdk::Telemetry> m_telemetry;

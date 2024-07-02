@@ -188,6 +188,9 @@ public:
   void setUnitZ(unsigned int graphNum, const std::string &unitz);
   void setThickness(unsigned int graphNum, unsigned int curveNum, unsigned int thickness);
 
+  //debug 20240628
+  void getImage(vpImage<vpRGBa> &Idest);
+
 private:
   void initNbGraph(unsigned int nbGraph);
   void displayGrid();

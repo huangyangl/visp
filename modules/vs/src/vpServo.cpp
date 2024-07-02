@@ -751,21 +751,21 @@ vpColVector vpServo::computeControlLaw()
 
   // compute  task Jacobian
   if (iscJcIdentity)
-    J1 = L * cVa * aJe;
+    J1 = L * cVa * aJe; //?????????????????????????????????????
   else
     J1 = L * cJc * cVa * aJe;
 
   // handle the eye-in-hand eye-to-hand case
   J1 *= signInteractionMatrix;
 
-  // pseudo inverse of the task Jacobian
-  // and rank of the task Jacobian
-  // the image of J1 is also computed to allows the computation
+  // pseudo inverse of the task Jacobian  //计算J1的逆矩阵
+  // and rank of the task Jacobian  //计算J1的秩
+  // the image of J1 is also computed to allows the computation //计算J1的镜像，用于计算投影算子
   // of the projection operator
   vpMatrix imJ1t, imJ1;
   bool imageComputed = false;
 
-  if (inversionType == PSEUDO_INVERSE) {
+  if (inversionType == PSEUDO_INVERSE) {//默认的构造函数inversionType == PSEUDO_INVERSE
     rankJ1 = J1.pseudoInverse(J1p, sv, m_pseudo_inverse_threshold, imJ1, imJ1t);
 
     imageComputed = true;
@@ -777,7 +777,7 @@ vpColVector vpServo::computeControlLaw()
     /* if no degrees of freedom remains (rank J1 = ndof)
        WpW = I, multiply by WpW is useless
     */
-    e1 = J1p * error; // primary task
+    e1 = J1p * error; // primary task //如果J1列满秩，广义逆矩阵就是J1p，控制律 = J1p * error ！！！！！！！！！！！！！！
 
     WpW.eye(J1.getCols(), J1.getCols());
   }
@@ -799,14 +799,14 @@ vpColVector vpServo::computeControlLaw()
     J1.print(std::cout, 10, "J1");
     J1p.print(std::cout, 10, "J1p");
 #endif
-    e1 = WpW * J1p * error;
+    e1 = WpW * J1p * error; //如果J1不是列满秩，广义逆矩阵就是(WpW * J1p)，控制律 = (WpW * J1p) * error ！！！！！！！！！！！！！！！！！！！！
   }
-  e = -lambda(e1) * e1;
+  e = -lambda(e1) * e1;//乘以-lambda
 
   I.eye(J1.getCols());
 
   // Compute classical projection operator
-  I_WpW = (I - WpW);
+  I_WpW = (I - WpW);//计算经典投影算子I_WpW，未知在哪里使用？？？？？？？？？？？？？
 
   m_first_iteration = false;
   return e;

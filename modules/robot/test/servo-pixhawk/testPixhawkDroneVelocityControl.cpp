@@ -76,20 +76,22 @@ int main(int argc, char **argv)
 
   auto drone = vpRobotMavsdk(argv[1]);
 
-  drone.setTakeOffAlt(.5);
-  if (!drone.takeOff()) {
+  drone.setTakeOffAlt(5.);
+  drone.setVerbose(true);
+
+  if (!drone.takeOff(false,15,true)) {//takeOff包含了：guided -> 解锁 -> 起飞 -> 位置保持
     std::cout << "Takeoff failed" << std::endl;
     return EXIT_FAILURE;
   }
   vpColVector vel_command { 0.0, 0.0, 0.0, 0.0 };
 
-  drone.setForwardSpeed(0.3);
-  std::cout << "Set forward speed of 0.3 m/s for 4 sec" << std::endl;
-  sleep_for(seconds(4));
+  drone.setForwardSpeed(5);
+  std::cout << "Set forward speed of 5 m/s for 4 sec" << std::endl;
+  sleep_for(seconds(10));
 
-  drone.setForwardSpeed(-0.3);
-  std::cout << "Set forward speed of -0.3 m/s for 4 sec" << std::endl;
-  sleep_for(seconds(4));
+  drone.setForwardSpeed(-5);
+  std::cout << "Set forward speed of -5 m/s for 4 sec" << std::endl;
+  sleep_for(seconds(10));
 
   drone.stopMoving();
   std::cout << "Stop moving for 4 sec" << std::endl;

@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
   }
 
-  double takeoff_alt = 1.;
+  double takeoff_alt = 10.;
 
   auto drone = vpRobotMavsdk(argv[1]);
   drone.setTakeOffAlt(takeoff_alt);
@@ -80,6 +80,8 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
+  std::cout << "Takeoff 00000000000!!!!!!!!!!!!!" << std::endl;
+  vpTime::wait(10000);
   drone.takeControl(); // Start PX4 offboard
 
   // Get position

@@ -8,6 +8,7 @@ find_package(VISP REQUIRED visp_core visp_sensor visp_gui visp_vision visp_mbt v
 set(tutorial_cpp
   tutorial-mb-generic-tracker-apriltag-webcam.cpp
   tutorial-mb-generic-tracker-apriltag-rs2.cpp
+  tutorial-mb-generic-tracker-apriltag-rs2-d455.cpp
 )
 
 foreach(cpp ${tutorial_cpp})

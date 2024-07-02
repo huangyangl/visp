@@ -64,6 +64,9 @@ void usage(const std::string &bin_name)
 
 int main(int argc, char **argv)
 {
+  std::cout << "argc: " <<argc<< std::endl;
+  std::cout << "argv[0]: " <<argv[0]<< std::endl;
+  std::cout << "argv[1]: " <<argv[1]<< std::endl;
   if (argc != 2) {
     usage(argv[0]);
     return EXIT_SUCCESS;
@@ -71,19 +74,19 @@ int main(int argc, char **argv)
 
   auto drone = vpRobotMavsdk(argv[1]);
 
-  drone.setTakeOffAlt(1.);
+  drone.setTakeOffAlt(5.);
   drone.setVerbose(true);
   drone.takeControl(); // Start off-board or guided mode
 
   // Drone takeoff
-  if (!drone.takeOff()) {
-    std::cout << "Takeoff failed" << std::endl;
+  if (!drone.takeOff(false,15,true)) {//takeOff(是否交互,超时,是否使用GPS)
+    std::cout << "drone Takeoff failed!" << std::endl;
     return EXIT_FAILURE;
   }
 
-  // Get position in NED local frame after takeoff
+  // Get position in NED local frame after takeoff，  NED local frame即地固坐标系！
   float ned_north, ned_east, ned_down, ned_yaw;
-  drone.getPosition(ned_north, ned_east, ned_down, ned_yaw);
+  drone.getPosition(ned_north, ned_east, ned_down, ned_yaw);//获取当前位置
   std::cout << "Vehicle position in NED frame: " << ned_north << " " << ned_east << " " << ned_down << " [m] and " << vpMath::deg(ned_yaw) << " [deg]" << std::endl;
 
   vpHomogeneousMatrix ned_M_frd;

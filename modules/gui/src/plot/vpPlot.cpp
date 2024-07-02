@@ -731,3 +731,10 @@ void vpPlot::saveData(unsigned int graphNum, const std::string &dataFile, const 
 // Work around to avoid warning: libvisp_core.a(vpPlot.cpp.o) has no symbols
 void dummy_vpPlot() { };
 #endif
+
+//debug 20240628
+void vpPlot::getImage(vpImage<vpRGBa> &Idest)
+{
+  display->flush(I);
+  display->getImage(I, Idest);
+}

@@ -7,7 +7,8 @@ find_package(VISP REQUIRED visp_core visp_me visp_io visp_gui visp_sensor)
 # set the list of source files
 set(tutorial_cpp
   tutorial-me-ellipse-tracker.cpp
-  tutorial-me-line-tracker.cpp)
+  tutorial-me-line-tracker.cpp
+  tutorial-me-line-tracker-d455.cpp)
 
 foreach(cpp ${tutorial_cpp})
   visp_add_target(${cpp})

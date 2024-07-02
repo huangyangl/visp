@@ -39,9 +39,14 @@ cmake_minimum_required(VERSION 3.5)
 
 find_package(VISP REQUIRED visp_core visp_vs visp_robot visp_gui visp_detection visp_sensor)
 
+#debug
+#target_include_directories(servoPixhawkDroneIBVS PRIVATE "/usr/include/gstreamer-2.0")
+#target_link_libraries(servoPixhawkDroneIBVS "/usr/lib/aarch64-linux-gnu/glib-2.0/include")
+
 set(example_cpp
   sendMocapToPixhawk.cpp
   servoPixhawkDroneIBVS.cpp
+  servoPixhawkDroneIBVS-test.cpp
 )
 
 foreach(cpp ${example_cpp})
@@ -52,4 +57,9 @@ foreach(cpp ${example_cpp})
   endif()
 endforeach()
 
-visp_set_source_file_compile_flag(servoPixhawkDroneIBVS.cpp -Wno-sign-compare -Wno-ignored-qualifiers -Wno-deprecated-copy-with-user-provided-copy)
+visp_set_source_file_compile_flag(servoPixhawkDroneIBVS.cpp -Wno-sign-compare -Wno-ignored-qualifiers -Wno-deprecated-copy-with-user-provided-copy 
+  -I/usr/include/gstreamer-1.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include
+)
+
+target_link_libraries(servoPixhawkDroneIBVS gstreamer-1.0 gobject-2.0 glib-2.0)
+target_link_libraries(servoPixhawkDroneIBVS-test gstreamer-1.0 gobject-2.0 glib-2.0)

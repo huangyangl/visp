@@ -8,7 +8,9 @@ find_package(VISP REQUIRED visp_core visp_blob visp_io visp_gui visp_sensor)
 set(tutorial_cpp
   tutorial-blob-auto-tracker.cpp
   tutorial-blob-tracker-live-firewire.cpp
-  tutorial-blob-tracker-live-v4l2.cpp)
+  tutorial-blob-tracker-live-v4l2.cpp
+  tutorial-blob-tracker-live-d455.cpp
+  )
 
 list(APPEND tutorial_data "${CMAKE_CURRENT_SOURCE_DIR}/target.pgm" )
 

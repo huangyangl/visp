@@ -23,8 +23,6 @@ dependencies:
   - pillow
   - ipywidgets
   - selenium
-  - geckodriver
-  - firefox
   - eigenpy==2.9
   - pip:
       - meshcat
