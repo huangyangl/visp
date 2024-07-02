@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test some core functionalities.
- *
-*****************************************************************************/
+ */
 
  /*!
    \example testMath.cpp
@@ -55,7 +53,7 @@
  // 4723 : potential divide by 0
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef NAN
 // https://msdn.microsoft.com/en-us/library/w22adx1s%28v=vs.120%29.aspx
 // http://tdistler.com/2011/03/24/how-to-define-nan-not-a-number-on-windows
@@ -66,6 +64,9 @@ static const unsigned long __nan[2] = { 0xffffffff, 0x7fffffff };
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   // Test isNaN
   if (vpMath::isNaN(0.0)) {
     std::cerr << "Fail: IsNaN(0.0)=" << vpMath::isNaN(0.0) << " / should be false" << std::endl;

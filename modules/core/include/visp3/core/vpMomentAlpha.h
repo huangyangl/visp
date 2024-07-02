@@ -39,7 +39,10 @@
 #ifndef _vpMomentAlpha_h_
 #define _vpMomentAlpha_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMoment.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
  * \class vpMomentAlpha
@@ -85,6 +88,10 @@
  *
  * //generic function for printing
  * void print (double i) { std::cout << i << "\t";}
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -198,7 +205,7 @@
  * Shortcuts for quickly getting those references exist in vpMomentCommon.
  *
  * This moment depends on vpMomentCentered.
- */
+*/
 class VISP_EXPORT vpMomentAlpha : public vpMoment
 {
 private:
@@ -249,5 +256,5 @@ public:
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMomentAlpha &v);
   void printDependencies(std::ostream &os) const;
 };
-
+END_VISP_NAMESPACE
 #endif

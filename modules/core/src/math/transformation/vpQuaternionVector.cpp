@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Quaternion vector.
- *
- * Authors:
- * Filip Novotny
- *
-*****************************************************************************/
+ */
 
 #include <algorithm>
 #include <cassert>
@@ -43,6 +38,7 @@
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpQuaternionVector.h>
 
+BEGIN_VISP_NAMESPACE
 // minimum value of sine
 const double vpQuaternionVector::minimum = 0.0001;
 
@@ -64,17 +60,17 @@ vpQuaternionVector::vpQuaternionVector(double x_, double y_, double z_, double w
 }
 
 //! Constructor from a 4-dimension vector of doubles.
-vpQuaternionVector::vpQuaternionVector(const vpColVector &q) : vpRotationVector(4) { buildFrom(q); }
+vpQuaternionVector::vpQuaternionVector(const vpColVector &q) : vpRotationVector(4) { build(q); }
 
 //! Constructor from a 4-dimension vector of doubles.
-vpQuaternionVector::vpQuaternionVector(const std::vector<double> &q) : vpRotationVector(4) { buildFrom(q); }
+vpQuaternionVector::vpQuaternionVector(const std::vector<double> &q) : vpRotationVector(4) { build(q); }
 
 /*!
   Constructs a quaternion from a rotation matrix.
 
   \param R : Matrix containing a rotation.
 */
-vpQuaternionVector::vpQuaternionVector(const vpRotationMatrix &R) : vpRotationVector(4) { buildFrom(R); }
+vpQuaternionVector::vpQuaternionVector(const vpRotationMatrix &R) : vpRotationVector(4) { build(R); }
 
 /*!
   Constructor that initialize \f$R_{xyz}=(\varphi,\theta,\psi)\f$ Euler
@@ -82,7 +78,7 @@ vpQuaternionVector::vpQuaternionVector(const vpRotationMatrix &R) : vpRotationVe
   \param tu : \f$\theta {\bf u}\f$ representation of a rotation used here as
   input to initialize the Euler angles.
 */
-vpQuaternionVector::vpQuaternionVector(const vpThetaUVector &tu) : vpRotationVector(4) { buildFrom(tu); }
+vpQuaternionVector::vpQuaternionVector(const vpThetaUVector &tu) : vpRotationVector(4) { build(tu); }
 
 /*!
   Manually change values of a quaternion.
@@ -93,11 +89,79 @@ vpQuaternionVector::vpQuaternionVector(const vpThetaUVector &tu) : vpRotationVec
 */
 void vpQuaternionVector::set(double qx, double qy, double qz, double qw)
 {
-  data[0] = qx;
-  data[1] = qy;
-  data[2] = qz;
-  data[3] = qw;
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int index_3 = 3;
+  data[index_0] = qx;
+  data[index_1] = qy;
+  data[index_2] = qz;
+  data[index_3] = qw;
 }
+
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+/*!
+  \deprecated You should use build(const double &, const double &, const double &, const double &) instead.
+  Manually change values of a quaternion.
+  \param qx : x quaternion parameter.
+  \param qy : y quaternion parameter.
+  \param qz : z quaternion parameter.
+  \param qw : w quaternion parameter.
+
+  \sa set()
+*/
+vpQuaternionVector vpQuaternionVector::buildFrom(const double qx, const double qy, const double qz, const double qw)
+{
+  build(qx, qy, qz, qw);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const vpThetaUVector &) instead.
+  Convert a \f$\theta {\bf u}\f$ vector into a quaternion.
+  \param tu : \f$\theta {\bf u}\f$ representation of a rotation used here as
+  input.
+  \return Quaternion vector.
+*/
+vpQuaternionVector vpQuaternionVector::buildFrom(const vpThetaUVector &tu)
+{
+  build(tu);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const vpColVector &q) instead.
+  Construct a quaternion vector from a 4-dim vector (x,y,z,w).
+*/
+vpQuaternionVector vpQuaternionVector::buildFrom(const vpColVector &q)
+{
+  build(q);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const std::vector<double> &q) instead.
+  Construct a quaternion vector from a 4-dim vector (x,y,z,w).
+*/
+vpQuaternionVector vpQuaternionVector::buildFrom(const std::vector<double> &q)
+{
+  build(q);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const vpRotationMatrix &) instead.
+  Constructs a quaternion from a rotation matrix.
+
+  \param R : Rotation matrix.
+*/
+vpQuaternionVector vpQuaternionVector::buildFrom(const vpRotationMatrix &R)
+{
+  build(R);
+  return *this;
+}
+#endif
+
 /*!
   Manually change values of a quaternion.
   \param qx : x quaternion parameter.
@@ -107,7 +171,7 @@ void vpQuaternionVector::set(double qx, double qy, double qz, double qw)
 
   \sa set()
 */
-vpQuaternionVector vpQuaternionVector::buildFrom(double qx, double qy, double qz, double qw)
+vpQuaternionVector &vpQuaternionVector::build(const double &qx, const double &qy, const double &qz, const double &qw)
 {
   set(qx, qy, qz, qw);
   return *this;
@@ -119,10 +183,10 @@ vpQuaternionVector vpQuaternionVector::buildFrom(double qx, double qy, double qz
   input.
   \return Quaternion vector.
 */
-vpQuaternionVector vpQuaternionVector::buildFrom(const vpThetaUVector &tu)
+vpQuaternionVector &vpQuaternionVector::build(const vpThetaUVector &tu)
 {
   vpRotationMatrix R(tu);
-  buildFrom(R);
+  build(R);
 
   return *this;
 }
@@ -130,13 +194,14 @@ vpQuaternionVector vpQuaternionVector::buildFrom(const vpThetaUVector &tu)
 /*!
   Construct a quaternion vector from a 4-dim vector (x,y,z,w).
 */
-vpQuaternionVector vpQuaternionVector::buildFrom(const vpColVector &q)
+vpQuaternionVector &vpQuaternionVector::build(const vpColVector &q)
 {
   if (q.size() != 4) {
     throw(vpException(vpException::dimensionError,
                       "Cannot construct a quaternion vector from a %d-dimension col vector", q.size()));
   }
-  for (unsigned int i = 0; i < 4; ++i) {
+  const unsigned int val_4 = 4;
+  for (unsigned int i = 0; i < val_4; ++i) {
     data[i] = q[i];
   }
 
@@ -146,16 +211,40 @@ vpQuaternionVector vpQuaternionVector::buildFrom(const vpColVector &q)
 /*!
   Construct a quaternion vector from a 4-dim vector (x,y,z,w).
 */
-vpQuaternionVector vpQuaternionVector::buildFrom(const std::vector<double> &q)
+vpQuaternionVector &vpQuaternionVector::build(const std::vector<double> &q)
 {
   if (q.size() != 4) {
     throw(vpException(vpException::dimensionError,
                       "Cannot construct a quaternion vector from a %d-dimension std::vector", q.size()));
   }
-  for (unsigned int i = 0; i < 4; ++i) {
+
+  const unsigned int val_4 = 4;
+  for (unsigned int i = 0; i < val_4; ++i) {
     data[i] = q[i];
   }
 
+  return *this;
+}
+
+/*!
+  Constructs a quaternion from a rotation matrix.
+
+  \param R : Rotation matrix.
+*/
+vpQuaternionVector &vpQuaternionVector::build(const vpRotationMatrix &R)
+{
+  vpThetaUVector tu(R);
+  vpColVector u;
+  double theta;
+  tu.extract(theta, u);
+
+  theta *= 0.5;
+
+  double sinTheta_2 = sin(theta);
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  set(u[index_0] * sinTheta_2, u[index_1] * sinTheta_2, u[index_2] * sinTheta_2, cos(theta));
   return *this;
 }
 
@@ -210,28 +299,30 @@ vpQuaternionVector vpQuaternionVector::operator/(double l) const
   return vpQuaternionVector(x() / l, y() / l, z() / l, w() / l);
 }
 /*!
-
   Copy operator that initializes a quaternion vector from a 4-dimension column
-vector \e q.
+  vector \e q.
 
-  \param q : 4-dimension vector containing the values of the quaternion
-vector.
+  \param q : 4-dimension vector containing the values of the quaternion vector.
 
-\code
-#include <visp3/core/vpQuaternionVector.h>
+  \code
+  #include <visp3/core/vpQuaternionVector.h>
 
-int main()
-{
-  vpColVector v(4);
-  v[0] = 0.1;
-  v[1] = 0.2;
-  v[2] = 0.3;
-  v[3] = 0.4;
-  vpQuaternionVector q;
-  q = v;
-  // q is now equal to v : 0.1, 0.2, 0.3, 0.4
-}
-\endcode
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpColVector v(4);
+    v[0] = 0.1;
+    v[1] = 0.2;
+    v[2] = 0.3;
+    v[3] = 0.4;
+    vpQuaternionVector q;
+    q = v;
+    // q is now equal to v : 0.1, 0.2, 0.3, 0.4
+  }
+  \endcode
 */
 vpQuaternionVector &vpQuaternionVector::operator=(const vpColVector &q)
 {
@@ -239,31 +330,15 @@ vpQuaternionVector &vpQuaternionVector::operator=(const vpColVector &q)
     throw(vpException(vpException::dimensionError, "Cannot set a quaternion vector from a %d-dimension col vector",
                       q.size()));
   }
-  for (unsigned int i = 0; i < 4; ++i) {
+  const unsigned int val_4 = 4;
+  for (unsigned int i = 0; i < val_4; ++i) {
     data[i] = q[i];
   }
 
   return *this;
 }
 
-/*!
-  Constructs a quaternion from a rotation matrix.
 
-  \param R : Rotation matrix.
-*/
-vpQuaternionVector vpQuaternionVector::buildFrom(const vpRotationMatrix &R)
-{
-  vpThetaUVector tu(R);
-  vpColVector u;
-  double theta;
-  tu.extract(theta, u);
-
-  theta *= 0.5;
-
-  double sinTheta_2 = sin(theta);
-  set(u[0] * sinTheta_2, u[1] * sinTheta_2, u[2] * sinTheta_2, cos(theta));
-  return *this;
-}
 
 /*!
   Quaternion conjugate.
@@ -324,38 +399,42 @@ double vpQuaternionVector::dot(const vpQuaternionVector &q0, const vpQuaternionV
 }
 
 //! Returns the x-component of the quaternion.
-const double &vpQuaternionVector::x() const { return data[0]; }
+const double &vpQuaternionVector::x() const { const unsigned int index_0 = 0; return data[index_0]; }
 //! Returns the y-component of the quaternion.
-const double &vpQuaternionVector::y() const { return data[1]; }
+const double &vpQuaternionVector::y() const { const unsigned int index_1 = 1; return data[index_1]; }
 //! Returns the z-component of the quaternion.
-const double &vpQuaternionVector::z() const { return data[2]; }
+const double &vpQuaternionVector::z() const { const unsigned int index_2 = 2; return data[index_2]; }
 //! Returns the w-component of the quaternion.
-const double &vpQuaternionVector::w() const { return data[3]; }
+const double &vpQuaternionVector::w() const { const unsigned int index_3 = 3; return data[index_3]; }
 
 //! Returns a reference to the x-component of the quaternion.
-double &vpQuaternionVector::x() { return data[0]; }
+double &vpQuaternionVector::x() { const unsigned int index_0 = 0; return data[index_0]; }
 //! Returns a reference to the y-component of the quaternion.
-double &vpQuaternionVector::y() { return data[1]; }
+double &vpQuaternionVector::y() { const unsigned int index_1 = 1; return data[index_1]; }
 //! Returns a reference to the z-component of the quaternion.
-double &vpQuaternionVector::z() { return data[2]; }
+double &vpQuaternionVector::z() { const unsigned int index_2 = 2; return data[index_2]; }
 //! Returns a reference to the w-component of the quaternion.
-double &vpQuaternionVector::w() { return data[3]; }
+double &vpQuaternionVector::w() { const unsigned int index_3 = 3; return data[index_3]; }
 
 #if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 /*!
   Set vector from a list of 4 double angle values.
   \code
-#include <visp3/core/vpQuaternionVector.cpp>
+  #include <visp3/core/vpQuaternionVector.cpp>
 
-int main()
-{
-  vpQuaternionVector q = {0, 0, 0, 1};
-  std::cout << "q: " << q.t() << std::endl;
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpQuaternionVector q = {0, 0, 0, 1};
+    std::cout << "q: " << q.t() << std::endl;
+  }
   \endcode
   It produces the following printings:
   \code
-q: 0  0  0  1
+  q: 0  0  0  1
   \endcode
   \sa operator<<()
 */
@@ -483,3 +562,4 @@ vpQuaternionVector vpQuaternionVector::slerp(const vpQuaternionVector &q0, const
 
   return qSlerp;
 }
+END_VISP_NAMESPACE

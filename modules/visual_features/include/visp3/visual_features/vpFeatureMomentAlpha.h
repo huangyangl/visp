@@ -40,9 +40,11 @@
 #ifndef _vpFeatureMomentAlpha_h_
 #define _vpFeatureMomentAlpha_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpColVector.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
+BEGIN_VISP_NAMESPACE
 class vpMomentDatabase;
 /*!
  * \class vpFeatureMomentAlpha
@@ -95,7 +97,7 @@ class vpMomentDatabase;
  * This feature depends on:
  * - vpMomentCentered
  * - vpMomentGravityCenter
- */
+*/
 class VISP_EXPORT vpFeatureMomentAlpha : public vpFeatureMoment
 {
 public:
@@ -114,11 +116,11 @@ public:
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 1)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentAlpha";
   }
@@ -126,11 +128,12 @@ public:
 /*!
  * Feature name.
  */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentAlpha";
   }
 
-  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) vp_override;
+  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) VP_OVERRIDE;
 };
+END_VISP_NAMESPACE
 #endif

@@ -40,6 +40,21 @@
 #include <visp3/core/vpMoment.h>
 #include <visp3/core/vpMomentDatabase.h>
 #include <visp3/core/vpMomentObject.h>
+
+BEGIN_VISP_NAMESPACE
+/*!
+ * Prints the moment contents to a stream
+ * \param os : a std::stream.
+ * \param m : a moment instance.
+ */
+  VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMoment &m)
+{
+  for (std::vector<double>::const_iterator i = m.values.begin(); i != m.values.end(); ++i)
+    os << *i << ",";
+
+  return os;
+}
+
 /*!
  * Default constructor
  */
@@ -57,6 +72,10 @@ vpMoment::vpMoment() : object(nullptr), moments(nullptr), values() { }
  * #include <visp3/core/vpMomentGravityCenter.h>
  * #include <visp3/core/vpMomentObject.h>
  * #include <visp3/core/vpPoint.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -108,19 +127,6 @@ void vpMoment::linkTo(vpMomentDatabase &data_base)
 void vpMoment::update(vpMomentObject &moment_object) { this->object = &moment_object; }
 
 /*!
- * Prints the moment contents to a stream
- * \param os : a std::stream.
- * \param m : a moment instance.
- */
-VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMoment &m)
-{
-  for (std::vector<double>::const_iterator i = m.values.begin(); i != m.values.end(); ++i)
-    os << *i << ",";
-
-  return os;
-}
-
-/*!
  * Prints values of all dependent moments required to calculate a specific
  * vpMoment. Not made pure to maintain compatibility Recommended : Types
  * inheriting from vpMoment should implement this function
@@ -132,3 +138,4 @@ void vpMoment::printDependencies(std::ostream &os) const
     "the derived classes!"
     << std::endl;
 }
+END_VISP_NAMESPACE

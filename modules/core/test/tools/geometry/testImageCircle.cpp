@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,12 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * Test vpRect and vpImagePoint.
+ * Test vpImageCircle.
  */
 
+/*!
+  \example testImageCircle.cpp
+ */
 #include <iostream>
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpImageCircle.h>
@@ -45,6 +48,9 @@ bool equal(const float &actualVal, const float &theoreticalVal)
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   const float OFFSET = 5.f;
   const float WIDTH = 640.f;
   const float HEIGHT = 480.f;
@@ -59,7 +65,7 @@ int main()
   {
     vpImageCircle circle(vpImagePoint(HEIGHT / 2.f, WIDTH / 2.f), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -81,7 +87,7 @@ int main()
     vpRect roiSquare(OFFSET, OFFSET, HEIGHT, HEIGHT);
     vpImageCircle circle(vpImagePoint(OFFSET + HEIGHT / 2.f, OFFSET + HEIGHT / 2.f), HEIGHT / 2.f);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * HEIGHT / 2.f;
+    float theoreticalValue = 2.f * M_PI_FLOAT * HEIGHT / 2.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -106,7 +112,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 4.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 4.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -131,7 +137,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -156,7 +162,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -206,7 +212,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 4.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 4.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -231,7 +237,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -256,7 +262,7 @@ int main()
     float vc = OFFSET + 100.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -302,12 +308,12 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + RADIUS * sin(theta)
-    float theta = M_PIf / 3.f;
+    float theta = M_PI_FLOAT / 3.f;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + RADIUS * sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 5.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 5.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -328,12 +334,12 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + RADIUS * sin(theta)
-    float theta = -2.f * M_PIf/3.f;
+    float theta = -2.f * M_PI_FLOAT/3.f;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + RADIUS * std::sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = M_PIf * RADIUS /3.f;
+    float theoreticalValue = M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -354,12 +360,12 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + RADIUS * sin(theta)
-    float theta = M_PI_2f;
+    float theta = M_PI_2_FLOAT;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + RADIUS * sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -380,7 +386,7 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + RADIUS * sin(theta)
-    float theta = -M_PI_2f;
+    float theta = -M_PI_2_FLOAT;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + RADIUS * sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
@@ -406,12 +412,12 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + HEIGHT + RADIUS * sin(theta)
-    float theta = -M_PIf / 3.f;
+    float theta = -M_PI_FLOAT / 3.f;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 5.f * M_PIf * RADIUS /3.f;
+    float theoreticalValue = 5.f * M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -432,12 +438,12 @@ int main()
   {
     // v = vc - r sin(theta)
     // Formula: vc = OFFSET + HEIGHT + RADIUS * sin(theta)
-    float theta = M_PIf / 3.f;
+    float theta = M_PI_FLOAT / 3.f;
     float uc = OFFSET + 100.f;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = M_PIf * RADIUS /3.f;
+    float theoreticalValue = M_PI_FLOAT * RADIUS /3.f;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -461,7 +467,7 @@ int main()
     float vc = OFFSET + HEIGHT - RADIUS;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 2.f * M_PIf * RADIUS;
+    float theoreticalValue = 2.f * M_PI_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -512,7 +518,7 @@ int main()
     float vc = OFFSET;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = M_PI_2f * RADIUS;
+    float theoreticalValue = M_PI_2_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -538,13 +544,13 @@ int main()
     // (4): umin = uc + r cos(theta_v_max)        ; v_cross_max = vc - r sin(theta_v_max) >= vmin && <= vmin + height
     // (3) & (4) => uc = umin - r cos(theta_v_min) = umin - r cos(theta_v_max) <=> theta_v_min = - theta_v_max
     // (3) & (4) => vc >= vmin + r sin(theta_v_min) && vc >= vmin + r sin (theta_v_max)
-    float theta_v_min = M_PIf / 4.f;
+    float theta_v_min = M_PI_FLOAT / 4.f;
     float uc = OFFSET - RADIUS * std::cos(theta_v_min);
     float vc = OFFSET + RADIUS * std::sin(theta_v_min) + 1.f;
     vc = std::max<float>(vc, OFFSET + RADIUS * std::sin(-theta_v_min) + 1.f);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = M_PI_2f * RADIUS;
+    float theoreticalValue = M_PI_2_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -572,13 +578,13 @@ int main()
     // (1)       => uc + r cos(theta_u_top_min) >= umin <=> uc >= umin - r cos(theta_u_top_min)
     // (2)       => uc + r cos(theta_u_top_max) >= umin <=> uc >= umin - r cos(theta_u_top_max)
 
-    float theta_u_top_min = -1.1f * M_PI_2f;
+    float theta_u_top_min = -1.1f * M_PI_2_FLOAT;
     float uc = OFFSET - RADIUS * std::cos(theta_u_top_min) + 1.f;
-    uc = std::max<float>(uc, OFFSET - RADIUS * std::cos(M_PIf - theta_u_top_min) + 1.f);
+    uc = std::max<float>(uc, OFFSET - RADIUS * std::cos(M_PI_FLOAT - theta_u_top_min) + 1.f);
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = 0.2f * M_PI_2f * RADIUS;
+    float theoreticalValue = 0.2f * M_PI_2_FLOAT * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -608,10 +614,10 @@ int main()
     // (3) & (4) =>{ uc  = umin - r cos(theta_v_min) & { uc  = umin - r cos(- theta_v_min)
     // (3) & (4)   { vc >= vmin - r sin(theta_v_min) & { vc >= vmin - r cos(- theta_v_min)
 
-    float theta_u_top_min = 5.f * M_PIf / 8.f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
     float uc = OFFSET - RADIUS * std::cos(theta_u_top_min) + 1.f;
-    uc = std::max<float>(uc, OFFSET - RADIUS * std::cos(M_PIf - theta_u_top_min) + 1.f);
+    uc = std::max<float>(uc, OFFSET - RADIUS * std::cos(M_PI_FLOAT - theta_u_top_min) + 1.f);
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);
     float theta_v_min = std::acos((OFFSET - uc)/RADIUS);
     theta_v_min = vpMath::getAngleBetweenMinPiAndPi(theta_v_min);
@@ -651,13 +657,13 @@ int main()
     // (1) => vc = vmin + r sin(theta_u_top_min)
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_top_min = 2.f * M_PIf / 3.f;
-    float theta_v_max = -M_PI_2f;
+    float theta_u_top_min = 2.f * M_PI_FLOAT / 3.f;
+    float theta_v_max = -M_PI_2_FLOAT;
     float uc = OFFSET + WIDTH - RADIUS * std::cos(theta_v_max);
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (M_PI_2f + M_PIf / 3.f) * RADIUS;
+    float theoreticalValue = (M_PI_2_FLOAT + M_PI_FLOAT / 3.f) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -686,13 +692,13 @@ int main()
     // (1) <=> asin((vc - vmin)/r) >= acos[(umin + width - uc)/r] <=> vc >= r sin(acos[(umin + width - uc)/r]) + vmin
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_v_max = -7.f * M_PIf / 8.f;
+    float theta_v_max = -7.f * M_PI_FLOAT / 8.f;
     float theta_v_min = -theta_v_max;
     float uc = OFFSET + WIDTH - RADIUS * std::cos(theta_v_max);
     float vc = RADIUS * std::sin(std::acos((OFFSET + WIDTH - uc)/RADIUS)) + OFFSET + 1.f;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - (theta_v_min - theta_v_max)) * RADIUS;
+    float theoreticalValue = (2.f * M_PI_FLOAT - (theta_v_min - theta_v_max)) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -721,8 +727,8 @@ int main()
     // Choice: theta_u_top_min = -0.9 * PI / 2
     // (1) => vc = vmin + r sin(theta_u_top_min)
     // (2) vc - r sin(theta_v_min) <= vmin => asin((vc - vmin)/r) <= theta_v_min
-    float theta_u_top_min = -0.9f * M_PI_2f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
+    float theta_u_top_min = -0.9f * M_PI_2_FLOAT;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
     theta_u_top_max = vpMath::getAngleBetweenMinPiAndPi(theta_u_top_max);
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);
     float theta_v_min = std::asin((vc - OFFSET)/RADIUS) + 1.f;
@@ -759,10 +765,10 @@ int main()
     // (2) & (4) =>{ uc  = umin - r cos(theta_v_min) & { uc  = umin - r cos(- theta_v_min)
     // (2) & (4)   { vc >= vmin - r sin(theta_v_min) & { vc >= vmin - r cos(- theta_v_min)
 
-    float theta_u_top_min = 5.f * M_PIf / 8.f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
     float uc = OFFSET + WIDTH - RADIUS * std::cos(theta_u_top_min) - 1.f;
-    uc = std::min<float>(uc, OFFSET + WIDTH - RADIUS * std::cos(M_PIf - theta_u_top_min) - 1.f);
+    uc = std::min<float>(uc, OFFSET + WIDTH - RADIUS * std::cos(M_PI_FLOAT - theta_u_top_min) - 1.f);
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);
     float theta_v_min = std::acos((OFFSET + WIDTH - uc)/RADIUS);
     theta_v_min = vpMath::getAngleBetweenMinPiAndPi(theta_v_min);
@@ -774,7 +780,7 @@ int main()
     }
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_u_top_min - theta_u_top_max) + (theta_v_min - theta_v_max))) * RADIUS;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_u_top_min - theta_u_top_max) + (theta_v_min - theta_v_max))) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -802,13 +808,13 @@ int main()
     // (3) => vc = vmin + height + r sin(theta_u_bot_max)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_v_min = M_PI_2f;
-    float theta_u_bot_max = -M_PIf / 3.f;
+    float theta_v_min = M_PI_2_FLOAT;
+    float theta_u_bot_max = -M_PI_FLOAT / 3.f;
     float uc = OFFSET - RADIUS * std::cos(theta_v_min);
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_max);;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (M_PI_2f + M_PIf / 3.f) * RADIUS;
+    float theoreticalValue = (M_PI_2_FLOAT + M_PI_FLOAT / 3.f) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -838,7 +844,7 @@ int main()
     // (4) => vc <= vmin + height + r sin(theta_v_max)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_v_min = M_PI_4f / 2.f;
+    float theta_v_min = M_PI_4_FLOAT / 2.f;
     float theta_v_max = -theta_v_min;
     float uc = OFFSET - RADIUS * std::cos(theta_v_min);
     float vc = std::min<float>(OFFSET + HEIGHT + RADIUS * std::sin(theta_v_min) - 1.f, OFFSET + HEIGHT + RADIUS * std::sin(theta_v_max) - 1.f);
@@ -874,8 +880,8 @@ int main()
     // (1) => uc >= umin - r cos(theta_u_bot_max)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_bot_min = 5.f * M_PI_4f / 2.f;
-    float theta_u_bot_max = M_PIf - theta_u_bot_min;
+    float theta_u_bot_min = 5.f * M_PI_4_FLOAT / 2.f;
+    float theta_u_bot_max = M_PI_FLOAT - theta_u_bot_min;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_min);
     float uc = std::max<float>(OFFSET - RADIUS * std::cos(theta_u_bot_min) + 1.f, OFFSET - RADIUS * std::cos(theta_u_bot_max) + 1.f);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
@@ -910,10 +916,10 @@ int main()
     // (2) & (4) => vc < vmin + height + r sin(theta_v_min) & vc < vmin + height + r sin(-theta_v_min)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_bot_min = -5.f * M_PIf / 8.f;
-    float theta_u_bot_max = M_PIf - theta_u_bot_min;
+    float theta_u_bot_min = -5.f * M_PI_FLOAT / 8.f;
+    float theta_u_bot_max = M_PI_FLOAT - theta_u_bot_min;
     theta_u_bot_max = vpMath::getAngleBetweenMinPiAndPi(theta_u_bot_max);
-    float theta_v_min = 7.f * M_PIf / 8.f;
+    float theta_v_min = 7.f * M_PI_FLOAT / 8.f;
     float theta_v_max = -theta_v_min;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_min);
     float uc = OFFSET - RADIUS * std::cos(theta_v_min);
@@ -947,13 +953,13 @@ int main()
     // (1) => vc = vmin + height + r sin(theta_u_bot_min)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_bot_min = -2.f * M_PIf / 3.f;
-    float theta_v_min = M_PI_2f;
+    float theta_u_bot_min = -2.f * M_PI_FLOAT / 3.f;
+    float theta_v_min = M_PI_2_FLOAT;
     float uc = OFFSET + WIDTH - RADIUS * std::cos(theta_v_min);
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_min);;
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (M_PI_2f + M_PIf / 3.f) * RADIUS;
+    float theoreticalValue = (M_PI_2_FLOAT + M_PI_FLOAT / 3.f) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -982,12 +988,12 @@ int main()
     // (2) & (4) => vc <= vmin + height + r sin(theta_v_min) & vc <= vmin + height + r sin(-theta_v_min)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_v_min = 5.f * M_PIf / 6.f;
+    float theta_v_min = 5.f * M_PI_FLOAT / 6.f;
     float uc = OFFSET + WIDTH - RADIUS * std::cos(theta_v_min);
     float vc = std::min<float>(OFFSET + HEIGHT + RADIUS * std::sin(theta_v_min) - 1.f, OFFSET + HEIGHT + RADIUS * std::sin(-theta_v_min) - 1.f);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (M_PIf / 3.f) * RADIUS; // <=> 2.f * M_PIf / 6.f
+    float theoreticalValue = (M_PI_FLOAT / 3.f) * RADIUS; // <=> 2.f * M_PI_FLOAT / 6.f
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1016,12 +1022,12 @@ int main()
     // (1) & (3) => uc < umin + width - r cos(theta_u_bot_min) & uc <= umin + width - r cos(PI - theta_u_bot_min)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_bot_min = 4.f * M_PIf / 6.f;
+    float theta_u_bot_min = 4.f * M_PI_FLOAT / 6.f;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_min);
-    float uc = std::min<float>(OFFSET + WIDTH - RADIUS * std::cos(theta_u_bot_min) - 1.f, OFFSET + WIDTH - RADIUS * std::cos(M_PIf -theta_u_bot_min) - 1.f);
+    float uc = std::min<float>(OFFSET + WIDTH - RADIUS * std::cos(theta_u_bot_min) - 1.f, OFFSET + WIDTH - RADIUS * std::cos(M_PI_FLOAT -theta_u_bot_min) - 1.f);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (M_PIf / 3.f) * RADIUS; // <=> 2.f * M_PIf / 6.f
+    float theoreticalValue = (M_PI_FLOAT / 3.f) * RADIUS; // <=> 2.f * M_PI_FLOAT / 6.f
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1051,16 +1057,16 @@ int main()
     // (2) & (4) => vc < vmin + height + r sin(theta_v_min) & vc < vmin + height + r sin(-theta_v_min)
     // (1) & (3) theta_u_bot_min = PI - theta_u_bot_max
     // (2) & (4) theta_v_min = - theta_v_max
-    float theta_u_bot_min = -7.f * M_PIf / 8.f;
-    float theta_u_bot_max = M_PIf - theta_u_bot_min;
+    float theta_u_bot_min = -7.f * M_PI_FLOAT / 8.f;
+    float theta_u_bot_max = M_PI_FLOAT - theta_u_bot_min;
     theta_u_bot_max = vpMath::getAngleBetweenMinPiAndPi(theta_u_bot_max);
-    float theta_v_max = -3.f * M_PIf / 8.f;
+    float theta_v_max = -3.f * M_PI_FLOAT / 8.f;
     float theta_v_min = -theta_v_max;
     float vc = OFFSET + HEIGHT + RADIUS * std::sin(theta_u_bot_min);
     float uc = OFFSET - RADIUS * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_v_min - theta_v_max) + (theta_u_bot_max - theta_u_bot_min))) * RADIUS;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_v_min - theta_v_max) + (theta_u_bot_max - theta_u_bot_min))) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1089,12 +1095,12 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 5.f * M_PIf / 8.f;
-    float theta_u_top_max = 3.f * M_PIf / 8.f;
-    float theta_v_min = 7.f * M_PIf / 8.f;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_u_top_max = 3.f * M_PI_FLOAT / 8.f;
+    float theta_v_min = 7.f * M_PI_FLOAT / 8.f;
     float theta_v_max = -theta_v_min;
-    float theta_u_bottom_min = -5.f * M_PIf / 8.f;
-    float theta_u_bottom_max = -3.f * M_PIf / 8.f;
+    float theta_u_bottom_min = -5.f * M_PI_FLOAT / 8.f;
+    float theta_u_bottom_max = -3.f * M_PI_FLOAT / 8.f;
     float vc = OFFSET + HEIGHT / 2.f;
     float radius = -(OFFSET - vc)/ std::sin(theta_u_top_min);
     float uc = OFFSET - radius * std::cos(theta_v_min);
@@ -1129,9 +1135,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_max = M_PIf / 6.f;
-    float theta_u_top_min = M_PIf - theta_u_top_max;
-    float theta_v_min = M_PIf / 3.f;
+    float theta_u_top_max = M_PI_FLOAT / 6.f;
+    float theta_u_top_min = M_PI_FLOAT - theta_u_top_max;
+    float theta_v_min = M_PI_FLOAT / 3.f;
     float theta_u_bottom_max = -theta_u_top_max;
     float radius = HEIGHT;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1167,9 +1173,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 4.f * M_PIf / 6.f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
-    float theta_v_min = M_PIf;
+    float theta_u_top_min = 4.f * M_PI_FLOAT / 6.f;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
+    float theta_v_min = M_PI_FLOAT;
     float theta_u_bottom_min = -theta_u_top_min;
     float theta_u_bottom_max = -theta_u_top_max;
     float radius = HEIGHT / (2.f * std::sin(theta_u_top_min)); // vmin + h - vmin = (vc - r sin(-theta_u_top_min)) - (vc - r sin(theta_top_min))
@@ -1177,7 +1183,7 @@ int main()
     float uc = OFFSET - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_u_top_min -  theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_u_top_min -  theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1206,8 +1212,8 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = M_PI_2f;
-    float theta_v_min = M_PI_4f;
+    float theta_u_top_min = M_PI_2_FLOAT;
+    float theta_v_min = M_PI_4_FLOAT;
     float theta_v_max = -theta_v_min;
     float radius = HEIGHT / 2.f;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1243,8 +1249,8 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = M_PI_2f;
-    float theta_v_min = 3.f * M_PI_4f;
+    float theta_u_top_min = M_PI_2_FLOAT;
+    float theta_v_min = 3.f * M_PI_4_FLOAT;
     float theta_v_max = -theta_v_min;
     float radius = HEIGHT / 2.f;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1281,8 +1287,8 @@ int main()
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
     float theta_u_top_max = 0.f;
-    float theta_u_bot_max = -M_PIf / 3.f;
-    float theta_v_max = -M_PIf / 6.f;
+    float theta_u_bot_max = -M_PI_FLOAT / 3.f;
+    float theta_v_max = -M_PI_FLOAT / 6.f;
     float radius = HEIGHT / (std::sin(theta_u_top_max)  - std::sin(theta_u_bot_max));
     float uc = OFFSET - radius * std::cos(theta_v_max);
     float vc = OFFSET + radius * std::sin(theta_u_top_max);
@@ -1317,9 +1323,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_max = M_PIf / 3.f;
+    float theta_u_top_max = M_PI_FLOAT / 3.f;
     float theta_u_bot_max = 0.f;
-    float theta_v_min = M_PIf / 6.f;
+    float theta_v_min = M_PI_FLOAT / 6.f;
     float radius = HEIGHT / (std::sin(theta_u_top_max) - std::sin(theta_u_bot_max));
     float uc = OFFSET - radius * std::cos(theta_v_min);
     float vc = OFFSET + radius * std::sin(theta_u_top_max);
@@ -1354,18 +1360,18 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 5.f * M_PIf / 8.f;
-    float theta_u_top_max = 3.f * M_PIf / 8.f;
-    float theta_v_min = 1.f * M_PIf / 8.f;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_u_top_max = 3.f * M_PI_FLOAT / 8.f;
+    float theta_v_min = 1.f * M_PI_FLOAT / 8.f;
     float theta_v_max = -theta_v_min;
-    float theta_u_bottom_min = -5.f * M_PIf / 8.f;
-    float theta_u_bottom_max = -3.f * M_PIf / 8.f;
+    float theta_u_bottom_min = -5.f * M_PI_FLOAT / 8.f;
+    float theta_u_bottom_max = -3.f * M_PI_FLOAT / 8.f;
     float vc = OFFSET + HEIGHT / 2.f;
     float radius = -(OFFSET - vc)/ std::sin(theta_u_top_min);
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_u_top_min - theta_u_top_max) + (theta_v_min - theta_v_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_u_top_min - theta_u_top_max) + (theta_v_min - theta_v_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1394,15 +1400,15 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 5.f * M_PIf / 6.f;
-    float theta_v_min = 2.f * M_PIf / 3.f;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 6.f;
+    float theta_v_min = 2.f * M_PI_FLOAT / 3.f;
     float theta_u_bottom_min = -theta_u_top_min;
     float radius = HEIGHT;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - (theta_u_top_min - theta_u_bottom_min)) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - (theta_u_top_min - theta_u_bottom_min)) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1431,8 +1437,8 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 4.f * M_PIf / 6.f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
+    float theta_u_top_min = 4.f * M_PI_FLOAT / 6.f;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
     float theta_v_min = 0;
     float theta_u_bottom_min = -theta_u_top_min;
     float theta_u_bottom_max = -theta_u_top_max;
@@ -1441,7 +1447,7 @@ int main()
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_u_top_min -  theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_u_top_min -  theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1470,15 +1476,15 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = M_PI_2f;
-    float theta_v_min = 3.f * M_PI_4f;
+    float theta_u_top_min = M_PI_2_FLOAT;
+    float theta_v_min = 3.f * M_PI_4_FLOAT;
     float theta_v_max = -theta_v_min;
     float radius = HEIGHT / 2.f;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - (theta_v_min - theta_v_max)) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - (theta_v_min - theta_v_max)) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1507,15 +1513,15 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = M_PI_2f;
-    float theta_v_min = M_PI_4f;
+    float theta_u_top_min = M_PI_2_FLOAT;
+    float theta_v_min = M_PI_4_FLOAT;
     float theta_v_max = -theta_v_min;
     float radius = HEIGHT / 2.f;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - (theta_v_min - theta_v_max)) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - (theta_v_min - theta_v_max)) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1544,15 +1550,15 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = M_PIf;
-    float theta_u_bot_min = -2.f * M_PIf / 3.f;
-    float theta_v_max = -5.f * M_PIf / 6.f;
+    float theta_u_top_min = M_PI_FLOAT;
+    float theta_u_bot_min = -2.f * M_PI_FLOAT / 3.f;
+    float theta_v_max = -5.f * M_PI_FLOAT / 6.f;
     float radius = HEIGHT / (std::sin(theta_u_top_min) - std::sin(theta_u_bot_min));
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_max);
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - (theta_u_top_min - theta_v_max)) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - (theta_u_top_min - theta_v_max)) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1581,9 +1587,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_min = - theta_v_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 2.f * M_PIf / 3.f;
-    float theta_u_bot_min = M_PIf;
-    float theta_v_min = 5.f * M_PIf / 6.f;
+    float theta_u_top_min = 2.f * M_PI_FLOAT / 3.f;
+    float theta_u_bot_min = M_PI_FLOAT;
+    float theta_v_min = 5.f * M_PI_FLOAT / 6.f;
     float radius = HEIGHT / (std::sin(theta_u_top_min) - std::sin(theta_u_bot_min));
     float uc = OFFSET + WIDTH - radius * std::cos(theta_v_min);
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1620,12 +1626,12 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_v_left_min = 7.f * M_PIf / 8.f;
+    float theta_v_left_min = 7.f * M_PI_FLOAT / 8.f;
     float theta_v_left_max = -theta_v_left_min;
-    float theta_v_right_min = M_PIf / 8.f;
+    float theta_v_right_min = M_PI_FLOAT / 8.f;
     float theta_v_right_max = -theta_v_right_min;
-    float theta_u_top_min = 5.f * M_PIf / 8.f;
-    float theta_u_top_max = M_PIf - theta_u_top_min;
+    float theta_u_top_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_u_top_max = M_PI_FLOAT - theta_u_top_min;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET + WIDTH_SWITCHED - radius * std::cos(theta_v_right_min);
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1661,12 +1667,12 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_u_top_min = -2.f * M_PIf / 3.f;
+    float theta_u_top_min = -2.f * M_PI_FLOAT / 3.f;
     float uc = OFFSET + WIDTH_SWITCHED/2.f;
     float vc = OFFSET + RADIUS * std::sin(theta_u_top_min);
     vpImageCircle circle(vpImagePoint(vc, uc), RADIUS);
     float arcLengthCircle = circle.computeArcLengthInRoI(switchedRoI);
-    float theoreticalValue = (M_PIf/3.f) * RADIUS;
+    float theoreticalValue = (M_PI_FLOAT/3.f) * RADIUS;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -1697,9 +1703,9 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_v_left_max = -5.f * M_PIf / 8.f;
-    float theta_v_right_max = -3.f *M_PIf / 8.f;
-    float theta_u_top_min = -7.f * M_PIf / 8.f;
+    float theta_v_left_max = -5.f * M_PI_FLOAT / 8.f;
+    float theta_v_right_max = -3.f *M_PI_FLOAT / 8.f;
+    float theta_u_top_min = -7.f * M_PI_FLOAT / 8.f;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_max) - std::cos(theta_v_left_max));
     float uc = OFFSET - radius * std::cos(theta_v_left_max);
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1736,9 +1742,9 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_u_top_max = -M_PIf / 3.f;
+    float theta_u_top_max = -M_PI_FLOAT / 3.f;
     float theta_v_right_max = 0.f;
-    float theta_v_left_max = -M_PI_2f;
+    float theta_v_left_max = -M_PI_2_FLOAT;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_max) - std::cos(theta_v_left_max));
     float uc = OFFSET;
     float vc = OFFSET + radius * std::sin(theta_u_top_max);
@@ -1775,9 +1781,9 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_u_top_min = -2.f * M_PIf / 3.f;
-    float theta_v_left_max = M_PIf;
-    float theta_v_right_max = -M_PI_2f;
+    float theta_u_top_min = -2.f * M_PI_FLOAT / 3.f;
+    float theta_v_left_max = M_PI_FLOAT;
+    float theta_v_right_max = -M_PI_2_FLOAT;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_max) - std::cos(theta_v_left_max));
     float uc = OFFSET + WIDTH_SWITCHED;
     float vc = OFFSET + radius * std::sin(theta_u_top_min);
@@ -1814,12 +1820,12 @@ int main()
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
 
-    float theta_v_left_min = 7.f * M_PIf / 8.f;
+    float theta_v_left_min = 7.f * M_PI_FLOAT / 8.f;
     float theta_v_left_max = -theta_v_left_min;
-    float theta_v_right_min = M_PIf / 8.f;
+    float theta_v_right_min = M_PI_FLOAT / 8.f;
     float theta_v_right_max = -theta_v_right_min;
-    float theta_u_bot_min = -5.f * M_PIf / 8.f;
-    float theta_u_bot_max = -M_PIf - theta_u_bot_min;
+    float theta_u_bot_min = -5.f * M_PI_FLOAT / 8.f;
+    float theta_u_bot_max = -M_PI_FLOAT - theta_u_bot_min;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET + WIDTH_SWITCHED - radius * std::cos(theta_v_right_min);
     float vc = OFFSET + HEIGHT_SWITCHED + radius * std::sin(theta_u_bot_min);
@@ -1855,10 +1861,10 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
-    float theta_u_bot_min = 2.f * M_PIf / 3.f;
-    float theta_u_bot_max = M_PIf - theta_u_bot_min;
-    float theta_v_left_min = 5.f * M_PIf / 6.f;
-    float theta_v_right_min = M_PIf / 6.f;
+    float theta_u_bot_min = 2.f * M_PI_FLOAT / 3.f;
+    float theta_u_bot_max = M_PI_FLOAT - theta_u_bot_min;
+    float theta_v_left_min = 5.f * M_PI_FLOAT / 6.f;
+    float theta_v_right_min = M_PI_FLOAT / 6.f;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET + WIDTH_SWITCHED - radius * std::cos(theta_v_right_min);
     float vc = OFFSET + HEIGHT_SWITCHED + radius * std::sin(theta_u_bot_min);
@@ -1894,9 +1900,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
-    float theta_u_bot_min = 7.f * M_PIf / 8.f;
-    float theta_v_left_min = 5.f * M_PIf / 8.f;
-    float theta_v_right_min = 3.f * M_PIf / 8.f;
+    float theta_u_bot_min = 7.f * M_PI_FLOAT / 8.f;
+    float theta_v_left_min = 5.f * M_PI_FLOAT / 8.f;
+    float theta_v_right_min = 3.f * M_PI_FLOAT / 8.f;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET + WIDTH_SWITCHED - radius * std::cos(theta_v_right_min);
     float vc = OFFSET + HEIGHT_SWITCHED + radius * std::sin(theta_u_bot_min);
@@ -1932,8 +1938,8 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
-    float theta_u_bot_max = M_PIf / 3.f;
-    float theta_v_left_min = M_PI_2f;
+    float theta_u_bot_max = M_PI_FLOAT / 3.f;
+    float theta_v_left_min = M_PI_2_FLOAT;
     float theta_v_right_min = 0.f;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET;
@@ -1970,9 +1976,9 @@ int main()
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
-    float theta_u_bot_min = 2.f * M_PIf / 3.f;
-    float theta_v_right_min = M_PI_2f;
-    float theta_v_left_min = M_PIf;
+    float theta_u_bot_min = 2.f * M_PI_FLOAT / 3.f;
+    float theta_v_right_min = M_PI_2_FLOAT;
+    float theta_v_left_min = M_PI_FLOAT;
     float radius = WIDTH_SWITCHED / (std::cos(theta_v_right_min) - std::cos(theta_v_left_min));
     float uc = OFFSET + WIDTH_SWITCHED;
     float vc = OFFSET + HEIGHT_SWITCHED + radius * std::sin(theta_u_bot_min);
@@ -2004,17 +2010,17 @@ int main()
     // (6): u_cross_bot_max = uc + r cos(theta_u_bottom_max) <=  umin_roi + width ; vmin_roi + height = vc - r sin(theta_u_bottom_max)
     // (1) & (3) theta_u_top_min = PI - theta_u_top_max
     // (5) & (6) theta_u_bottom_min = PI - theta_u_bottom_max
-    float theta_u_top_min = 2.f * M_PIf / 3.f;
-    float theta_u_top_max = M_PIf / 3.f;
-    float theta_u_bottom_min = -2.f * M_PIf / 3.f;
-    float theta_u_bottom_max = -M_PIf / 3.f;
+    float theta_u_top_min = 2.f * M_PI_FLOAT / 3.f;
+    float theta_u_top_max = M_PI_FLOAT / 3.f;
+    float theta_u_bottom_min = -2.f * M_PI_FLOAT / 3.f;
+    float theta_u_bottom_max = -M_PI_FLOAT / 3.f;
     float uc = OFFSET + WIDTH / 2.f;
     float vc = OFFSET + HEIGHT / 2.f;
     float radius = -(OFFSET - vc)/ std::sin(theta_u_top_min);
 
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(roi);
-    float theoreticalValue = (2.f * M_PIf - ((theta_u_top_min - theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
+    float theoreticalValue = (2.f * M_PI_FLOAT - ((theta_u_top_min - theta_u_top_max) + (theta_u_bottom_max - theta_u_bottom_min))) * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {
@@ -2040,9 +2046,9 @@ int main()
     // (6): u_min + width = uc + r cos(theta_v_right_max); v_cross_right_max = vc - r sin(theta_v_right_max)
     // (2) & (4) theta_v_left_min = - theta_v_left_max
     // (5) & (6) theta_v_right_min = - theta_v_right_max
-    float theta_v_left_min = 5.f * M_PIf / 6.f;
+    float theta_v_left_min = 5.f * M_PI_FLOAT / 6.f;
     float theta_v_left_max = -theta_v_left_min;
-    float theta_v_right_min = M_PIf / 6.f;
+    float theta_v_right_min = M_PI_FLOAT / 6.f;
     float theta_v_right_max = -theta_v_right_min;
     float uc = OFFSET + HEIGHT / 2.f;
     float vc = OFFSET + WIDTH / 2.f;
@@ -2072,14 +2078,14 @@ int main()
     // Choosing theta_v_left_min = 7 PI / 8 and circle at the center of the RoI
     // umin = uc + r cos(theta_v_left_min) => r = (umin - uc) / cos(theta_v_left_min)
     vpRect squareRoI(OFFSET, OFFSET, HEIGHT, HEIGHT);
-    float theta_v_left_min = 7.f * M_PIf / 8.f;
+    float theta_v_left_min = 7.f * M_PI_FLOAT / 8.f;
     float uc = OFFSET + HEIGHT  / 2.f;
     float vc = OFFSET + HEIGHT / 2.f;
     float radius = (OFFSET - uc) / std::cos(theta_v_left_min);
 
     vpImageCircle circle(vpImagePoint(vc, uc), radius);
     float arcLengthCircle = circle.computeArcLengthInRoI(squareRoI);
-    float theoreticalValue = M_PIf * radius;
+    float theoreticalValue = M_PI_FLOAT * radius;
     bool isValueOK = equal(arcLengthCircle, theoreticalValue);
     std::string statusTest;
     if (isValueOK) {

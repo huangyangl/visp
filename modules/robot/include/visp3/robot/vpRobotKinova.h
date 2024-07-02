@@ -33,9 +33,6 @@
  *
 *****************************************************************************/
 
-#ifndef vpRobotKinova_h
-#define vpRobotKinova_h
-
 /*!
 
   \file vpRobotKinova.h
@@ -43,6 +40,9 @@
   Interface for Kinova robot using Jaco SDK.
 
 */
+
+#ifndef vpRobotKinova_h
+#define vpRobotKinova_h
 
 #include <visp3/core/vpConfig.h>
 
@@ -60,7 +60,7 @@
 #elif _WIN32
 #include <CommandLayer.h>
 #include <CommunicationLayer.h>
-#include <winsock2.h>    
+#include <winsock2.h>
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
@@ -69,6 +69,7 @@
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/robot/vpRobot.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
 
   \class vpRobotKinova
@@ -92,12 +93,12 @@ public:
   typedef enum { CMD_LAYER_USB, CMD_LAYER_ETHERNET, CMD_LAYER_UNSET } CommandLayer;
 
   vpRobotKinova();
-  virtual ~vpRobotKinova() vp_override;
+  virtual ~vpRobotKinova() VP_OVERRIDE;
 
   int connect();
 
-  void get_eJe(vpMatrix &eJe) vp_override;
-  void get_fJe(vpMatrix &fJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
+  void get_fJe(vpMatrix &fJe) VP_OVERRIDE;
 
   /*!
    * Return constant transformation between end-effector and tool frame.
@@ -107,8 +108,8 @@ public:
 
   int getActiveDevice() const { return m_active_device; }
   int getNumDevices() const { return m_devices_count; }
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) vp_override;
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) VP_OVERRIDE;
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &pose);
 
   void homing();
@@ -125,7 +126,7 @@ public:
    */
   void setCommandLayer(CommandLayer command_layer) { m_command_layer = command_layer; }
   void setDoF(unsigned int dof);
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) VP_OVERRIDE;
   /*!
    * \param[in] plugin_location: Path to Jaco SDK plugins (ie. `Kinova.API.USBCommandLayerUbuntu.so` on
    * unix-like platform or `CommandLayerWindows.dll` on Windows platform). By default this location is empty,
@@ -133,7 +134,7 @@ public:
    * them.
    */
   void setPluginLocation(const std::string &plugin_location) { m_plugin_location = plugin_location; }
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
   /*!
    * Enable or disable verbose mode to print to stdout additional information.
    * \param[in] verbose : true to enable verbose, false to disable. By default verbose
@@ -178,6 +179,6 @@ private:
   int (*KinovaSetAngularControl)();
   int (*KinovaSetCartesianControl)();
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

@@ -42,6 +42,7 @@
 #include <visp3/core/vpColVector.h>
 #include <visp3/sensor/vpComedi.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpForceTorqueAtiSensor
  *
@@ -80,12 +81,12 @@
  * #endif
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpForceTorqueAtiSensor : public vpComedi
 {
 public:
   vpForceTorqueAtiSensor();
-  virtual ~vpForceTorqueAtiSensor() vp_override;
+  virtual ~vpForceTorqueAtiSensor() VP_OVERRIDE;
 
   void bias();
   void close();
@@ -113,6 +114,6 @@ protected:
   unsigned short m_num_channels; //!< Number of channels available from the sensor
   vpColVector m_sample_bias;     //!< Sample value used for bias
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

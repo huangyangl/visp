@@ -44,6 +44,7 @@
  // inet_ntop() not supported on win XP
 #ifdef VISP_HAVE_FUNC_INET_NTOP
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpClient
  *
@@ -61,6 +62,10 @@
  * \code
  * #include <iostream>
  * #include <visp3/core/vpClient.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -158,7 +163,7 @@
  * \sa vpClient
  * \sa vpRequest
  * \sa vpNetwork
- */
+*/
 class VISP_EXPORT vpClient : public vpNetwork
 {
 private:
@@ -168,7 +173,7 @@ private:
 
 public:
   vpClient();
-  virtual ~vpClient() vp_override;
+  virtual ~vpClient() VP_OVERRIDE;
 
   bool connectToHostname(const std::string &hostname, const unsigned int &port_serv);
   bool connectToIP(const std::string &ip, const unsigned int &port_serv);
@@ -203,6 +208,6 @@ public:
 
   void stop();
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

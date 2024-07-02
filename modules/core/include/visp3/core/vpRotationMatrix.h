@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,15 @@
  * Rotation matrix.
  */
 
-#ifndef _vpRotationMatrix_h_
-#define _vpRotationMatrix_h_
-
 /*!
   \file vpRotationMatrix.h
   \brief Class that consider the particular case of rotation matrix
 */
 
+#ifndef VP_ROTATION_MATRIX_H
+#define VP_ROTATION_MATRIX_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpArray2D.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpPoseVector.h>
@@ -49,6 +50,7 @@
 #include <visp3/core/vpThetaUVector.h>
 #include <visp3/core/vpTranslationVector.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpRotationMatrix
 
@@ -65,6 +67,10 @@
   The code below shows how to create a rotation matrix, set the element values and access them:
   \code
   #include <visp3/core/vpRotationMatrix.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -93,6 +99,10 @@
   \code
   #include <visp3/core/vpRotationMatrix.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpRotationMatrix R;
@@ -104,6 +114,10 @@
   If ViSP is build with c++11 enabled, you can do the same using:
   \code
   #include <visp3/code/vpRotationMatrix.h
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -117,28 +131,38 @@ class VISP_EXPORT vpRotationMatrix : public vpArray2D<double>
 public:
   vpRotationMatrix();
   vpRotationMatrix(const vpRotationMatrix &R);
-  explicit vpRotationMatrix(const vpHomogeneousMatrix &M);
-  explicit vpRotationMatrix(const vpThetaUVector &r);
-  explicit vpRotationMatrix(const vpPoseVector &p);
-  explicit vpRotationMatrix(const vpRzyzVector &r);
-  explicit vpRotationMatrix(const vpRxyzVector &r);
-  explicit vpRotationMatrix(const vpRzyxVector &r);
-  explicit vpRotationMatrix(const vpQuaternionVector &q);
-  explicit vpRotationMatrix(const vpMatrix &R);
+  VP_EXPLICIT vpRotationMatrix(const vpHomogeneousMatrix &M);
+  VP_EXPLICIT vpRotationMatrix(const vpThetaUVector &r);
+  VP_EXPLICIT vpRotationMatrix(const vpPoseVector &p);
+  VP_EXPLICIT vpRotationMatrix(const vpRzyzVector &r);
+  VP_EXPLICIT vpRotationMatrix(const vpRxyzVector &r);
+  VP_EXPLICIT vpRotationMatrix(const vpRzyxVector &r);
+  VP_EXPLICIT vpRotationMatrix(const vpQuaternionVector &q);
+  VP_EXPLICIT vpRotationMatrix(const vpMatrix &R);
   vpRotationMatrix(double tux, double tuy, double tuz);
 
 #if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
-  explicit vpRotationMatrix(const std::initializer_list<double> &list);
+  VP_EXPLICIT vpRotationMatrix(const std::initializer_list<double> &list);
 #endif
 
-  vpRotationMatrix buildFrom(const vpHomogeneousMatrix &M);
-  vpRotationMatrix buildFrom(const vpThetaUVector &v);
-  vpRotationMatrix buildFrom(const vpPoseVector &p);
-  vpRotationMatrix buildFrom(const vpRzyzVector &v);
-  vpRotationMatrix buildFrom(const vpRxyzVector &v);
-  vpRotationMatrix buildFrom(const vpRzyxVector &v);
-  vpRotationMatrix buildFrom(const vpQuaternionVector &q);
-  vpRotationMatrix buildFrom(double tux, double tuy, double tuz);
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpHomogeneousMatrix &M);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpThetaUVector &v);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpPoseVector &p);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpRzyzVector &v);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpRxyzVector &v);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpRzyxVector &v);
+  VP_DEPRECATED vpRotationMatrix buildFrom(const vpQuaternionVector &q);
+  VP_DEPRECATED vpRotationMatrix buildFrom(double tux, double tuy, double tuz);
+#endif
+  vpRotationMatrix &build(const vpHomogeneousMatrix &M);
+  vpRotationMatrix &build(const vpThetaUVector &v);
+  vpRotationMatrix &build(const vpPoseVector &p);
+  vpRotationMatrix &build(const vpRzyzVector &v);
+  vpRotationMatrix &build(const vpRxyzVector &v);
+  vpRotationMatrix &build(const vpRzyxVector &v);
+  vpRotationMatrix &build(const vpQuaternionVector &q);
+  vpRotationMatrix &build(const double &tux, const double &tuy, const double &tuz);
 
   void eye();
 
@@ -204,11 +228,11 @@ public:
      \deprecated Provided only for compat with previous releases.
      This function does nothing.
    */
-  vp_deprecated void init() { }
+  VP_DEPRECATED void init() { }
   /*!
      \deprecated You should rather use eye().
    */
-  vp_deprecated void setIdentity();
+  VP_DEPRECATED void setIdentity();
   //@}
 #endif
 
@@ -219,6 +243,6 @@ protected:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 VISP_EXPORT
 #endif
-vpRotationMatrix operator*(const double &x, const vpRotationMatrix &R);
-
+VISP_NAMESPACE_ADDRESSING vpRotationMatrix operator*(const double &x, const VISP_NAMESPACE_ADDRESSING vpRotationMatrix &R);
+END_VISP_NAMESPACE
 #endif

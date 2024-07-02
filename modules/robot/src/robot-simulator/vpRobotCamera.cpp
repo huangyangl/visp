@@ -47,6 +47,7 @@
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/robot/vpRobotException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   Constructor.
 
@@ -183,14 +184,14 @@ void vpRobotCamera::getPosition(vpHomogeneousMatrix &cMw) const { cMw = this->cM
   Get the current position of the robot.
 
   \param frame : Control frame type in which to get the position, either :
-  - in the camera cartesien frame,
+  - in the camera cartesian frame,
   - joint (articular) coordinates of each axes
-  - in a reference or fixed cartesien frame attached to the robot base
-  - in a mixt cartesien frame (translation in reference frame, and rotation in
+  - in a reference or fixed cartesian frame attached to the robot base
+  - in a mixt cartesian frame (translation in reference frame, and rotation in
   camera frame)
 
   \param position : Measured position of the robot:
-  - in camera cartesien frame, a 6 dimension vector, set to 0.
+  - in camera cartesian frame, a 6 dimension vector, set to 0.
 
   - in articular, a 6 dimension vector corresponding to the articular
   position of each dof, first the 3 translations, then the 3
@@ -216,7 +217,7 @@ void vpRobotCamera::getPosition(const vpRobot::vpControlFrameType frame, vpColVe
     vpRotationMatrix cRw;
     this->cMw_.extract(cRw);
     vpRxyzVector rxyz;
-    rxyz.buildFrom(cRw);
+    rxyz.build(cRw);
 
     for (unsigned int i = 0; i < 3; i++) {
       q[i] = this->cMw_[i][3]; // translation x,y,z
@@ -246,7 +247,7 @@ void vpRobotCamera::setPosition(const vpHomogeneousMatrix &cMw)
 
   this->cMw_ = cMw;
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_robot.a(vpRobotCamera.cpp.o) has no symbols
 void dummy_vpRobotCamera() { };

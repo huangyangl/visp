@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,18 +31,20 @@
  * Generic tracker.
  */
 
-#ifndef vpTracker_H
-#define vpTracker_H
-
 /*!
  * \file vpTracker.h
  * \brief Class that defines what is a generic tracker.
  */
 
+#ifndef VP_TRACKER_H
+#define VP_TRACKER_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpCameraParameters.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpImage.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpTracker
  * \ingroup group_core_trackers
@@ -54,7 +56,7 @@
  * - in the image plane \e p. These parameters are located in the public
  *   attribute vpTracker::p. They correspond to normalized coordinates
  *   of the feature expressed in meters.
- */
+*/
 class VISP_EXPORT vpTracker
 {
 public:
@@ -83,7 +85,7 @@ public:
   //! Copy constructor.
   vpTracker(const vpTracker &tracker);
   //! Destructor.
-  virtual ~vpTracker() { ; }
+  virtual ~vpTracker() { }
 
   /** @name Public Member Functions Inherited from vpTracker */
   //@{
@@ -103,5 +105,5 @@ protected:
   void init();
   //@}
 };
-
+END_VISP_NAMESPACE
 #endif

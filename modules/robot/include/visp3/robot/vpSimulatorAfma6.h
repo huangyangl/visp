@@ -31,14 +31,15 @@
  * Class which provides a simulator for the robot Afma6.
  */
 
-#ifndef vpSimulatorAfma6_HH
-#define vpSimulatorAfma6_HH
-
 /*!
  * \file vpSimulatorAfma6.h
  * \brief Class which provides a simulator for the robot Afma6.
  */
 
+#ifndef vpSimulatorAfma6_HH
+#define vpSimulatorAfma6_HH
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/robot/vpAfma6.h>
 #include <visp3/robot/vpRobotWireFrameSimulator.h>
 
@@ -46,6 +47,7 @@
 
 #if defined(VISP_HAVE_MODULE_GUI) && defined(VISP_HAVE_THREADS)
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpSimulatorAfma6
  *
@@ -88,6 +90,10 @@
  * #include <visp3/core/vpMath.h>
  * #include <visp3/robot/vpSimulatorAfma6.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpSimulatorAfma6 robot;
@@ -123,6 +129,10 @@
  * #include <visp3/core/vpColVector.h>
  * #include <visp3/core/vpMath.h>
  * #include <visp3/robot/vpSimulatorAfma6.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -166,7 +176,7 @@
  *
  * To know how this class can be used to achieve a visual servoing simulation,
  * you can follow the \ref tutorial-ibvs.
- */
+*/
 class VISP_EXPORT vpSimulatorAfma6 : public vpRobotWireFrameSimulator, public vpAfma6
 {
 public:
@@ -186,14 +196,14 @@ private:
 
 public:
   vpSimulatorAfma6();
-  explicit vpSimulatorAfma6(bool display);
-  virtual ~vpSimulatorAfma6() vp_override;
+  VP_EXPLICIT vpSimulatorAfma6(bool display);
+  virtual ~vpSimulatorAfma6() VP_OVERRIDE;
 
   void getCameraParameters(vpCameraParameters &cam, const unsigned int &image_width, const unsigned int &image_height);
   void getCameraParameters(vpCameraParameters &cam, const vpImage<unsigned char> &I);
   void getCameraParameters(vpCameraParameters &cam, const vpImage<vpRGBa> &I);
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &displacement) vp_override;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &displacement) VP_OVERRIDE;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
   void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q, double &timestamp);
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &position);
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &position, double &timestamp);
@@ -205,8 +215,8 @@ public:
 
   void get_cMe(vpHomogeneousMatrix &cMe);
   void get_cVe(vpVelocityTwistMatrix &cVe);
-  void get_eJe(vpMatrix &eJe) vp_override;
-  void get_fJe(vpMatrix &fJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
+  void get_fJe(vpMatrix &fJe) VP_OVERRIDE;
 
   void
     init(vpAfma6::vpAfma6ToolType tool,
@@ -221,26 +231,26 @@ public:
   void setCameraParameters(const vpCameraParameters &cam);
   void setJointLimit(const vpColVector &limitMin, const vpColVector &limitMax);
 
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) VP_OVERRIDE;
   void setPosition(const vpRobot::vpControlFrameType frame, double pos1, double pos2, double pos3, double pos4,
                    double pos5, double pos6);
   void setPosition(const char *filename);
   void setPositioningVelocity(double vel) { positioningVelocity = vel; }
   bool setPosition(const vpHomogeneousMatrix &cdMo, vpImage<unsigned char> *Iint = nullptr, const double &errMax = 0.001);
-  vpRobot::vpRobotStateType setRobotState(const vpRobot::vpRobotStateType newState) vp_override;
+  vpRobot::vpRobotStateType setRobotState(const vpRobot::vpRobotStateType newState) VP_OVERRIDE;
 
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &velocity) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &velocity) VP_OVERRIDE;
 
   void stopMotion();
 
 protected:
   /** @name Protected Member Functions Inherited from vpSimulatorAfma6 */
   //@{
-  void computeArticularVelocity() vp_override;
+  void computeArticularVelocity() VP_OVERRIDE;
   void compute_fMi();
   void findHighestPositioningSpeed(vpColVector &q);
   void getExternalImage(vpImage<vpRGBa> &I);
-  inline void get_fMi(vpHomogeneousMatrix *fMit) vp_override
+  inline void get_fMi(vpHomogeneousMatrix *fMit) VP_OVERRIDE
   {
     m_mutex_fMi.lock();
     for (int i = 0; i < 8; i++) {
@@ -249,15 +259,15 @@ protected:
 
     m_mutex_fMi.unlock();
   }
-  void init() vp_override;
-  void initArms() vp_override;
+  void init() VP_OVERRIDE;
+  void initArms() VP_OVERRIDE;
   void initDisplay();
-  int isInJointLimit() vp_override;
+  int isInJointLimit() VP_OVERRIDE;
   bool singularityTest(const vpColVector &q, vpMatrix &J);
-  void updateArticularPosition() vp_override;
+  void updateArticularPosition() VP_OVERRIDE;
   //@}
 };
-
+END_VISP_NAMESPACE
 #endif
 
 #endif

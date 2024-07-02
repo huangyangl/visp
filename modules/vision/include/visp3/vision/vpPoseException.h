@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,19 +31,21 @@
  * Error that can be emitted by the vpPose class and its derivatives
  */
 
-#ifndef _vpPoseException_h_
-#define _vpPoseException_h_
+#ifndef VP_POSE_EXCEPTION_H
+#define VP_POSE_EXCEPTION_H
 
 #include <visp3/core/vpException.h>
 
 #include <iostream>
 #include <string>
 
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpPoseException
  * \ingroup group_vision_pose
  * \brief Error that can be emitted by the vpPose class and its derivatives.
- */
+*/
 class VISP_EXPORT vpPoseException : public vpException
 {
 public:
@@ -86,7 +88,9 @@ public:
   /*!
    * Constructor.
    */
-  explicit vpPoseException(int id) : vpException(id) { }
+  VP_EXPLICIT vpPoseException(int id) : vpException(id) { }
 };
+
+END_VISP_NAMESPACE
 
 #endif

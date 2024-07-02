@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Check that the different image I/O backends work correctly.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testImageLoadSave.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -43,6 +45,10 @@
 #include <thread>
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 static const std::string ipath = vpIoTools::getViSPImagesDataPath();
 static const std::string path = ipath + "/Solvay/Solvay_conference_1927_Version2_640x440";

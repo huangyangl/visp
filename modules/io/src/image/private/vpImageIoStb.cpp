@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+
+BEGIN_VISP_NAMESPACE
 
 void readStb(vpImage<unsigned char> &I, const std::string &filename)
 {
@@ -266,4 +268,7 @@ void writePNGtoMemStb(const vpImage<vpRGBa> &I_color, std::vector<unsigned char>
 #endif
   }
 }
+
+END_VISP_NAMESPACE
+
 #endif

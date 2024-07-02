@@ -45,6 +45,7 @@
 #include <visp3/robot/vpRobotException.h>
 #include <visp3/robot/vpSimulatorPioneerPan.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   Constructor.
 
@@ -141,7 +142,7 @@ void vpSimulatorPioneerPan::setVelocity(const vpRobot::vpControlFrameType frame,
 
     vpRotationMatrix wRm(0, 0, theta_);
     vpTranslationVector wtm(xm_, ym_, 0);
-    wMm_.buildFrom(wtm, wRm);
+    wMm_.build(wtm, wRm);
 
     // Update the end effector pose
     set_pMe(q_pan_);
@@ -179,14 +180,14 @@ void vpSimulatorPioneerPan::getPosition(vpHomogeneousMatrix &wMc) const { wMc = 
   Get the current position of the robot.
 
   \param frame : Control frame type in which to get the position, either :
-  - in the camera cartesien frame,
+  - in the camera cartesian frame,
   - joint (articular) coordinates of each axes (not implemented)
-  - in a reference or fixed cartesien frame attached to the robot base
-  - in a mixt cartesien frame (translation in reference frame, and rotation in
+  - in a reference or fixed cartesian frame attached to the robot base
+  - in a mixt cartesian frame (translation in reference frame, and rotation in
   camera frame)
 
   \param position : Measured position of the robot:
-  - in camera cartesien frame, a 6 dimension vector, set to 0.
+  - in camera cartesian frame, a 6 dimension vector, set to 0.
 
   - in articular, this functionality is not implemented.
 
@@ -214,7 +215,7 @@ void vpSimulatorPioneerPan::getPosition(const vpRobot::vpControlFrameType frame,
     vpRotationMatrix wRc;
     this->wMc_.extract(wRc);
     vpRxyzVector rxyz;
-    rxyz.buildFrom(wRc);
+    rxyz.build(wRc);
 
     for (unsigned int i = 0; i < 3; i++) {
       q[i] = this->wMc_[i][3]; // translation x,y,z
@@ -231,3 +232,4 @@ void vpSimulatorPioneerPan::getPosition(const vpRobot::vpControlFrameType frame,
     break;
   }
 }
+END_VISP_NAMESPACE

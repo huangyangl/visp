@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image warping.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testImageWarp.cpp
@@ -49,6 +47,10 @@
 #include <visp3/core/vpImageTools.h>
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 namespace
 {

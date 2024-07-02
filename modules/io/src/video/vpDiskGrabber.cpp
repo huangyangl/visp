@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@
  */
 
 #include <visp3/io/vpDiskGrabber.h>
+
+BEGIN_VISP_NAMESPACE
 
 vpDiskGrabber::vpDiskGrabber()
   : m_image_number(0), m_image_number_next(0), m_image_step(1), m_number_of_zero(0), m_directory("/tmp"),
@@ -247,3 +249,5 @@ void vpDiskGrabber::setGenericName(const std::string &generic_name)
   m_generic_name = generic_name;
   m_use_generic_name = true;
 }
+
+END_VISP_NAMESPACE

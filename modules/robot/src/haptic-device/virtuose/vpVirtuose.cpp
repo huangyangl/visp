@@ -42,16 +42,16 @@
 #include <visp3/robot/vpVirtuose.h>
 
 #ifdef VISP_HAVE_VIRTUOSE
-
+BEGIN_VISP_NAMESPACE
 /*!
  * Default constructor.
  * Set command type to virtual mechanism by default (impedance mode).
  * Authorize indexing on all movements by default.
  */
-vpVirtuose::vpVirtuose()
+  vpVirtuose::vpVirtuose()
   : m_virtContext(nullptr), m_ip_port("localhost#5000"), m_verbose(false), m_apiMajorVersion(0), m_apiMinorVersion(0),
-    m_ctrlMajorVersion(0), m_ctrlMinorVersion(0), m_typeCommand(COMMAND_TYPE_IMPEDANCE), m_indexType(INDEXING_ALL),
-    m_is_init(false), m_period(0.001f), m_njoints(6)
+  m_ctrlMajorVersion(0), m_ctrlMinorVersion(0), m_typeCommand(COMMAND_TYPE_IMPEDANCE), m_indexType(INDEXING_ALL),
+  m_is_init(false), m_period(0.001f), m_njoints(6)
 {
   virtAPIVersion(&m_apiMajorVersion, &m_apiMinorVersion);
   std::cout << "API version: " << m_apiMajorVersion << "." << m_apiMinorVersion << std::endl;
@@ -137,7 +137,7 @@ vpColVector vpVirtuose::getArticularPosition() const
     throw(vpException(vpException::fatalError, "Device not initialized. Call init()."));
   }
 
-  float articular_position_[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  float articular_position_[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   if (virtGetArticularPosition(m_virtContext, articular_position_)) {
     int err = virtGetErrorCode(m_virtContext);
@@ -160,7 +160,7 @@ vpColVector vpVirtuose::getArticularVelocity() const
     throw(vpException(vpException::fatalError, "Device not initialized. Call init()."));
   }
 
-  float articular_velocity_[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  float articular_velocity_[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   if (virtGetArticularSpeed(m_virtContext, articular_velocity_)) {
     int err = virtGetErrorCode(m_virtContext);
@@ -196,7 +196,8 @@ vpPoseVector vpVirtuose::getAvatarPosition() const
   if (virtGetAvatarPosition(m_virtContext, position_)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling virtGetAvatarPosition: error code %d", err));
-  } else {
+  }
+  else {
     for (int i = 0; i < 3; i++)
       translation[i] = position_[i];
     for (int i = 0; i < 4; i++)
@@ -204,7 +205,7 @@ vpPoseVector vpVirtuose::getAvatarPosition() const
 
     vpThetaUVector thetau(quaternion);
 
-    position.buildFrom(translation, thetau);
+    position.build(translation, thetau);
 
     return position;
   }
@@ -230,7 +231,8 @@ vpPoseVector vpVirtuose::getBaseFrame() const
   if (virtGetBaseFrame(m_virtContext, position_)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling virtGetBaseFrame: error code %d", err));
-  } else {
+  }
+  else {
     for (int i = 0; i < 3; i++)
       translation[i] = position_[i];
     for (int i = 0; i < 4; i++)
@@ -238,7 +240,7 @@ vpPoseVector vpVirtuose::getBaseFrame() const
 
     vpThetaUVector thetau(quaternion);
 
-    position.buildFrom(translation, thetau);
+    position.build(translation, thetau);
 
     return position;
   }
@@ -330,24 +332,28 @@ vpColVector vpVirtuose::getForce() const
   device joint positions. This functionality is already implemented
   in getArticularPosition().
   \code
-#include <visp3/robot/vpVirtuose.h>
+  #include <visp3/robot/vpVirtuose.h>
 
-int main()
-{
-  vpVirtuose virtuose;
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  virtuose.init();
+  int main()
+  {
+    vpVirtuose virtuose;
 
-  VirtContext handler = virtuose.getHandler();
-  float q[6];
-  if (virtGetArticularPosition(handler, q)) { // Use the handler to access to Haption API directly
-    std::cout << "Cannot get articular position" << std::endl;
+    virtuose.init();
+
+    VirtContext handler = virtuose.getHandler();
+    float q[6];
+    if (virtGetArticularPosition(handler, q)) { // Use the handler to access to Haption API directly
+      std::cout << "Cannot get articular position" << std::endl;
+    }
+    std::cout << "Joint position: ";
+    for (unsigned int i=0; i<6; i++)
+      std::cout << q[i] << " ";
+    std::cout << std::endl;
   }
-  std::cout << "Joint position: ";
-  for (unsigned int i=0; i<6; i++)
-    std::cout << q[i] << " ";
-  std::cout << std::endl;
-}
   \endcode
 
   \sa getArticularPosition()
@@ -389,7 +395,8 @@ vpPoseVector vpVirtuose::getObservationFrame() const
   if (virtGetObservationFrame(m_virtContext, position_)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling virtGetObservationFrame: error code %d", err));
-  } else {
+  }
+  else {
     for (int i = 0; i < 3; i++)
       translation[i] = position_[i];
     for (int i = 0; i < 4; i++)
@@ -397,7 +404,7 @@ vpPoseVector vpVirtuose::getObservationFrame() const
 
     vpThetaUVector thetau(quaternion);
 
-    position.buildFrom(translation, thetau);
+    position.build(translation, thetau);
   }
   return position;
 }
@@ -422,7 +429,8 @@ vpPoseVector vpVirtuose::getPhysicalPosition() const
   if (virtGetPhysicalPosition(m_virtContext, position_)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling virtGetPhysicalPosition: error code %d", err));
-  } else {
+  }
+  else {
     for (int i = 0; i < 3; i++)
       translation[i] = position_[i];
     for (int i = 0; i < 4; i++)
@@ -430,7 +438,7 @@ vpPoseVector vpVirtuose::getPhysicalPosition() const
 
     vpThetaUVector thetau(quaternion);
 
-    position.buildFrom(translation, thetau);
+    position.build(translation, thetau);
   }
   return position;
 }
@@ -478,7 +486,8 @@ vpPoseVector vpVirtuose::getPosition() const
   if (virtGetPosition(m_virtContext, position_)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling virtGetPosition: error code %d", err));
-  } else {
+  }
+  else {
     for (int i = 0; i < 3; i++)
       translation[i] = position_[i];
     for (int i = 0; i < 4; i++)
@@ -486,7 +495,7 @@ vpPoseVector vpVirtuose::getPosition() const
 
     vpThetaUVector thetau(quaternion);
 
-    position.buildFrom(translation, thetau);
+    position.build(translation, thetau);
   }
   return position;
 }
@@ -567,7 +576,7 @@ void vpVirtuose::init()
     }
 
     // Update number of joints
-    float articular_position_[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float articular_position_[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     if (virtGetArticularPosition(m_virtContext, articular_position_)) {
       int err = virtGetErrorCode(m_virtContext);
@@ -833,41 +842,45 @@ void vpVirtuose::setObservationFrame(const vpPoseVector &position)
 /*!
  * Register the periodic function.
  * setPeriodicFunction() defines a callback function to be called at a fixed
-period of time, as timing for the simulation.
+ * period of time, as timing for the simulation.
  * The callback function is synchronized with the Virtuose controller
-(messages arrive at very constant time intervals from it)
+ * (messages arrive at very constant time intervals from it)
  * and generates hardware interrupts to be taken into account by the operating
-system.
+ * system.
  * In practice, this function is much more efficient for timing the simulation
-than common software timers.
+ * than common software timers.
  * This function is started using startPeriodicFunction() and stopped using
-stopPeriodicFunction().
+ * stopPeriodicFunction().
  * \param CallBackVirt : Callback function.
  *
  * Example of the use of the periodic function:
- \code
-#include <visp3/robot/vpVirtuose.h>
-
-void CallBackVirtuose(VirtContext VC, void* ptr)
-{
-  (void) VC;
-  vpVirtuose* p_virtuose=(vpVirtuose*)ptr;
-  vpPoseVector position = p_virtuose->getPosition();
-  return;
-}
-
-int main()
-{
-  vpVirtuose virtuose;
-  float period = 0.001;
-  virtuose.setTimeStep(period);
-  virtuose.setPeriodicFunction(CallBackVirtuose, period, virtuose);
-  virtuose.startPeriodicFunction();
-  virtuose.stopPeriodicFunction();
-}
- \endcode
-
- \sa startPeriodicFunction(), stopPeriodicFunction()
+ * \code
+ * #include <visp3/robot/vpVirtuose.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
+ * void CallBackVirtuose(VirtContext VC, void* ptr)
+ * {
+ *   (void) VC;
+ *   vpVirtuose* p_virtuose=(vpVirtuose*)ptr;
+ *   vpPoseVector position = p_virtuose->getPosition();
+ *   return;
+ * }
+ *
+ * int main()
+ * {
+ *   vpVirtuose virtuose;
+ *   float period = 0.001;
+ *   virtuose.setTimeStep(period);
+ *   virtuose.setPeriodicFunction(CallBackVirtuose, period, virtuose);
+ *   virtuose.startPeriodicFunction();
+ *   virtuose.stopPeriodicFunction();
+ * }
+ * \endcode
+ *
+ * \sa startPeriodicFunction(), stopPeriodicFunction()
  */
 void vpVirtuose::setPeriodicFunction(VirtPeriodicFunction CallBackVirt)
 {
@@ -1017,7 +1030,8 @@ void vpVirtuose::startPeriodicFunction()
   if (virtStartLoop(m_virtContext)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling startLoop: error code %d", err));
-  } else
+  }
+  else
     std::cout << "Haptic loop open." << std::endl;
 }
 
@@ -1033,11 +1047,12 @@ void vpVirtuose::stopPeriodicFunction()
   if (virtStopLoop(m_virtContext)) {
     int err = virtGetErrorCode(m_virtContext);
     throw(vpException(vpException::fatalError, "Error calling stopLoop: error code %d", err));
-  } else
+  }
+  else
     std::cout << "Haptic loop closed." << std::endl;
 }
-
+END_VISP_NAMESPACE
 #else
 // Work around to avoid warning
-void dummy_vpVirtuose(){};
+void dummy_vpVirtuose() { };
 #endif

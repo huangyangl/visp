@@ -48,6 +48,10 @@
 #include <windows.h>
 #endif
 
+#ifdef ENABLE_VISP_NAMESPACE
+namespace VISP_NAMESPACE_NAME
+{
+#endif
 /*!
 
    \class vpMutex
@@ -63,7 +67,7 @@
 
    \sa vpScopedLock
 */
-class vp_deprecated vpMutex
+class VP_DEPRECATED vpMutex
 {
 public:
   vpMutex() : m_mutex()
@@ -128,6 +132,10 @@ public:
     \code
     #include <visp3/core/vpMutex.h>
 
+    #ifdef ENABLE_VISP_NAMESPACE
+    using namespace VISP_NAMESPACE_NAME;
+    #endif
+
     int main()
     {
       vpMutex mutex;
@@ -142,6 +150,10 @@ public:
     Without using vpScopedLock, the previous example would become:
     \code
     #include <visp3/core/vpMutex.h>
+
+    #ifdef ENABLE_VISP_NAMESPACE
+    using namespace VISP_NAMESPACE_NAME;
+    #endif
 
     int main()
     {
@@ -184,6 +196,8 @@ private:
   HANDLE m_mutex;
 #endif
 };
-
+#ifdef ENABLE_VISP_NAMESPACE
+}
+#endif
 #endif
 #endif

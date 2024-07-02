@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +31,17 @@
  * Translation vector.
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include <visp3/core/vpTranslationVector.h>
-
 /*!
   \file vpTranslationVector.cpp
   \brief Class that consider the case of a translation vector.
 */
 
+#include <stdio.h>
+#include <string.h>
+
+#include <visp3/core/vpTranslationVector.h>
+
+BEGIN_VISP_NAMESPACE
 /*!
   Construct a translation vector \f$ \bf t \f$ from 3 doubles.
 
@@ -51,9 +51,12 @@
 */
 vpTranslationVector::vpTranslationVector(double tx, double ty, double tz) : vpArray2D<double>(3, 1), m_index(0)
 {
-  (*this)[0] = tx;
-  (*this)[1] = ty;
-  (*this)[2] = tz;
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  (*this)[index_0] = tx;
+  (*this)[index_1] = ty;
+  (*this)[index_2] = tz;
 }
 
 /*!
@@ -77,9 +80,12 @@ vpTranslationVector::vpTranslationVector(const vpHomogeneousMatrix &M) : vpArray
 */
 vpTranslationVector::vpTranslationVector(const vpPoseVector &p) : vpArray2D<double>(3, 1), m_index(0)
 {
-  (*this)[0] = p[0];
-  (*this)[1] = p[1];
-  (*this)[2] = p[2];
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  (*this)[index_0] = p[index_0];
+  (*this)[index_1] = p[index_1];
+  (*this)[index_2] = p[index_2];
 }
 
 /*!
@@ -118,7 +124,9 @@ vpTranslationVector::vpTranslationVector(const vpColVector &v) : vpArray2D<doubl
   }
 }
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
 /*!
+  \deprecated You should use build(const vpHomogeneousMatrix &) instead.
   Build a 3 dimension translation vector \f$ \bf t\f$ from
   an homogeneous matrix \f$ \bf M \f$.
 
@@ -130,6 +138,70 @@ vpTranslationVector::vpTranslationVector(const vpColVector &v) : vpArray2D<doubl
 
 */
 vpTranslationVector vpTranslationVector::buildFrom(const vpHomogeneousMatrix &M)
+{
+  build(M);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const vpPoseVector &) instead.
+  Build a 3 dimension translation vector \f$ \bf t\f$ from
+  the translation contained in a pose vector.
+
+  \param p : Pose vector where translations are in meters.
+
+  \return The build translation vector.
+
+*/
+vpTranslationVector vpTranslationVector::buildFrom(const vpPoseVector &p)
+{
+  build(p);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const vpColVector &) instead.
+  Build a 3 dimension translation vector \f$ \bf t\f$ from
+  a 3-dimension column vector.
+
+  \param v : 3-dimension column vector.
+
+  \return The build translation vector.
+*/
+vpTranslationVector vpTranslationVector::buildFrom(const vpColVector &v)
+{
+  build(v);
+  return *this;
+}
+
+/*!
+  \deprecated You should use build(const double &, const double &, const double &) instead.
+  Build a 3 dimension translation vector \f$ \bf t\f$ from 3 doubles.
+
+  \param tx,ty,tz : Translation respectively along x, y and z axis in meter.
+
+  \return The build translation vector.
+  \sa build()
+*/
+vpTranslationVector vpTranslationVector::buildFrom(double tx, double ty, double tz)
+{
+  build(tx, ty, tz);
+  return *this;
+}
+#endif
+
+/*!
+  Build a 3 dimension translation vector \f$ \bf t\f$ from
+  an homogeneous matrix \f$ \bf M \f$.
+
+  \param M : Homogeneous matrix \f$ \bf M \f$ from which translation \f$
+  \bf t \f$ and \f$\theta \bf u \f$ vectors are extracted to initialize
+  the pose vector.
+
+  \return The build translation vector.
+
+*/
+vpTranslationVector &vpTranslationVector::build(const vpHomogeneousMatrix &M)
 {
   M.extract(*this);
   return *this;
@@ -144,11 +216,14 @@ vpTranslationVector vpTranslationVector::buildFrom(const vpHomogeneousMatrix &M)
   \return The build translation vector.
 
 */
-vpTranslationVector vpTranslationVector::buildFrom(const vpPoseVector &p)
+vpTranslationVector &vpTranslationVector::build(const vpPoseVector &p)
 {
-  (*this)[0] = p[0];
-  (*this)[1] = p[1];
-  (*this)[2] = p[2];
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  (*this)[index_0] = p[index_0];
+  (*this)[index_1] = p[index_1];
+  (*this)[index_2] = p[index_2];
   return *this;
 }
 
@@ -161,16 +236,20 @@ vpTranslationVector vpTranslationVector::buildFrom(const vpPoseVector &p)
   \return The build translation vector.
 
 */
-vpTranslationVector vpTranslationVector::buildFrom(const vpColVector &v)
+vpTranslationVector &vpTranslationVector::build(const vpColVector &v)
 {
-  if (v.size() != 3) {
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int v_size = 3;
+  if (v.size() != v_size) {
     throw(vpException(vpException::dimensionError,
                       "Cannot build a translation vector from a %d-dimension column vector", v.size()));
   }
 
-  (*this)[0] = v[0];
-  (*this)[1] = v[1];
-  (*this)[2] = v[2];
+  (*this)[index_0] = v[index_0];
+  (*this)[index_1] = v[index_1];
+  (*this)[index_2] = v[index_2];
   return *this;
 }
 
@@ -182,7 +261,7 @@ vpTranslationVector vpTranslationVector::buildFrom(const vpColVector &v)
   \return The build translation vector.
   \sa set()
 */
-vpTranslationVector vpTranslationVector::buildFrom(double tx, double ty, double tz)
+vpTranslationVector &vpTranslationVector::build(const double &tx, const double &ty, const double &tz)
 {
   set(tx, ty, tz);
   return *this;
@@ -196,9 +275,12 @@ vpTranslationVector vpTranslationVector::buildFrom(double tx, double ty, double 
 */
 void vpTranslationVector::set(double tx, double ty, double tz)
 {
-  (*this)[0] = tx;
-  (*this)[1] = ty;
-  (*this)[2] = tz;
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  (*this)[index_0] = tx;
+  (*this)[index_1] = ty;
+  (*this)[index_2] = tz;
 }
 
 /*!
@@ -223,7 +305,8 @@ vpTranslationVector vpTranslationVector::operator+(const vpTranslationVector &tv
 {
   vpTranslationVector s;
 
-  for (unsigned int i = 0; i < 3; ++i) {
+  const unsigned int val_3 = 3;
+  for (unsigned int i = 0; i < val_3; ++i) {
     s[i] = (*this)[i] + tv[i];
   }
 
@@ -258,7 +341,8 @@ vpTranslationVector vpTranslationVector::operator+(const vpColVector &v) const
   }
   vpTranslationVector s;
 
-  for (unsigned int i = 0; i < 3; ++i) {
+  const unsigned int val_3 = 3;
+  for (unsigned int i = 0; i < val_3; ++i) {
     s[i] = (*this)[i] + v[i];
   }
 
@@ -287,7 +371,8 @@ vpTranslationVector vpTranslationVector::operator-(const vpTranslationVector &tv
 {
   vpTranslationVector sub;
 
-  for (unsigned int i = 0; i < 3; ++i) {
+  const unsigned int val_3 = 3;
+  for (unsigned int i = 0; i < val_3; ++i) {
     sub[i] = (*this)[i] - tv[i];
   }
 
@@ -518,6 +603,10 @@ vpTranslationVector &vpTranslationVector::operator=(double x)
   \code
   #include <visp3/core/vpTranslationVector.cpp>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpTranslationVector t = {0, 0.1, 0.5};
@@ -552,6 +641,10 @@ vpTranslationVector &vpTranslationVector::operator=(const std::initializer_list<
   \code
   #include <visp3/core/vpTranslationVector.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpTranslationVector t;
@@ -581,6 +674,10 @@ vpTranslationVector &vpTranslationVector::operator<<(double val)
   The following example shows how to initialize a translations vector from a list of 3 values [meter].
   \code
   #include <visp3/core/vpTranslationVector.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -628,16 +725,19 @@ vpTranslationVector &vpTranslationVector::operator,(double val)
 */
 void vpTranslationVector::skew(const vpTranslationVector &tv, vpMatrix &M)
 {
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
   M.resize(3, 3);
-  M[0][0] = 0;
-  M[0][1] = -tv[2];
-  M[0][2] = tv[1];
-  M[1][0] = tv[2];
-  M[1][1] = 0;
-  M[1][2] = -tv[0];
-  M[2][0] = -tv[1];
-  M[2][1] = tv[0];
-  M[2][2] = 0;
+  M[index_0][index_0] = 0;
+  M[index_0][index_1] = -tv[index_2];
+  M[index_0][index_2] = tv[index_1];
+  M[index_1][index_0] = tv[index_2];
+  M[index_1][index_1] = 0;
+  M[index_1][index_2] = -tv[index_0];
+  M[index_2][index_0] = -tv[index_1];
+  M[index_2][index_1] = tv[index_0];
+  M[index_2][index_2] = 0;
 }
 
 /*!
@@ -802,3 +902,4 @@ vpTranslationVector vpTranslationVector::mean(const std::vector<vpTranslationVec
   vpTranslationVector t(meanT);
   return t;
 }
+END_VISP_NAMESPACE

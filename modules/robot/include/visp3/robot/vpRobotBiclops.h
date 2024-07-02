@@ -57,6 +57,7 @@
 /* --- CLASS -------------------------------------------------------------- */
 /* ------------------------------------------------------------------------ */
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpRobotBiclops
  *
@@ -86,7 +87,7 @@
  * \warning With the understanding that hitting the hard limits at full
  * speed/power can damage the unit, damage due to velocity mode commanding is
  * under user responsibility.
- */
+*/
 class VISP_EXPORT vpRobotBiclops : public vpBiclops, public vpRobot
 {
 public:
@@ -103,6 +104,10 @@ public:
    *
    * \code
    * #include <visp3/robot/vpRobotBiclops.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -135,6 +140,10 @@ public:
    * \code
    * #include <visp3/robot/vpRobotBiclops.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    * #ifdef VISP_HAVE_BICLOPS
@@ -153,7 +162,7 @@ public:
    * }
    * \endcode
    */
-  explicit vpRobotBiclops(const std::string &filename);
+  VP_EXPLICIT vpRobotBiclops(const std::string &filename);
 
   /*!
    * Destructor.
@@ -168,7 +177,7 @@ public:
    * \exception vpRobotException::constructionError If the config file cannot be
    * opened.
    */
-  void init() vp_override;
+  void init() VP_OVERRIDE;
 
   /*!
    * Get the homogeneous matrix corresponding to the transformation between the
@@ -198,7 +207,7 @@ public:
    * \param eJe : Jacobian between end effector frame and end effector frame (on
    * tilt axis).
    */
-  void get_eJe(vpMatrix &eJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
 
   /*!
    * Get the robot jacobian expressed in the robot reference frame
@@ -206,7 +215,7 @@ public:
    * \param fJe : Jacobian between reference frame (or fix frame) and end
    * effector frame (on tilt axis).
    */
-  void get_fJe(vpMatrix &fJe) vp_override;
+  void get_fJe(vpMatrix &fJe) VP_OVERRIDE;
 
   /*!
    * Get the robot displacement since the last call of this method.
@@ -228,7 +237,7 @@ public:
    * \exception vpRobotException::wrongStateError If a not supported frame type
    * is given.
    */
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &d) vp_override;
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &d) VP_OVERRIDE;
 
   /*!
    * Return the position of each axis.
@@ -243,7 +252,7 @@ public:
    * \exception vpRobotException::wrongStateError : If a not supported frame type
    * is given.
    */
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
 
   /*!
    * Get the velocity in % used for a position control.
@@ -315,7 +324,7 @@ public:
    * \exception vpRobotException::wrongStateError : If a not supported frame
    * type is given.
    */
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) VP_OVERRIDE;
 
   /*!
    * Move the robot in position control.
@@ -359,7 +368,7 @@ public:
    * Change the state of the robot either to stop them, or to set position or
    * speed control.
    */
-  vpRobot::vpRobotStateType setRobotState(const vpRobot::vpRobotStateType newState) vp_override;
+  vpRobot::vpRobotStateType setRobotState(const vpRobot::vpRobotStateType newState) VP_OVERRIDE;
 
   /*!
    * Send a velocity on each axis.
@@ -385,7 +394,7 @@ public:
    * \warning Velocities could be saturated if one of them exceed the maximal
    * authorized speed (see vpRobot::maxRotationVelocity).
    */
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &q_dot) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &q_dot) VP_OVERRIDE;
 
   /*!
    * Halt all the axis.
@@ -439,7 +448,7 @@ private:
   //  }
   //#endif
 };
-
+END_VISP_NAMESPACE
 #endif /* #ifndef _vpRobotBiclops_h_ */
 
 #endif

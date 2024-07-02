@@ -38,8 +38,11 @@
 #ifndef _vpMomentGravityCenter_h_
 #define _vpMomentGravityCenter_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMoment.h>
 #include <visp3/core/vpMomentDatabase.h>
+
+BEGIN_VISP_NAMESPACE
 class vpMomentObject;
 
 /*!
@@ -60,6 +63,10 @@ class vpMomentObject;
  * #include <visp3/core/vpMomentGravityCenter.h>
  * #include <visp3/core/vpMomentObject.h>
  * #include <visp3/core/vpPoint.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -103,7 +110,7 @@ class vpMomentObject;
  * Yg=-0.00833333
  * Xg=0.0166667, Yg=-0.00833333
  * \endcode
- */
+*/
 
 class VISP_EXPORT vpMomentGravityCenter : public vpMoment
 {
@@ -132,5 +139,5 @@ public:
   //@}
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMomentGravityCenter &v);
 };
-
+END_VISP_NAMESPACE
 #endif

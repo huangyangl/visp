@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Augmented Reality viewer using Ogre3D.
- *
- * Authors:
- * Bertrand Delabarre
- *
-*****************************************************************************/
+ */
 
 /*!
   \file vpAROgre.h
@@ -46,8 +41,8 @@
 
 */
 
-#ifndef _vpAROgre_h_
-#define _vpAROgre_h_
+#ifndef VP_AR_OGRE_H
+#define VP_AR_OGRE_H
 
 #include <visp3/core/vpConfig.h>
 
@@ -70,6 +65,7 @@
 #include <OIS.h>
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpAROgre
 
@@ -88,10 +84,10 @@
 
 */
 class VISP_EXPORT vpAROgre : public Ogre::FrameListener,
-                             public Ogre::WindowEventListener
+  public Ogre::WindowEventListener
 #ifdef VISP_HAVE_OIS
   ,
-                             public OIS::KeyListener
+  public OIS::KeyListener
 #endif
 {
 public:
@@ -296,7 +292,7 @@ protected:
    * Build the 3D scene
    * Override this to show what you want
    */
-  virtual void createScene(void){};
+  virtual void createScene(void) { };
 
   virtual void closeOIS(void);
 
@@ -391,7 +387,7 @@ protected:
   std::list<std::string> mOptionalResourceLocation; /** Optional resource location (used to
                                                         load mesh and material) */
 };
-
+END_VISP_NAMESPACE
 #endif // VISP_HAVE_OGRE
 
 #endif

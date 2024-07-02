@@ -31,20 +31,22 @@
  * 3D translation visual feature.
  */
 
-#ifndef vpFeatureTranslation_H
-#define vpFeatureTranslation_H
-
 /*!
   \file vpFeatureTranslation.h
   \brief class that defines the translation visual feature.
 */
 
+#ifndef vpFeatureTranslation_H
+#define vpFeatureTranslation_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMatrix.h>
 #include <visp3/core/vpRGBa.h>
 #include <visp3/core/vpTranslationVector.h>
 #include <visp3/visual_features/vpBasicFeature.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpFeatureTranslation
  * \ingroup group_visual_features
@@ -104,7 +106,7 @@
  *   -I_3 \;\; [^{c}t_o]_\times] \f]
  *
  * To initialize the feature \f$(t_x, t_y, t_z)\f$ you may use member
- * functions like set_Tx(), set_Ty(), set_Tz(), or also buildFrom()
+ * functions like set_Tx(), set_Ty(), set_Tz(), or also build()
  * functions.
  *
  * The interaction() method allows to compute the interaction matrix
@@ -129,6 +131,10 @@
  * #include <visp3/visual_features/vpFeatureTranslation.h>
  * #include <visp3/vs/vpServo.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpServo task; // Visual servoing task
@@ -138,7 +144,7 @@
  *
  *   // Creation of the current visual feature s
  *   vpFeatureTranslation s(vpFeatureTranslation::cdMc);
- *   s.buildFrom(cdMc); // Initialization of the current feature s=(tx,ty,tz)
+ *   s.build(cdMc); // Initialization of the current feature s=(tx,ty,tz)
  *
  *   // Set eye-in-hand control law.
  *   // The computed velocities will be expressed in the camera frame
@@ -157,7 +163,7 @@
  *     // ... cdMc need here to be initialized from for example a pose estimation.
  *
  *     // Update the current 3D translation visual feature
- *     s.buildFrom(cdMc);
+ *     s.build(cdMc);
  *
  *     // compute the control law
  *     vpColVector v = task.computeControlLaw(); // camera velocity
@@ -185,6 +191,10 @@
  * #include <visp3/core/vpMatrix.h>
  * #include <visp3/visual_features/vpFeatureTranslation.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpHomogeneousMatrix cdMc;
@@ -192,7 +202,7 @@
  *
  *   // Creation of the current feature s
  *   vpFeatureTranslation s(vpFeatureTranslation::cdMc);
- *   s.buildFrom(cdMc); // Initialization of the feature
+ *   s.build(cdMc); // Initialization of the feature
  *
  *   // Creation of the desired feature s*. By default this feature is
  *   // initialized to zero
@@ -221,6 +231,10 @@
  * #include <visp3/visual_features/vpFeatureTranslation.h>
  * #include <visp3/vs/vpServo.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpServo task; // Visual servoing task
@@ -230,14 +244,14 @@
  *
  *   // Creation of the desired visual feature s*
  *   vpFeatureTranslation s_star(vpFeatureTranslation::cMo);
- *   s_star.buildFrom(cdMo); // Initialization of the desired feature s*=(tx*,ty*,tz*)
+ *   s_star.build(cdMo); // Initialization of the desired feature s*=(tx*,ty*,tz*)
  *
  *   vpHomogeneousMatrix cMo;
  *   // ... cMo need here to be computed.
  *
  *   // Creation of the current visual feature s
  *   vpFeatureTranslation s(vpFeatureTranslation::cMo);
- *   s.buildFrom(cMo); // Initialization of the current feature s=(tx,ty,tz)
+ *   s.build(cMo); // Initialization of the current feature s=(tx,ty,tz)
  *
  *   // Set eye-in-hand control law.
  *   // The computed velocities will be expressed in the camera frame
@@ -256,14 +270,14 @@
  *     // ... cMo need here to be computed from for example a pose estimation.
  *
  *     // Update the current 3D translation visual feature
- *     s.buildFrom(cMo);
+ *     s.build(cMo);
  *
  *     // compute the control law
  *     vpColVector v = task.computeControlLaw(); // camera velocity
  *   }
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpFeatureTranslation : public vpBasicFeature
 {
 public:
@@ -290,26 +304,31 @@ public:
   // basic constructor
   vpFeatureTranslation();
   // basic constructor specifying the type of translation feature
-  explicit vpFeatureTranslation(vpFeatureTranslationRepresentationType r);
+  VP_EXPLICIT vpFeatureTranslation(vpFeatureTranslationRepresentationType r);
   // constructor : build from an homogeneous matrix
   // cdMc is the displacement that the camera has to realize
   vpFeatureTranslation(vpHomogeneousMatrix &f2Mf1, vpFeatureTranslationRepresentationType r);
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
   // build from an homogeneous matrix
   // cdMc is the displacement that the camera has to realize
   void buildFrom(const vpHomogeneousMatrix &f2Mf1);
+#endif
+  // build from an homogeneous matrix
+  // cdMc is the displacement that the camera has to realize
+  vpFeatureTranslation &build(const vpHomogeneousMatrix &f2Mf1);
 
   void display(const vpCameraParameters &cam, const vpImage<unsigned char> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
   void display(const vpCameraParameters &cam, const vpImage<vpRGBa> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
 
   //! Feature duplication
-  vpFeatureTranslation *duplicate() const vp_override;
+  vpFeatureTranslation *duplicate() const VP_OVERRIDE;
 
   // compute the error between two visual features from a subset
   // a the possible features
-  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) vp_override;
+  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) VP_OVERRIDE;
 
   vpFeatureTranslationRepresentationType getFeatureTranslationType() const;
 
@@ -318,12 +337,12 @@ public:
   double get_Tz() const;
 
   // basic construction
-  void init() vp_override;
+  void init() VP_OVERRIDE;
   // compute the interaction matrix from a subset a the possible features
-  vpMatrix interaction(unsigned int select = FEATURE_ALL) vp_override;
+  vpMatrix interaction(unsigned int select = FEATURE_ALL) VP_OVERRIDE;
 
   // print the name of the feature
-  void print(unsigned int select = FEATURE_ALL) const vp_override;
+  void print(unsigned int select = FEATURE_ALL) const VP_OVERRIDE;
 
   void set_Tx(double t_x);
   void set_Ty(double t_y);
@@ -341,5 +360,5 @@ private:
   vpHomogeneousMatrix f2Mf1;
   vpFeatureTranslationRepresentationType translation;
 };
-
+END_VISP_NAMESPACE
 #endif

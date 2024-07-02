@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
   \brief Determine machine endianness and define VISP_LITTLE_ENDIAN, VISP_BIG_ENDIAN and VISP_PDP_ENDIAN macros.
 */
 
-#ifndef vpEndian_h
-#define vpEndian_h
+#ifndef VP_ENDIAN_H
+#define VP_ENDIAN_H
 
 // Visual Studio 2010 or previous is missing inttypes.h
 #if defined(_MSC_VER) && (_MSC_VER < 1700)
@@ -86,6 +86,7 @@ typedef unsigned short uint16_t;
 #error Cannot detect host machine endianness.
 #endif
 
+BEGIN_VISP_NAMESPACE
 namespace vpEndian
 {
 VISP_EXPORT uint16_t swap16bits(uint16_t val);
@@ -98,5 +99,5 @@ VISP_EXPORT double swapDouble(double d);
 
 VISP_EXPORT uint16_t reinterpret_cast_uchar_to_uint16_LE(unsigned char *const ptr);
 } // namespace vpEndian
-
+END_VISP_NAMESPACE
 #endif

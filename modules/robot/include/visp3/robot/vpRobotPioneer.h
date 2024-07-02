@@ -48,6 +48,7 @@
 #include <visp3/robot/vpPioneer.h>
 #include <visp3/robot/vpRobot.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpRobotPioneer
  *
@@ -58,7 +59,7 @@
  * This class provides a position and speed control interface for Pioneer
  * mobile robots. It inherits from the Aria ArRobot class. For more information
  * about the model of the robot, see vpPioneer documentation.
- */
+*/
 class VISP_EXPORT vpRobotPioneer : public vpRobot, public vpPioneer, public ArRobot
 {
 private: /* Not allowed functions. */
@@ -69,7 +70,7 @@ private: /* Not allowed functions. */
 
 public:
   vpRobotPioneer();
-  virtual ~vpRobotPioneer() vp_override;
+  virtual ~vpRobotPioneer() VP_OVERRIDE;
 
   /*!
    * Get the robot Jacobian expressed at point E, the point located at the
@@ -82,14 +83,14 @@ public:
    *
    * \sa get_eJe()
    */
-  void get_eJe(vpMatrix &eJe) vp_override { eJe = vpUnicycle::get_eJe(); }
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE { eJe = vpUnicycle::get_eJe(); }
 
 private: // Set as private since not implemented
   /*!
    * Get the robot Jacobian expressed in the robot reference (or world) frame.
    * \warning Not implemented.
    */
-  void get_fJe(vpMatrix & /*fJe*/) vp_override { };
+  void get_fJe(vpMatrix & /*fJe*/) VP_OVERRIDE { };
 
   /*!
    * Get a displacement (frame as to ve specified) between two successive
@@ -117,10 +118,10 @@ private: // Set as private since not implemented
    * Set a displacement (frame has to be specified) in position control.
    * \warning Not implemented.
    */
-  void setPosition(const vpRobot::vpControlFrameType /*frame*/, const vpColVector & /*q*/) vp_override { };
+  void setPosition(const vpRobot::vpControlFrameType /*frame*/, const vpColVector & /*q*/) VP_OVERRIDE { };
 
 public:
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
 
   /*!
    * Enable or disable sonar device usage.
@@ -130,7 +131,7 @@ public:
 protected:
   bool isInitialized;
 };
-
+END_VISP_NAMESPACE
 #endif
 
 #endif // VPROBOTPIONEER_H

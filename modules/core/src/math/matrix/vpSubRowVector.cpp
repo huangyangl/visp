@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include <visp3/core/vpException.h>
 #include <visp3/core/vpSubRowVector.h>
 
+BEGIN_VISP_NAMESPACE
 //! Default constructor that creates an empty vector.
 vpSubRowVector::vpSubRowVector() : vpRowVector(), m_pColNum(0), m_parent(nullptr) { }
 
@@ -181,3 +182,4 @@ vpSubRowVector &vpSubRowVector::operator=(const double &x)
   }
   return *this;
 }
+END_VISP_NAMESPACE

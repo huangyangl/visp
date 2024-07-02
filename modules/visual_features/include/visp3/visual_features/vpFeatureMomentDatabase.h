@@ -45,6 +45,7 @@
 #include <string>
 #include <visp3/core/vpConfig.h>
 
+BEGIN_VISP_NAMESPACE
 class vpFeatureMoment;
 class vpMomentObject;
 /*!
@@ -87,6 +88,10 @@ class vpMomentObject;
  * #include <visp3/visual_features/vpFeatureMomentCInvariant.h>
  * #include <visp3/visual_features/vpFeatureMomentCentered.h>
  * #include <visp3/visual_features/vpFeatureMomentDatabase.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -149,7 +154,7 @@ class vpMomentObject;
  *   return 0;
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpFeatureMomentDatabase
 {
 private:
@@ -180,5 +185,5 @@ public:
   // vpFeatureMomentDatabase& m);
   friend class vpFeatureMoment;
 };
-
+END_VISP_NAMESPACE
 #endif

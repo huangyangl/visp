@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,10 @@
 #include "visp3/core/vpException.h"
 #include <stdio.h>
 
-vpException::vpException(int id) : code(id), message() {}
+BEGIN_VISP_NAMESPACE
+vpException::vpException(int id) : code(id), message() { }
 
-vpException::vpException(int id, const std::string &msg) : code(id), message(msg) {}
+vpException::vpException(int id, const std::string &msg) : code(id), message(msg) { }
 
 vpException::vpException(int id, const char *format, ...) : code(id), message()
 {
@@ -55,8 +56,8 @@ vpException::vpException(int id, const char *format, va_list args) : code(id), m
 
 void vpException::setMessage(const char *format, va_list args)
 {
-  char buffer[1024];
-  vsnprintf(buffer, 1024, format, args);
+  char buffer[FILENAME_MAX];
+  vsnprintf(buffer, FILENAME_MAX, format, args);
   std::string msg(buffer);
   message = msg;
 }
@@ -75,3 +76,4 @@ VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpException &error)
 
   return os;
 }
+END_VISP_NAMESPACE

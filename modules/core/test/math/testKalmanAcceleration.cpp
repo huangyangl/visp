@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Tests some vpLinearKalmanFilterInstantiation functionalities.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testKalmanAcceleration.cpp
@@ -46,6 +44,10 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
+
   try {
     unsigned int nsignal = 1; // Number of signal to filter
     unsigned int niter = 100;
@@ -105,7 +107,8 @@ int main()
 
     flog.close();
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

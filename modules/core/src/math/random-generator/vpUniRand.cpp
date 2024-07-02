@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +68,7 @@
 #include <stdint.h>
 #include <visp3/core/vpUniRand.h>
 
+BEGIN_VISP_NAMESPACE
 vpUniRand::vpUniRand()
   : m_maxInvDbl(1.0 / static_cast<double>(UINT32_MAX)), m_maxInvFlt(1.0f / static_cast<float>(UINT32_MAX)), m_rng()
 { }
@@ -207,3 +207,4 @@ void vpUniRand::setSeed(uint64_t initstate, uint64_t initseq)
   m_rng.state += initstate;
   next();
 }
+END_VISP_NAMESPACE

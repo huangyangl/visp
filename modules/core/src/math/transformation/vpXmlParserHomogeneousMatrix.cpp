@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * XML parser to load and save Homogeneous Matrix in a XML file
- *
- * Authors:
- * Giovanni Claudio
- *
-*****************************************************************************/
+ */
 
 /*!
   \file vpXmlParserHomogeneousMatrix.cpp
@@ -62,6 +57,7 @@
 #define LABEL_XML_TUY "theta_uy"
 #define LABEL_XML_TUZ "theta_uz"
 
+BEGIN_VISP_NAMESPACE
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 class vpXmlParserHomogeneousMatrix::Impl
 {
@@ -123,21 +119,20 @@ public:
     unsigned int nbM = 0;
 
     for (pugi::xml_node node = node_.first_child(); node; node = node.next_sibling()) {
-      if (node.type() != pugi::node_element)
-        continue;
-
-      if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
-        prop = CODE_XML_OTHER;
-        back = SEQUENCE_ERROR;
-      }
-
-      if (prop == CODE_XML_M) {
-        if (SEQUENCE_OK == read_matrix(node, name)) {
-          nbM++;
+      if (node.type() == pugi::node_element) {
+        if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
+          prop = CODE_XML_OTHER;
+          back = SEQUENCE_ERROR;
         }
-      }
-      else {
-        back = SEQUENCE_ERROR;
+
+        if (prop == CODE_XML_M) {
+          if (SEQUENCE_OK == read_matrix(node, name)) {
+            nbM++;
+          }
+        }
+        else {
+          back = SEQUENCE_ERROR;
+        }
       }
     }
 
@@ -173,40 +168,39 @@ public:
     vpXmlCodeSequenceType back = SEQUENCE_OK;
 
     for (pugi::xml_node node = node_.first_child(); node; node = node.next_sibling()) {
-      if (node.type() != pugi::node_element)
-        continue;
-
-      if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
-        prop = CODE_XML_OTHER;
-        back = SEQUENCE_ERROR;
-      }
-
-      switch (prop) {
-      case CODE_XML_M_NAME: {
-        M_name_tmp = node.text().as_string();
-        break;
-      }
-
-      case CODE_XML_VALUE: // VALUE
-        if (name == M_name_tmp) {
-          std::cout << "Found Homogeneous Matrix with name: \"" << M_name_tmp << "\"" << std::endl;
-          back = read_values(node, M_tmp);
+      if (node.type() == pugi::node_element) {
+        if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
+          prop = CODE_XML_OTHER;
+          back = SEQUENCE_ERROR;
         }
-        break;
 
-      case CODE_XML_BAD:
-      case CODE_XML_OTHER:
-      case CODE_XML_M:
-      case CODE_XML_TX:
-      case CODE_XML_TY:
-      case CODE_XML_TZ:
-      case CODE_XML_TUX:
-      case CODE_XML_TUY:
-      case CODE_XML_TUZ:
+        switch (prop) {
+        case CODE_XML_M_NAME: {
+          M_name_tmp = node.text().as_string();
+          break;
+        }
 
-      default:
-        back = SEQUENCE_ERROR;
-        break;
+        case CODE_XML_VALUE: // VALUE
+          if (name == M_name_tmp) {
+            std::cout << "Found Homogeneous Matrix with name: \"" << M_name_tmp << "\"" << std::endl;
+            back = read_values(node, M_tmp);
+          }
+          break;
+
+        case CODE_XML_BAD:
+        case CODE_XML_OTHER:
+        case CODE_XML_M:
+        case CODE_XML_TX:
+        case CODE_XML_TY:
+        case CODE_XML_TZ:
+        case CODE_XML_TUX:
+        case CODE_XML_TUY:
+        case CODE_XML_TUZ:
+
+        default:
+          back = SEQUENCE_ERROR;
+          break;
+        }
       }
     }
 
@@ -247,49 +241,48 @@ public:
     vpXmlCodeSequenceType back = SEQUENCE_OK;
 
     for (pugi::xml_node node = node_.first_child(); node; node = node.next_sibling()) {
-      if (node.type() != pugi::node_element)
-        continue;
+      if (node.type() == pugi::node_element) {
+        if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
+          prop = CODE_XML_OTHER;
+          back = SEQUENCE_ERROR;
+        }
 
-      if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
-        prop = CODE_XML_OTHER;
-        back = SEQUENCE_ERROR;
-      }
+        switch (prop) {
+        case CODE_XML_TX:
+          tx_ = node.text().as_double();
+          nb++;
+          break;
+        case CODE_XML_TY:
+          ty_ = node.text().as_double();
+          nb++;
+          break;
+        case CODE_XML_TZ:
+          tz_ = node.text().as_double();
+          nb++;
+          break;
+        case CODE_XML_TUX:
+          tux_ = node.text().as_double();
+          nb++;
+          break;
+        case CODE_XML_TUY:
+          tuy_ = node.text().as_double();
+          nb++;
+          break;
+        case CODE_XML_TUZ:
+          tuz_ = node.text().as_double();
+          nb++;
+          break;
 
-      switch (prop) {
-      case CODE_XML_TX:
-        tx_ = node.text().as_double();
-        nb++;
-        break;
-      case CODE_XML_TY:
-        ty_ = node.text().as_double();
-        nb++;
-        break;
-      case CODE_XML_TZ:
-        tz_ = node.text().as_double();
-        nb++;
-        break;
-      case CODE_XML_TUX:
-        tux_ = node.text().as_double();
-        nb++;
-        break;
-      case CODE_XML_TUY:
-        tuy_ = node.text().as_double();
-        nb++;
-        break;
-      case CODE_XML_TUZ:
-        tuz_ = node.text().as_double();
-        nb++;
-        break;
+        case CODE_XML_BAD:
+        case CODE_XML_OTHER:
+        case CODE_XML_M:
+        case CODE_XML_M_NAME:
+        case CODE_XML_VALUE:
 
-      case CODE_XML_BAD:
-      case CODE_XML_OTHER:
-      case CODE_XML_M:
-      case CODE_XML_M_NAME:
-      case CODE_XML_VALUE:
-
-      default:
-        back = SEQUENCE_ERROR;
-        break;
+        default:
+          back = SEQUENCE_ERROR;
+          break;
+        }
       }
     }
 
@@ -301,7 +294,7 @@ public:
     }
 
     // Create the Homogeneous matrix
-    M.buildFrom(tx_, ty_, tz_, tux_, tuy_, tuz_);
+    M.build(tx_, ty_, tz_, tux_, tuy_, tuz_);
 
     //  --comment: std::cout << "Read values from file:" << std::endl;
     //  --comment: std::cout << "tx:" << tx_<< std::endl;
@@ -370,15 +363,14 @@ public:
     int nbM = 0;
 
     for (pugi::xml_node node = node_.first_child(); node; node = node.next_sibling()) {
-      if (node.type() != pugi::node_element)
-        continue;
-
-      if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
-        prop = CODE_XML_OTHER;
-      }
-      if (prop == CODE_XML_M) {
-        if (SEQUENCE_OK == read_matrix(node, name)) {
-          nbM++;
+      if (node.type() == pugi::node_element) {
+        if (SEQUENCE_OK != str2xmlcode(node.name(), prop)) {
+          prop = CODE_XML_OTHER;
+        }
+        if (prop == CODE_XML_M) {
+          if (SEQUENCE_OK == read_matrix(node, name)) {
+            nbM++;
+          }
         }
       }
     }
@@ -556,7 +548,7 @@ void vpXmlParserHomogeneousMatrix::setHomogeneousMatrixName(const std::string &n
 {
   m_impl->setHomogeneousMatrixName(name);
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_core.a(vpXmlParserHomogeneousMatrix.cpp.o) has no symbols
 void dummy_vpXmlParserHomogeneousMatrix() { };

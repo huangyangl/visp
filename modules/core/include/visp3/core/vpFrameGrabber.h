@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,18 +31,20 @@
  * Frame grabbing.
  */
 
-#ifndef vpFrameGrabber_hh
-#define vpFrameGrabber_hh
-
-#include <visp3/core/vpImage.h>
-#include <visp3/core/vpRGBa.h>
-
 /*!
  * \file vpFrameGrabber.h
  * \brief Base class for all video devices. It is
  *        designed to provide a generic front end to video sources.
  */
 
+#ifndef VP_FRAME_GRABBER_H
+#define VP_FRAME_GRABBER_H
+
+#include <visp3/core/vpConfig.h>
+#include <visp3/core/vpImage.h>
+#include <visp3/core/vpRGBa.h>
+
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpFrameGrabber
  *
@@ -59,6 +61,10 @@
  * #include <visp3/io/vpImageIo.h>
  * #include <visp3/sensor/vp1394TwoGrabber.h>
  * #include <visp3/sensor/vpV4l2Grabber.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -89,15 +95,11 @@
  * #endif
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpFrameGrabber
 {
 public:
   bool init; //!< Set to true if the frame grabber has been initialized.
-
-protected:
-  unsigned int height; //!< Number of rows in the image.
-  unsigned int width;  //!< Number of columns in the image.
 
 public:
   /** @name Inherited functionalities from vpFramegrabber */
@@ -127,6 +129,10 @@ public:
    * the memory used by a specific frame grabber
    */
   virtual void close() = 0;
-};
 
+protected:
+  unsigned int height; //!< Number of rows in the image.
+  unsigned int width;  //!< Number of columns in the image.
+};
+END_VISP_NAMESPACE
 #endif

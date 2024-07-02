@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
  * \brief error that can be emitted by the vp class and its derivatives
  */
 
-#ifndef _vpException_h_
-#define _vpException_h_
+#ifndef VP_EXCEPTION_H
+#define VP_EXCEPTION_H
 
 #include <visp3/core/vpConfig.h>
 
@@ -45,6 +45,7 @@
 #include <stdarg.h>
 #include <string>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpException
  * \ingroup group_core_debug
@@ -54,22 +55,9 @@
  * STL.
  * It is therefore possible to catch vpException with any other derivative of
  * std::exception in the same catch.
- */
+*/
 class VISP_EXPORT vpException : public std::exception
 {
-protected:
-  //! Contains the error code, see the errorCodeEnum table for details.
-  int code;
-
-  //! Contains an error message (can be empty)
-  std::string message;
-
-  //! Set the message container
-  void setMessage(const char *format, va_list args);
-
-  //!  forbid the empty constructor (protected)
-  vpException() : code(notInitialized), message("") { }
-
 public:
   enum generalExceptionEnum
   {
@@ -110,7 +98,7 @@ public:
   /*!
    * Constructor.
    */
-  explicit vpException(int code);
+  VP_EXPLICIT vpException(int code);
 
   /** @name Inherited functionalities from vpException */
   //@{
@@ -143,6 +131,20 @@ public:
    * Print the error structure.
    */
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpException &art);
-};
 
+protected:
+  //! Contains the error code, see the errorCodeEnum table for details.
+  int code;
+
+  //! Contains an error message (can be empty)
+  std::string message;
+
+  //! Set the message container
+  void setMessage(const char *format, va_list args);
+
+  //!  forbid the empty constructor (protected)
+  vpException() : code(notInitialized), message("") { }
+
+};
+END_VISP_NAMESPACE
 #endif

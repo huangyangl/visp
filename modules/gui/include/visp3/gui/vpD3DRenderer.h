@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,13 @@
  * D3D renderer for windows 32 display
  */
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef VP_D3D_RENDERER_H
+#define VP_D3D_RENDERER_H
 
 #include <visp3/core/vpConfig.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 #if (defined(VISP_HAVE_D3D9))
-
-#ifndef VPD3DRENDERER_HH
-#define VPD3DRENDERER_HH
 
 // Include WinSock2.h before windows.h to ensure that winsock.h is not
 // included by windows.h since winsock.h and winsock2.h are incompatible
@@ -50,12 +49,14 @@
 
 #include <iostream>
 
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpD3DRenderer.h
  *
  * \brief Display under windows using Direct3D9.
  * Is used by vpDisplayD3D to do the drawing.
- */
+*/
 class VISP_EXPORT vpD3DRenderer : public vpWin32Renderer
 {
   IDirect3D9 *pD3D;
@@ -94,7 +95,7 @@ public:
   bool render();
 
   vpD3DRenderer();
-  virtual ~vpD3DRenderer() vp_override;
+  virtual ~vpD3DRenderer() VP_OVERRIDE;
 
   void setImg(const vpImage<vpRGBa> &im);
   void setImg(const vpImage<unsigned char> &im);
@@ -121,7 +122,7 @@ public:
   void drawArrow(const vpImagePoint &ip1, const vpImagePoint &ip2, const vpColor &color, unsigned int w, unsigned int h,
                  unsigned int thickness = 1);
 
-  void getImage(vpImage<vpRGBa> &I) vp_override;
+  void getImage(vpImage<vpRGBa> &I) VP_OVERRIDE;
 
 private:
   void initView(float, float);
@@ -189,5 +190,8 @@ private:
   unsigned int supPowerOf2(unsigned int n);
 };
 #endif
+
+END_VISP_NAMESPACE
+
 #endif
 #endif

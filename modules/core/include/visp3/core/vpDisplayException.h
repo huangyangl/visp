@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,24 +31,25 @@
  * Exception that can be emitted by the vpDisplay class and its derivatives.
  */
 
-#ifndef _vpDisplayException_h_
-#define _vpDisplayException_h_
-
 /*!
  * \file vpDisplayException.h
  *  \brief error that can be emitted by the vpDisplay class and its derivatives
  */
+
+#ifndef VP_DISPLAY_EXCEPTION_H
+#define VP_DISPLAY_EXCEPTION_H
 
 #include <iostream>
 #include <string>
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpDisplayException
  * \ingroup group_core_debug
  * \brief Error that can be emitted by the vpDisplay class and its derivatives.
- */
+*/
 class VISP_EXPORT vpDisplayException : public vpException
 {
 public:
@@ -88,7 +89,7 @@ public:
   /*!
    * Constructor.
    */
-  explicit vpDisplayException(int id) : vpException(id) { }
+  VP_EXPLICIT vpDisplayException(int id) : vpException(id) { }
 };
-
+END_VISP_NAMESPACE
 #endif

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,22 @@
  * Forward projection.
  */
 
-#ifndef vpForwardProjection_H
-#define vpForwardProjection_H
-
 /*!
  * \file vpForwardProjection.h
  * \brief  class that defines what is a generic geometric feature
  */
 
+#ifndef VP_FORWARD_PROJECTION_H
+#define VP_FORWARD_PROJECTION_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpColor.h>
 #include <visp3/core/vpMatrix.h>
 #include <visp3/core/vpTracker.h>
 
 #include <visp3/core/vpHomogeneousMatrix.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpForwardProjection
  * \brief Class that defines what is a generic geometric feature.
@@ -58,7 +60,7 @@
  * - in the image plane \e p. These parameters are located in the public
  *   attribute vpTracker::p. They correspond to normalized coordinates
  *   of the feature expressed in meters.
- */
+*/
 class VISP_EXPORT vpForwardProjection : public vpTracker
 {
 public:
@@ -193,6 +195,16 @@ public:
   void track(const vpHomogeneousMatrix &cMo);
   //@}
 
+
+public:
+  /** @name Public Attributes Inherited from vpForwardProjection */
+  //@{
+  /*!
+   * Feature coordinates expressed in the object frame.
+   */
+  vpColVector oP;
+  //@}
+
 protected:
   /** @name Protected Member Functions Inherited from vpForwardProjection */
   //@{
@@ -205,17 +217,8 @@ protected:
   virtual void init() = 0;
   //@}
 
-public:
-  /** @name Public Attributes Inherited from vpForwardProjection */
-  //@{
-  /*!
-   * Feature coordinates expressed in the object frame.
-   */
-  vpColVector oP;
-  //@}
-
 private:
   vpForwardProjectionDeallocatorType deallocate;
 };
-
+END_VISP_NAMESPACE
 #endif

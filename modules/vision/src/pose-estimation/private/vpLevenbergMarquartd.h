@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@
  * Levenberg Marquartd.
  */
 
-#ifndef vpLevenbergMarquartd_h
-#define vpLevenbergMarquartd_h
+#ifndef VP_LEVENBERG_MARQUARTD_H
+#define VP_LEVENBERG_MARQUARTD_H
 
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMath.h>
@@ -42,6 +42,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
  * ENTREE  :
@@ -98,35 +100,35 @@
  * carres du systeme a * x = b, d * x = 0. sdiag  Vecteur de taille "n"
  * contenant les elements diagonaux de la matrice triangulaire superieure "s".
  */
-int VISP_EXPORT qrsolv(int n, double *r, int ldr, int *ipvt, double *diag, double *qtb, double *x, double *sdiag,
-                       double *wa);
+  int VISP_EXPORT qrsolv(int n, double *r, int ldr, int *ipvt, double *diag, double *qtb, double *x, double *sdiag,
+                         double *wa);
 
-/*
- * PROCEDURE  : enorm
- *
- * ENTREE  :
- *
- * x    Vecteur de taille "n"
- * n    Taille du vecteur "x"
- *
- * DESCRIPTION  :
- * La procedure calcule la norme euclidienne d'un vecteur "x" de taille "n"
- * La norme euclidienne est calculee par accumulation de la somme  des carres
- * dans les trois directions. Les sommes des carres pour les petits et grands
- * elements sont mis a echelle afin d'eviter les overflows. Des underflows non
- * destructifs sont autorisee. Les underflows et overflows sont evites dans le
- * calcul des sommes des carres non encore mis a echelle par les elements
- * intermediaires. La definition des elements petit, intermediaire et grand
- * depend de deux constantes : rdwarf et rdiant. Les restrictions principales
- * sur ces constantes sont rdwarf^2 n'est pas en underflow et rdgiant^2 n'est
- * pas en overflow. Les constantes donnees ici conviennent pour la plupart des
- * pc connus.
- *
- * RETOUR  :
- * En cas de succes,  la valeur retournee est la norme euclidienne du vecteur
- * Sinon, la valeur -1 est retournee et la variable globale "errno" est
- * initialisee pour indiquee le type de l'erreur.
- */
+  /*
+   * PROCEDURE  : enorm
+   *
+   * ENTREE  :
+   *
+   * x    Vecteur de taille "n"
+   * n    Taille du vecteur "x"
+   *
+   * DESCRIPTION  :
+   * La procedure calcule la norme euclidienne d'un vecteur "x" de taille "n"
+   * La norme euclidienne est calculee par accumulation de la somme  des carres
+   * dans les trois directions. Les sommes des carres pour les petits et grands
+   * elements sont mis a echelle afin d'eviter les overflows. Des underflows non
+   * destructifs sont autorisee. Les underflows et overflows sont evites dans le
+   * calcul des sommes des carres non encore mis a echelle par les elements
+   * intermediaires. La definition des elements petit, intermediaire et grand
+   * depend de deux constantes : rdwarf et rdiant. Les restrictions principales
+   * sur ces constantes sont rdwarf^2 n'est pas en underflow et rdgiant^2 n'est
+   * pas en overflow. Les constantes donnees ici conviennent pour la plupart des
+   * pc connus.
+   *
+   * RETOUR  :
+   * En cas de succes,  la valeur retournee est la norme euclidienne du vecteur
+   * Sinon, la valeur -1 est retournee et la variable globale "errno" est
+   * initialisee pour indiquee le type de l'erreur.
+   */
 double VISP_EXPORT enorm(const double *x, int n);
 
 /* PROCEDURE  : lmpar
@@ -458,5 +460,7 @@ int VISP_EXPORT lmder(void (*ptr_fcn)(int m, int n, double *xc, double *fvecc, d
 int VISP_EXPORT lmder1(void (*ptr_fcn)(int m, int n, double *xc, double *fvecc, double *jac, int ldfjac, int iflag),
                        int m, int n, double *x, double *fvec, double *fjac, int ldfjac, double tol, int *info,
                        int *ipvt, int lwa, double *wa);
+
+END_VISP_NAMESPACE
 
 #endif

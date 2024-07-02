@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef _vpCircleHoughTransform_h_
-#define _vpCircleHoughTransform_h_
+#ifndef VP_CIRCLE_HOUGH_TRANSFORM_H
+#define VP_CIRCLE_HOUGH_TRANSFORM_H
 
 // System includes
 #include <utility>
@@ -51,6 +51,8 @@
 #include <optional>
 #endif
 
+BEGIN_VISP_NAMESPACE
+
 /**
  * \ingroup group_hough_transform
  * \brief Class that permits to detect 2D circles in a image using
@@ -58,74 +60,22 @@
  * Please find more information on the algorithm
  * [here](https://theailearner.com/tag/hough-gradient-method-opencv/)
  *
- */
+*/
 class VISP_EXPORT vpCircleHoughTransform
 {
 public:
   /**
    * \brief Class that gather the algorithm parameters.
    */
-  class vpCircleHoughTransformParameters
+  class vpCircleHoughTransformParams
   {
-  private:
-    // // Filtering + gradient operators to use
-    vpImageFilter::vpCannyFilteringAndGradientType m_filteringAndGradientType; /*!< Permits to choose the filtering +
-                                                                                    gradient operators to use.*/
-
-    // // Gaussian smoothing attributes
-    int m_gaussianKernelSize; /*!< Size of the Gaussian filter kernel used to smooth the input image.
-                                   Must be an odd number.*/
-    float m_gaussianStdev;   /*!< Standard deviation of the Gaussian filter.*/
-
-    // // Gradient computation attributes
-    int m_gradientFilterKernelSize; /*!< Size of the Sobel or Scharr kernels used to compute the gradients. Must be an odd number.*/
-
-    // // Edge detection attributes
-    float m_lowerCannyThresh; /*!< The lower threshold for the Canny operator. Values lower than this value are rejected.
-                               A negative value makes the algorithm compute the lower threshold automatically.*/
-    float m_upperCannyThresh; /*!< The upper threshold for the Canny operator. Only values greater than this value are marked as an edge.
-                               A negative value makes the algorithm compute the upper and lower thresholds automatically.*/
-    int m_edgeMapFilteringNbIter; /*!< Number of iterations of 8-neighbor connectivity filtering to apply to the edge map*/
-    vpImageFilter::vpCannyBackendType m_cannyBackendType; /*!< Permits to choose the backend used to compute the edge map.*/
-    float m_lowerCannyThreshRatio; /*!< The ratio of the upper threshold the lower threshold must be equal to.
-                                        It is used only if the user asks to compute the Canny thresholds.*/
-    float m_upperCannyThreshRatio; /*!< The ratio of pixels whose absolute gradient Gabs is lower or equal to define
-                                        the upper threshold. It is used only if the user asks to compute the Canny thresholds.*/
-
-    // // Center candidates computation attributes
-    std::pair<int, int> m_centerXlimits; /*!< Minimum and maximum position on the horizontal axis of the center of the circle we want to detect.*/
-    std::pair<int, int> m_centerYlimits; /*!< Minimum and maximum position on the vertical axis of the center of the circle we want to detect.*/
-    float m_minRadius; /*!< Minimum radius of the circles we want to detect.*/
-    float m_maxRadius; /*!< Maximum radius of the circles we want to detect.*/
-    int m_dilatationKernelSize; /*!< Kernel size of the dilatation that is performed to detect the maximum number of votes for the center candidates.*/
-    int m_averagingWindowSize; /*!< Size of the averaging window around the maximum number of votes to compute the
-                                    center candidate such as it is the barycenter of the window. Must be odd.*/
-    float m_centerMinThresh;  /*!< Minimum number of votes a point must exceed to be considered as center candidate.*/
-    int m_expectedNbCenters; /*!< Expected number of different centers in the image. If negative, all candidates centers
-                                  are kept, otherwise only up to this number are kept.*/
-
-    // // Circle candidates computation attributes
-    float m_circleProbaThresh;  /*!< Probability threshold in order to keep a circle candidate.*/
-    float m_circlePerfectness; /*!< The threshold for the colinearity between the gradient of a point
-                                    and the radius it would form with a center candidate to be able to vote.
-                                    The formula to get the equivalent angle is: `angle = acos(circle_perfectness)`. */
-    float m_circleVisibilityRatioThresh; /*!< Visibility ratio threshold: minimum ratio of the circle must be visible in order to keep a circle candidate.*/
-    bool m_recordVotingPoints; /*!< If true, the edge-map points having voted for each circle will be stored.*/
-
-    // // Circle candidates merging attributes
-    float m_centerMinDist; /*!< Maximum distance between two circle candidates centers to consider merging them.*/
-    float m_mergingRadiusDiffThresh; /*!< Maximum radius difference between two circle candidates to consider merging them.*/
-
-    friend class vpCircleHoughTransform;
   public:
     /**
-     * \brief Construct a new vpCircleHoughTransformParameters object with default parameters.
+     * \brief Construct a new vpCircleHoughTransformParams object with default parameters.
      */
-    vpCircleHoughTransformParameters()
+    vpCircleHoughTransformParams()
       : m_filteringAndGradientType(vpImageFilter::CANNY_GBLUR_SOBEL_FILTERING)
-      , m_gaussianKernelSize(5)
       , m_gaussianStdev(1.f)
-      , m_gradientFilterKernelSize(3)
       , m_lowerCannyThresh(-1.f)
       , m_upperCannyThresh(-1.f)
       , m_edgeMapFilteringNbIter(1)
@@ -136,8 +86,6 @@ public:
       , m_centerYlimits(std::pair<int, int>(std::numeric_limits<int>::min(), std::numeric_limits<int>::max()))
       , m_minRadius(0.f)
       , m_maxRadius(1000.f)
-      , m_dilatationKernelSize(3)
-      , m_averagingWindowSize(5)
       , m_centerMinThresh(50.f)
       , m_expectedNbCenters(-1)
       , m_circleProbaThresh(0.9f)
@@ -147,11 +95,19 @@ public:
       , m_centerMinDist(15.f)
       , m_mergingRadiusDiffThresh(1.5f * m_centerMinDist)
     {
+      const unsigned int gaussianKernelSize_default = 5;
+      const unsigned int gradientFilterKernelSize_default = 3;
+      const unsigned int dilatationKernelSize_default = 3;
+      const unsigned int averagingWindowSize_default = 5;
 
+      m_gaussianKernelSize = gaussianKernelSize_default;
+      m_gradientFilterKernelSize = gradientFilterKernelSize_default;
+      m_dilatationKernelSize = dilatationKernelSize_default;
+      m_averagingWindowSize = averagingWindowSize_default;
     }
 
     /**
-     * \brief Construct a new vpCircleHoughTransformParameters object.
+     * \brief Construct a new vpCircleHoughTransformParams object.
      *
      * \param[in] gaussianKernelSize Size of the Gaussian filter kernel used to smooth the input image. Must be an odd number.
      * \param[in] gaussianStdev Standard deviation of the Gaussian filter.
@@ -188,7 +144,7 @@ public:
      * \param[in] recordVotingPoints If true, the edge-map points having voted for each circle will be stored.
      * \param[in] visibilityRatioThresh Visibility threshold: which minimum ratio of the circle must be visible in order to keep a circle candidate.
      */
-    vpCircleHoughTransformParameters(
+    vpCircleHoughTransformParams(
       const int &gaussianKernelSize
       , const float &gaussianStdev
       , const int &gradientFilterKernelSize
@@ -479,7 +435,8 @@ public:
       txt <<  "\tCircle probability threshold = " << m_circleProbaThresh << "\n";
       txt <<  "\tCircle visibility ratio threshold = " << m_circleVisibilityRatioThresh << "\n";
       txt <<  "\tCircle perfectness threshold = " << m_circlePerfectness << "\n";
-      txt <<  "\tRecord voting points = " + (m_recordVotingPoints ? std::string("true") : std::string("false")) << "\n";
+      txt <<  "\tRecord voting points = ";
+      txt << (m_recordVotingPoints ? std::string("true") : std::string("false")) << "\n";
       txt <<  "\tCenters minimum distance = " << m_centerMinDist << "\n";
       txt <<  "\tRadius difference merging threshold = " << m_mergingRadiusDiffThresh << "\n";
       return txt.str();
@@ -488,12 +445,12 @@ public:
     // // Configuration from files
 #ifdef VISP_HAVE_NLOHMANN_JSON
   /**
-   * \brief Create a new vpCircleHoughTransformParameters from a JSON file.
+   * \brief Create a new vpCircleHoughTransformParams from a JSON file.
    *
    * \param[in] jsonFile The path towards the JSON file.
-   * \return vpCircleHoughTransformParameters The corresponding vpCircleHoughTransformParameters object.
+   * \return vpCircleHoughTransformParams The corresponding vpCircleHoughTransformParams object.
    */
-    inline static vpCircleHoughTransformParameters createFromJSON(const std::string &jsonFile)
+    inline static vpCircleHoughTransformParams createFromJSON(const std::string &jsonFile)
     {
       using json = nlohmann::json;
 
@@ -515,7 +472,7 @@ public:
         msg << "Byte position of error: " << e.byte;
         throw vpException(vpException::ioError, msg.str());
       }
-      vpCircleHoughTransformParameters params = j; // Call from_json(const json& j, vpDetectorDNN& *this) to read json
+      vpCircleHoughTransformParams params = j; // Call from_json(const json& j, vpDetectorDNN& *this) to read json
       file.close();
       return params;
     }
@@ -532,7 +489,8 @@ public:
       using json = nlohmann::json;
       std::ofstream file(jsonPath);
       const json j = *this;
-      file << j.dump(4);
+      const int indent = 4;
+      file << j.dump(indent);
       file.close();
     }
 
@@ -543,14 +501,15 @@ public:
      * \param[in] j : The JSON object, resulting from the parsing of a JSON file.
      * \param[out] params : The circle Hough transform parameters that will be initialized from the JSON data.
      */
-    friend inline void from_json(const nlohmann::json &j, vpCircleHoughTransformParameters &params)
+    friend inline void from_json(const nlohmann::json &j, vpCircleHoughTransformParams &params)
     {
       std::string filteringAndGradientName = vpImageFilter::vpCannyFiltAndGradTypeToStr(params.m_filteringAndGradientType);
       filteringAndGradientName = j.value("filteringAndGradientType", filteringAndGradientName);
       params.m_filteringAndGradientType = vpImageFilter::vpCannyFiltAndGradTypeFromStr(filteringAndGradientName);
 
       params.m_gaussianKernelSize = j.value("gaussianKernelSize", params.m_gaussianKernelSize);
-      if ((params.m_gaussianKernelSize % 2) != 1) {
+      const int checkEvenModulo = 2;
+      if ((params.m_gaussianKernelSize % checkEvenModulo) != 1) {
         throw vpException(vpException::badValue, "Gaussian Kernel size should be odd.");
       }
 
@@ -560,7 +519,7 @@ public:
       }
 
       params.m_gradientFilterKernelSize = j.value("gradientFilterKernelSize", params.m_gradientFilterKernelSize);
-      if ((params.m_gradientFilterKernelSize % 2) != 1) {
+      if ((params.m_gradientFilterKernelSize % checkEvenModulo) != 1) {
         throw vpException(vpException::badValue, "Gradient filter kernel (Sobel or Scharr) size should be odd.");
       }
 
@@ -581,7 +540,7 @@ public:
 
       params.m_dilatationKernelSize = j.value("dilatationKernelSize", params.m_dilatationKernelSize);
       params.m_averagingWindowSize = j.value("averagingWindowSize", params.m_averagingWindowSize);
-      if (params.m_averagingWindowSize <= 0 || (params.m_averagingWindowSize % 2) == 0) {
+      if ((params.m_averagingWindowSize <= 0) || ((params.m_averagingWindowSize % checkEvenModulo) == 0)) {
         throw vpException(vpException::badValue, "Averaging window size must be positive and odd.");
       }
 
@@ -598,7 +557,7 @@ public:
 
       params.m_circlePerfectness = j.value("circlePerfectnessThreshold", params.m_circlePerfectness);
 
-      if (params.m_circlePerfectness <= 0 || params.m_circlePerfectness > 1) {
+      if ((params.m_circlePerfectness <= 0) || (params.m_circlePerfectness > 1)) {
         throw vpException(vpException::badValue, "Circle perfectness must be in the interval ] 0; 1].");
       }
 
@@ -621,7 +580,7 @@ public:
      * \param[out] j : A JSON parser object.
      * \param[in] params : The circle Hough transform parameters that will be serialized in the json object.
      */
-    friend inline void to_json(nlohmann::json &j, const vpCircleHoughTransformParameters &params)
+    friend inline void to_json(nlohmann::json &j, const vpCircleHoughTransformParams &params)
     {
       std::pair<float, float> radiusLimits = { params.m_minRadius, params.m_maxRadius };
 
@@ -651,19 +610,85 @@ public:
           {"mergingRadiusDiffThresh", params.m_mergingRadiusDiffThresh} };
     }
 #endif
+
+  private:
+    // // Filtering + gradient operators to use
+    vpImageFilter::vpCannyFilteringAndGradientType m_filteringAndGradientType; /*!< Permits to choose the filtering +
+                                                                                    gradient operators to use.*/
+
+    // // Gaussian smoothing attributes
+    int m_gaussianKernelSize; /*!< Size of the Gaussian filter kernel used to smooth the input image.
+                                   Must be an odd number.*/
+    float m_gaussianStdev;   /*!< Standard deviation of the Gaussian filter.*/
+
+    // // Gradient computation attributes
+    int m_gradientFilterKernelSize; /*!< Size of the Sobel or Scharr kernels used to compute the gradients. Must be an odd number.*/
+
+    // // Edge detection attributes
+    float m_lowerCannyThresh; /*!< The lower threshold for the Canny operator. Values lower than this value are rejected.
+                               A negative value makes the algorithm compute the lower threshold automatically.*/
+    float m_upperCannyThresh; /*!< The upper threshold for the Canny operator. Only values greater than this value are marked as an edge.
+                               A negative value makes the algorithm compute the upper and lower thresholds automatically.*/
+    int m_edgeMapFilteringNbIter; /*!< Number of iterations of 8-neighbor connectivity filtering to apply to the edge map*/
+    vpImageFilter::vpCannyBackendType m_cannyBackendType; /*!< Permits to choose the backend used to compute the edge map.*/
+    float m_lowerCannyThreshRatio; /*!< The ratio of the upper threshold the lower threshold must be equal to.
+                                        It is used only if the user asks to compute the Canny thresholds.*/
+    float m_upperCannyThreshRatio; /*!< The ratio of pixels whose absolute gradient Gabs is lower or equal to define
+                                        the upper threshold. It is used only if the user asks to compute the Canny thresholds.*/
+
+    // // Center candidates computation attributes
+    std::pair<int, int> m_centerXlimits; /*!< Minimum and maximum position on the horizontal axis of the center of the circle we want to detect.*/
+    std::pair<int, int> m_centerYlimits; /*!< Minimum and maximum position on the vertical axis of the center of the circle we want to detect.*/
+    float m_minRadius; /*!< Minimum radius of the circles we want to detect.*/
+    float m_maxRadius; /*!< Maximum radius of the circles we want to detect.*/
+    int m_dilatationKernelSize; /*!< Kernel size of the dilatation that is performed to detect the maximum number of votes for the center candidates.*/
+    int m_averagingWindowSize; /*!< Size of the averaging window around the maximum number of votes to compute the
+                                    center candidate such as it is the barycenter of the window. Must be odd.*/
+    float m_centerMinThresh;  /*!< Minimum number of votes a point must exceed to be considered as center candidate.*/
+    int m_expectedNbCenters; /*!< Expected number of different centers in the image. If negative, all candidates centers
+                                  are kept, otherwise only up to this number are kept.*/
+
+    // // Circle candidates computation attributes
+    float m_circleProbaThresh;  /*!< Probability threshold in order to keep a circle candidate.*/
+    float m_circlePerfectness; /*!< The threshold for the colinearity between the gradient of a point
+                                    and the radius it would form with a center candidate to be able to vote.
+                                    The formula to get the equivalent angle is: `angle = acos(circle_perfectness)`. */
+    float m_circleVisibilityRatioThresh; /*!< Visibility ratio threshold: minimum ratio of the circle must be visible in order to keep a circle candidate.*/
+    bool m_recordVotingPoints; /*!< If true, the edge-map points having voted for each circle will be stored.*/
+
+    // // Circle candidates merging attributes
+    float m_centerMinDist; /*!< Maximum distance between two circle candidates centers to consider merging them.*/
+    float m_mergingRadiusDiffThresh; /*!< Maximum radius difference between two circle candidates to consider merging them.*/
+
+    friend class vpCircleHoughTransform;
   };
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+  typedef vpCircleHoughTransformParams vpCircleHoughTransformParameters;
+#endif
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /**
-   * \brief Construct a new vpCircleHoughTransform object with default parameters.
+   * \brief Data storage for the computation of the center candidates.
    */
+  typedef struct vpCenterVotes
+  {
+    std::pair<float, float> m_position;
+    float m_votes;
+  } vpCenterVotes;
+#endif
+
+/**
+ * \brief Construct a new vpCircleHoughTransform object with default parameters.
+ */
   vpCircleHoughTransform();
 
   /**
    * \brief Construct a new vpCircleHoughTransform object
-   * from a \b vpCircleHoughTransformParameters object.
+   * from a \b vpCircleHoughTransformParams object.
    * \param[in] algoParams The parameters of the Circle Hough Transform.
    */
-  vpCircleHoughTransform(const vpCircleHoughTransformParameters &algoParams);
+  VP_EXPLICIT vpCircleHoughTransform(const vpCircleHoughTransformParams &algoParams);
 
   /**
    * \brief Destroy the vp Circle Hough Transform object
@@ -735,7 +760,7 @@ public:
    * does not exist.
    * \param[in] jsonPath The path towards the JSON configuration file.
    */
-  vpCircleHoughTransform(const std::string &jsonPath);
+  VP_EXPLICIT vpCircleHoughTransform(const std::string &jsonPath);
 
   /**
    * \brief Initialize all the algorithm parameters using the JSON file
@@ -787,7 +812,7 @@ public:
    *
    * \param[in] algoParams The algorithm parameters.
    */
-  void init(const vpCircleHoughTransformParameters &algoParams);
+  void init(const vpCircleHoughTransformParams &algoParams);
 
   /**
    * \brief Permits to choose the filtering + gradient operators to use.
@@ -813,7 +838,8 @@ public:
     m_algoParams.m_gaussianKernelSize = kernelSize;
     m_algoParams.m_gaussianStdev = stdev;
 
-    if ((m_algoParams.m_gaussianKernelSize % 2) != 1) {
+    const unsigned int checkEvenModulo = 2;
+    if ((m_algoParams.m_gaussianKernelSize % checkEvenModulo) != 1) {
       throw vpException(vpException::badValue, "Gaussian Kernel size should be odd.");
     }
 
@@ -833,7 +859,8 @@ public:
   {
     m_algoParams.m_gradientFilterKernelSize = apertureSize;
 
-    if ((m_algoParams.m_gradientFilterKernelSize % 2) != 1) {
+    const unsigned int checkEvenModulo = 2;
+    if ((m_algoParams.m_gradientFilterKernelSize % checkEvenModulo) != 1) {
       throw vpException(vpException::badValue, "Gradient filter (Sobel or Scharr) Kernel size should be odd.");
     }
 
@@ -945,7 +972,7 @@ public:
   void setCirclePerfectness(const float &circle_perfectness)
   {
     m_algoParams.m_circlePerfectness = circle_perfectness;
-    if (m_algoParams.m_circlePerfectness <= 0 || m_algoParams.m_circlePerfectness > 1) {
+    if ((m_algoParams.m_circlePerfectness <= 0) || (m_algoParams.m_circlePerfectness > 1)) {
       throw vpException(vpException::badValue, "Circle perfectness must be in the interval ] 0; 1].");
     }
   }
@@ -968,10 +995,12 @@ public:
     m_algoParams.m_averagingWindowSize = averagingWindowSize;
     m_algoParams.m_expectedNbCenters = expectedNbCenters;
 
-    if (m_algoParams.m_dilatationKernelSize < 3) {
+    const int minDilatationKernel = 3;
+    const unsigned int checkEvenModulo = 2;
+    if (m_algoParams.m_dilatationKernelSize < minDilatationKernel) {
       throw vpException(vpException::badValue, "Dilatation kernel size for center detection must be greater or equal to 3.");
     }
-    else if ((m_algoParams.m_dilatationKernelSize % 2) == 0) {
+    else if ((m_algoParams.m_dilatationKernelSize % checkEvenModulo) == 0) {
       throw vpException(vpException::badValue, "Dilatation kernel size for center detection must be odd.");
     }
 
@@ -979,7 +1008,7 @@ public:
       throw vpException(vpException::badValue, "Votes thresholds for center detection must be positive.");
     }
 
-    if ((m_algoParams.m_averagingWindowSize <= 0) || ((m_algoParams.m_averagingWindowSize % 2) == 0)) {
+    if ((m_algoParams.m_averagingWindowSize <= 0) || ((m_algoParams.m_averagingWindowSize % checkEvenModulo) == 0)) {
       throw vpException(vpException::badValue, "Averaging window size must be positive and odd.");
     }
   }
@@ -1207,14 +1236,20 @@ protected:
   virtual void computeCenterCandidates();
 
   /**
+   * \brief Aggregate center candidates that are close to each other.
+   * \param[in] peak_positions_votes Vector containing raw center candidates.
+   */
+  virtual void filterCenterCandidates(const std::vector<vpCenterVotes> &peak_positions_votes);
+
+  /**
    * \brief Compute the probability of \b circle given the number of pixels voting for
    * it \b nbVotes.
    * The probability is defined as the ratio of \b nbVotes by the theoretical number of
    * pixel that should be visible in the image.
    *
-   * @param circle The circle for which we want to evaluate the probability.
-   * @param nbVotes The number of visible pixels of the given circle.
-   * @return float The probability of the circle.
+   * \param[in] circle The circle for which we want to evaluate the probability.
+   * \param[in] nbVotes The number of visible pixels of the given circle.
+   * \return float The probability of the circle.
    */
   virtual float computeCircleProbability(const vpImageCircle &circle, const unsigned int &nbVotes);
 
@@ -1247,7 +1282,7 @@ protected:
   virtual void mergeCandidates(std::vector<vpImageCircle> &circleCandidates, std::vector<unsigned int> &circleCandidatesVotes,
                                std::vector<float> &circleCandidatesProba, std::vector<std::vector<std::pair<unsigned int, unsigned int> > > &votingPoints);
 
-  vpCircleHoughTransformParameters m_algoParams; /*!< Attributes containing all the algorithm parameters.*/
+  vpCircleHoughTransformParams m_algoParams; /*!< Attributes containing all the algorithm parameters.*/
   // // Gaussian smoothing attributes
   vpArray2D<float> m_fg;
 
@@ -1279,4 +1314,7 @@ protected:
   std::vector<unsigned int> m_finalCircleVotes; /*!< Number of votes for the final circles.*/
   std::vector<std::vector<std::pair<unsigned int, unsigned int> > > m_finalCirclesVotingPoints; /*!< Points that voted for each final circle.*/
 };
+
+END_VISP_NAMESPACE
+
 #endif

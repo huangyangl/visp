@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +29,11 @@
  *
  * Description:
  * ViSP <--> Eigen conversion.
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpEigenConversion.h>
 
-namespace vp
+namespace VISP_NAMESPACE_NAME
 {
 #ifdef VISP_HAVE_EIGEN3
 /* Eigen to ViSP */
@@ -49,7 +47,7 @@ void eigen2visp(const Eigen::MatrixXd &src, vpMatrix &dst)
 void eigen2visp(const Eigen::MatrixXd &src, vpHomogeneousMatrix &dst)
 {
   if ((src.rows() != 4) || (src.cols() != 4)) {
-    throw vpException(vpException::dimensionError, "Input Eigen Matrix must be of size (4,4)!");
+    throw  vpException(vpException::dimensionError, "Input Eigen Matrix must be of size (4,4)!");
   }
 
   Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >(&dst.data[0], src.rows(),
@@ -84,11 +82,11 @@ void eigen2visp(const Eigen::RowVectorXd &src, vpRowVector &dst)
   }
 }
 
-void visp2eigen(const vpColVector &src, Eigen::VectorXd &dst) { dst = Eigen::VectorXd::Map(src.data, src.size()); }
+void visp2eigen(const  vpColVector &src, Eigen::VectorXd &dst) { dst = Eigen::VectorXd::Map(src.data, src.size()); }
 
-void visp2eigen(const vpRowVector &src, Eigen::RowVectorXd &dst)
+void visp2eigen(const  vpRowVector &src, Eigen::RowVectorXd &dst)
 {
   dst = Eigen::RowVectorXd::Map(src.data, src.size());
 }
 #endif
-} // namespace vp
+} // namespace VISP_NAMESPACE_NAME

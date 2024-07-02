@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +30,7 @@
  * Description:
  * Acquisition of images and odometry information with RealSense T265 sensor
  * and librealsense2.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testRealSense2_T265_images_odometry.cpp
@@ -54,6 +52,9 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   vpHomogeneousMatrix cMw, cMw_0;
   vpHomogeneousMatrix cextMw(0, 0, 2, 0, 0, 0); // External camera view for pose visualization
   vpColVector odo_vel, odo_acc, imu_acc, imu_vel;

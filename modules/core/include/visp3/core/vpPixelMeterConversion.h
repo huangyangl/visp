@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,16 +31,15 @@
  * Pixel to meter conversion.
  */
 
-#ifndef _vpPixelMeterConversion_h_
-#define _vpPixelMeterConversion_h_
-
 /*!
   \file vpPixelMeterConversion.h
   \brief pixel to meter conversion
-
 */
+
+#ifndef VP_PIXEL_METER_CONVERSION_H
+#define VP_PIXEL_METER_CONVERSION_H
+
 #include <visp3/core/vpCameraParameters.h>
-#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpException.h>
 #include <visp3/core/vpImagePoint.h>
 #include <visp3/core/vpMath.h>
@@ -50,6 +49,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpPixelMeterConversion
 
@@ -111,6 +111,8 @@ public:
     case vpCameraParameters::ProjWithKannalaBrandtDistortion:
       convertPointWithKannalaBrandtDistortion(cam, u, v, x, y);
       break;
+    default:
+      std::cerr << "projection model not identified" << std::endl;
     }
   }
 
@@ -153,6 +155,8 @@ public:
     case vpCameraParameters::ProjWithKannalaBrandtDistortion:
       convertPointWithKannalaBrandtDistortion(cam, iP, x, y);
       break;
+    default:
+      std::cerr << "projection model not identified" << std::endl;
     }
   }
 
@@ -215,7 +219,7 @@ public:
   inline static void convertPointWithDistortion(const vpCameraParameters &cam, const double &u, const double &v,
                                                 double &x, double &y)
   {
-    double r2 = 1. + cam.m_kdu * (vpMath::sqr((u - cam.m_u0) * cam.m_inv_px) + vpMath::sqr((v - cam.m_v0) * cam.m_inv_py));
+    double r2 = 1. + (cam.m_kdu * (vpMath::sqr((u - cam.m_u0) * cam.m_inv_px) + vpMath::sqr((v - cam.m_v0) * cam.m_inv_py)));
     x = (u - cam.m_u0) * r2 * cam.m_inv_px;
     y = (v - cam.m_v0) * r2 * cam.m_inv_py;
   }
@@ -239,8 +243,8 @@ public:
   inline static void convertPointWithDistortion(const vpCameraParameters &cam, const vpImagePoint &iP, double &x,
                                                 double &y)
   {
-    double r2 = 1. + cam.m_kdu * (vpMath::sqr((iP.get_u() - cam.m_u0) * cam.m_inv_px) +
-                                vpMath::sqr((iP.get_v() - cam.m_v0) * cam.m_inv_py));
+    double r2 = 1. + (cam.m_kdu * (vpMath::sqr((iP.get_u() - cam.m_u0) * cam.m_inv_px) +
+                                   vpMath::sqr((iP.get_v() - cam.m_v0) * cam.m_inv_py)));
     x = (iP.get_u() - cam.m_u0) * r2 * cam.m_inv_px;
     y = (iP.get_v() - cam.m_v0) * r2 * cam.m_inv_py;
   }
@@ -271,6 +275,16 @@ public:
     double x_d = (u - cam.m_u0) / cam.m_px, y_d = (v - cam.m_v0) / cam.m_py;
     double scale = 1.0;
     double r_d = sqrt(vpMath::sqr(x_d) + vpMath::sqr(y_d));
+    const unsigned int index_0 = 0;
+    const unsigned int index_1 = 1;
+    const unsigned int index_2 = 2;
+    const unsigned int index_3 = 3;
+    const unsigned int val_1 = 1;
+    const unsigned int val_3 = 3;
+    const unsigned int val_5 = 5;
+    const unsigned int val_7 = 7;
+    const unsigned int val_9 = 9;
+    const unsigned int val_10 = 10;
 
     r_d = std::min<double>(std::max<double>(-M_PI, r_d), M_PI); // FOV restricted to 180degrees.
 
@@ -282,16 +296,24 @@ public:
       // compensate distortion iteratively
       double theta = r_d;
 
-      for (int j = 0; j < 10; ++j) {
-        double theta2 = theta * theta, theta4 = theta2 * theta2, theta6 = theta4 * theta2, theta8 = theta6 * theta2;
-        double k0_theta2 = k[0] * theta2, k1_theta4 = k[1] * theta4, k2_theta6 = k[2] * theta6,
-          k3_theta8 = k[3] * theta8;
-   /* new_theta = theta - theta_fix, theta_fix = f0(theta) / f0'(theta) */
-        double theta_fix = (theta * (1 + k0_theta2 + k1_theta4 + k2_theta6 + k3_theta8) - r_d) /
-          (1 + 3 * k0_theta2 + 5 * k1_theta4 + 7 * k2_theta6 + 9 * k3_theta8);
+      for (unsigned int j = 0; j < val_10; ++j) {
+        double theta2 = theta * theta;
+        double theta4 = theta2 * theta2;
+        double theta6 = theta4 * theta2;
+        double theta8 = theta6 * theta2;
+        double k0_theta2 = k[index_0] * theta2;
+        double k1_theta4 = k[index_1] * theta4;
+        double k2_theta6 = k[index_2] * theta6,
+          k3_theta8 = k[index_3] * theta8;
+          /*
+          // new_theta = theta - theta_fix, theta_fix = f0(theta) / f0'(theta)
+          */
+        double theta_fix = ((theta * (val_1 + k0_theta2 + k1_theta4 + k2_theta6 + k3_theta8)) - r_d)
+          / (val_1 + (val_3 * k0_theta2) + (val_5 * k1_theta4) + (val_7 * k2_theta6) + (val_9 * k3_theta8));
         theta = theta - theta_fix;
-        if (fabs(theta_fix) < EPS)
+        if (fabs(theta_fix) < EPS) {
           break;
+        }
       }
 
       scale = std::tan(theta) / r_d; // Scale of norm of (x,y) and (x_d, y_d)
@@ -326,6 +348,16 @@ public:
     double x_d = (iP.get_u() - cam.m_u0) / cam.m_px, y_d = (iP.get_v() - cam.m_v0) / cam.m_py;
     double scale = 1.0;
     double r_d = sqrt(vpMath::sqr(x_d) + vpMath::sqr(y_d));
+    const unsigned int index_0 = 0;
+    const unsigned int index_1 = 1;
+    const unsigned int index_2 = 2;
+    const unsigned int index_3 = 3;
+    const unsigned int val_1 = 1;
+    const unsigned int val_3 = 3;
+    const unsigned int val_5 = 5;
+    const unsigned int val_7 = 7;
+    const unsigned int val_9 = 9;
+    const unsigned int val_10 = 10;
 
     r_d = std::min<double>(std::max<double>(-M_PI, r_d), M_PI); // FOV restricted to 180degrees.
 
@@ -337,16 +369,24 @@ public:
       // compensate distortion iteratively
       double theta = r_d;
 
-      for (int j = 0; j < 10; ++j) {
-        double theta2 = theta * theta, theta4 = theta2 * theta2, theta6 = theta4 * theta2, theta8 = theta6 * theta2;
-        double k0_theta2 = k[0] * theta2, k1_theta4 = k[1] * theta4, k2_theta6 = k[2] * theta6,
-          k3_theta8 = k[3] * theta8;
-   /* new_theta = theta - theta_fix, theta_fix = f0(theta) / f0'(theta) */
-        double theta_fix = (theta * (1 + k0_theta2 + k1_theta4 + k2_theta6 + k3_theta8) - r_d) /
-          (1 + 3 * k0_theta2 + 5 * k1_theta4 + 7 * k2_theta6 + 9 * k3_theta8);
+      for (unsigned int j = 0; j < val_10; ++j) {
+        double theta2 = theta * theta;
+        double theta4 = theta2 * theta2;
+        double theta6 = theta4 * theta2;
+        double theta8 = theta6 * theta2;
+        double k0_theta2 = k[index_0] * theta2;
+        double k1_theta4 = k[index_1] * theta4;
+        double k2_theta6 = k[index_2] * theta6;
+        double k3_theta8 = k[index_3] * theta8;
+        /*
+          // new_theta = theta - theta_fix, theta_fix = f0(theta) / f0'(theta)
+        */
+        double theta_fix = ((theta * (val_1 + k0_theta2 + k1_theta4 + k2_theta6 + k3_theta8)) - r_d) /
+          (val_1 + (val_3 * k0_theta2) + (val_5 * k1_theta4) + (val_7 * k2_theta6) + (val_9 * k3_theta8));
         theta = theta - theta_fix;
-        if (fabs(theta_fix) < EPS)
+        if (fabs(theta_fix) < EPS) {
           break;
+        }
       }
 
       scale = std::tan(theta) / r_d; // Scale of norm of (x,y) and (x_d, y_d)
@@ -375,5 +415,5 @@ public:
   //@}
 #endif
 };
-
+END_VISP_NAMESPACE
 #endif

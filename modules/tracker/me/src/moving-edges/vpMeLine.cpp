@@ -40,6 +40,7 @@
 #include <cmath>     // std::fabs
 #include <limits>    // numeric_limits
 #include <stdlib.h>
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpImagePoint.h>
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpRobust.h>
@@ -51,6 +52,7 @@
 
 #define INCR_MIN 1
 
+BEGIN_VISP_NAMESPACE
 void computeDelta(double &delta, int i1, int j1, int i2, int j2);
 
 static void normalizeAngle(double &delta)
@@ -1204,3 +1206,4 @@ void vpMeLine::displayLine(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, cons
   ip1.set_j(PExt2.m_jfloat);
   vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
 }
+END_VISP_NAMESPACE

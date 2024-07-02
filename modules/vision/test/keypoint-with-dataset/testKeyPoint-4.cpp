@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,13 @@
  * calls to detect potential memory leaks in testKeyPoint-2.cpp.
  */
 
+/*!
+  \example testKeyPoint-4.cpp
+
+  \brief   Test keypoint matching and pose estimation with mostly OpenCV
+  functions calls to detect potential memory leaks in testKeyPoint-2.cpp.
+*/
+
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
@@ -53,6 +60,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdh"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam);
 bool getOptions(int argc, const char **argv, bool &click_allowed, bool &display);
@@ -372,12 +383,6 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   }
 }
 
-/*!
-  \example testKeyPoint-4.cpp
-
-  \brief   Test keypoint matching and pose estimation with mostly OpenCV
-  functions calls to detect potential memory leaks in testKeyPoint-2.cpp.
-*/
 int main(int argc, const char **argv)
 {
   try {

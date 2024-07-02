@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Read images on the disk.
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpDebug.h>
 #include <visp3/core/vpImage.h>
@@ -47,6 +45,10 @@
   \brief Read images on the disk.
 
 */
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 // List of allowed command line options
 #define GETOPTARGS "cdi:p:h"
@@ -72,7 +74,7 @@ SYNOPSIS\n\
   %s [-i <input image path>] [-p <personal image path>]\n\
      [-h]\n\
 ",
-          name);
+name);
 
   fprintf(stdout, "\n\
 OPTIONS:                                               Default\n\
@@ -179,8 +181,8 @@ int main(int argc, const char **argv)
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
         std::cout << "  Since -i <visp image path=" << ipath << "> "
-                  << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
-                  << "  we skip the environment variable." << std::endl;
+          << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
+          << "  we skip the environment variable." << std::endl;
       }
     }
 
@@ -220,12 +222,14 @@ int main(int argc, const char **argv)
       filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.png");
       vpImageIo::read(Irgb, filename);
       printf("Read png ok\n");
-    } else {
+    }
+    else {
       filename = opt_ppath;
       vpImageIo::read(I, filename);
       printf("Image \"%s\" read successfully\n", filename.c_str());
     }
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e.getMessage() << std::endl;
     return EXIT_FAILURE;
   }

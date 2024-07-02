@@ -37,6 +37,8 @@ ViSP 3.x.x (Version in development)
     . New vpImageTools::inRange() functions to ease binary mask computation by thresholding HSV channels
     . New tutorials in tutorial/segmentation/color folder to show how to use HSV color segmentation to
       extract the corresponding point cloud
+    . New scene renderer based on Panda3D. See inheritance diagram for vpPanda3DBaseRenderer class and corresponding
+      tutorial.
   - Applications
     . Migrate eye-to-hand tutorials in apps
   - Tutorials
@@ -57,6 +59,8 @@ ViSP 3.x.x (Version in development)
       https://visp-doc.inria.fr/doxygen/visp-daily/tutorial-hsv-segmentation-live.html
     . New tutorial: Point cloud segmentation using HSV color scale
       https://visp-doc.inria.fr/doxygen/visp-daily/tutorial-hsv-segmentation-pcl.html
+    . New tutorial: Rendering a 3D scene with Panda3D
+      https://visp-doc.inria.fr/doxygen/visp-daily/tutorial-panda3d.html
   - Bug fixed
     . [#1251] Bug in vpDisplay::displayFrame()
     . [#1270] Build issue around std::clamp and optional header which are not found with cxx17
@@ -71,6 +75,7 @@ ViSP 3.x.x (Version in development)
     . [#1337] The pose of the automatic datageneration pipeline from blenderproc seems wrong
     . [#1341] SVD computation fails with Lapack when m < n
     . [#1370] encountered compilation errors while building the ViSP library
+    . [#1424] Unable to detect Yarp 3.9.0
 ----------------------------------------------
 ViSP 3.6.0 (released September 22, 2023)
   - Contributors:

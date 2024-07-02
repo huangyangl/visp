@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +39,7 @@
 #endif
 #include <visp3/core/vpCPUFeatures.h>
 
+BEGIN_VISP_NAMESPACE
 namespace vpCPUFeatures
 {
 // TODO: try to refactor to keep only SimdCpuInfo code and remove cpu_x86 code?
@@ -71,3 +71,4 @@ bool checkNeon() { return SimdCpuInfo(SimdCpuInfoNeon) != 0; }
 
 void printCPUInfo() { cpu_features.print(); }
 } // namespace vpCPUFeatures
+END_VISP_NAMESPACE

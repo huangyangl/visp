@@ -52,6 +52,7 @@
 
 #include <visp3/io/vpParallelPortException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
 
   \class vpParallelPort
@@ -60,17 +61,21 @@
 
   The code below shows how to send a data over the parallel port.
   \code
-#include <visp3/io/vpParallelPort.h>
+  #include <visp3/io/vpParallelPort.h>
 
-int main()
-{
-#ifdef VISP_HAVE_PARPORT
-  vpParallelPort parport;
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  unsigned char data = 5; // 0x00000101 = 5 in decimal
-  parport.sendData(data); // D0 and D2 are set to logical level 1
-#endif
-}
+  int main()
+  {
+  #ifdef VISP_HAVE_PARPORT
+    vpParallelPort parport;
+
+    unsigned char data = 5; // 0x00000101 = 5 in decimal
+    parport.sendData(data); // D0 and D2 are set to logical level 1
+  #endif
+  }
   \endcode
 
 */
@@ -92,7 +97,7 @@ private:
   int fd; // parallel port descriptor
   std::string device;
 };
-
+END_VISP_NAMESPACE
 #endif
 
 #endif

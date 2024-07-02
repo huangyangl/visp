@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,15 @@
   \brief Definition and computation on the homogeneous matrices
  */
 
-#ifndef _vpHomogeneousMatrix_h_
-#define _vpHomogeneousMatrix_h_
+#ifndef VP_HOMOGENEOUS_MATRIX_H
+#define VP_HOMOGENEOUS_MATRIX_H
+
+#include <fstream>
+#include <vector>
+
+#include <visp3/core/vpConfig.h>
+
+BEGIN_VISP_NAMESPACE
 
 class vpTranslationVector;
 class vpPoseVector;
@@ -48,19 +55,18 @@ class vpThetaUVector;
 class vpQuaternionVector;
 class vpPoint;
 
-#include <fstream>
-#include <vector>
+END_VISP_NAMESPACE
 
 #include <visp3/core/vpArray2D.h>
 #include <visp3/core/vpRotationMatrix.h>
 #include <visp3/core/vpThetaUVector.h>
-//#include <visp3/core/vpTranslationVector.h>
 #include <visp3/core/vpPoseVector.h>
 
 #ifdef VISP_HAVE_NLOHMANN_JSON
 #include <nlohmann/json.hpp>
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpHomogeneousMatrix
 
@@ -91,6 +97,10 @@ class vpPoint;
   \code
   #include <visp3/core/vpHomogeneousMatrix.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpHomogeneousMatrix M;
@@ -119,6 +129,10 @@ class vpPoint;
   \code
   #include <visp3/core/vpHomogeneousMatrix.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpTranslationVector t;
@@ -134,6 +148,10 @@ class vpPoint;
   If ViSP is build with c++11 enabled, you can do the same using:
   \code
   #include <visp3/core/vpHomogeneousMatrix.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -157,6 +175,10 @@ class vpPoint;
   and reload the values from this JSON file.
   \code
   #include <visp3/core/vpHomogeneousMatrix.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -203,21 +225,30 @@ public:
   vpHomogeneousMatrix(const vpTranslationVector &t, const vpRotationMatrix &R);
   vpHomogeneousMatrix(const vpTranslationVector &t, const vpThetaUVector &tu);
   vpHomogeneousMatrix(const vpTranslationVector &t, const vpQuaternionVector &q);
-  explicit vpHomogeneousMatrix(const vpPoseVector &p);
-  explicit vpHomogeneousMatrix(const std::vector<float> &v);
-  explicit vpHomogeneousMatrix(const std::vector<double> &v);
+  VP_EXPLICIT vpHomogeneousMatrix(const vpPoseVector &p);
+  VP_EXPLICIT vpHomogeneousMatrix(const std::vector<float> &v);
+  VP_EXPLICIT vpHomogeneousMatrix(const std::vector<double> &v);
   vpHomogeneousMatrix(double tx, double ty, double tz, double tux, double tuy, double tuz);
 #if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
-  vpHomogeneousMatrix(const std::initializer_list<double> &list);
+  VP_EXPLICIT vpHomogeneousMatrix(const std::initializer_list<double> &list);
 #endif
 
-  void buildFrom(const vpTranslationVector &t, const vpRotationMatrix &R);
-  void buildFrom(const vpTranslationVector &t, const vpThetaUVector &tu);
-  void buildFrom(const vpTranslationVector &t, const vpQuaternionVector &q);
-  void buildFrom(const vpPoseVector &p);
-  void buildFrom(const std::vector<float> &v);
-  void buildFrom(const std::vector<double> &v);
-  void buildFrom(double tx, double ty, double tz, double tux, double tuy, double tuz);
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+  VP_DEPRECATED void buildFrom(const vpTranslationVector &t, const vpRotationMatrix &R);
+  VP_DEPRECATED void buildFrom(const vpTranslationVector &t, const vpThetaUVector &tu);
+  VP_DEPRECATED void buildFrom(const vpTranslationVector &t, const vpQuaternionVector &q);
+  VP_DEPRECATED void buildFrom(const vpPoseVector &p);
+  VP_DEPRECATED void buildFrom(const std::vector<float> &v);
+  VP_DEPRECATED void buildFrom(const std::vector<double> &v);
+  VP_DEPRECATED void buildFrom(double tx, double ty, double tz, double tux, double tuy, double tuz);
+#endif
+  vpHomogeneousMatrix &build(const vpTranslationVector &t, const vpRotationMatrix &R);
+  vpHomogeneousMatrix &build(const vpTranslationVector &t, const vpThetaUVector &tu);
+  vpHomogeneousMatrix &build(const vpTranslationVector &t, const vpQuaternionVector &q);
+  vpHomogeneousMatrix &build(const vpPoseVector &p);
+  vpHomogeneousMatrix &build(const std::vector<float> &v);
+  vpHomogeneousMatrix &build(const std::vector<double> &v);
+  vpHomogeneousMatrix &build(const double &tx, const double &ty, const double &tz, const double &tux, const double &tuy, const double &tuz);
 
   void convert(std::vector<float> &M);
   void convert(std::vector<double> &M);
@@ -370,7 +401,7 @@ public:
 public:
   static const std::string jsonTypeName;
 private:
-  friend void to_json(nlohmann::json &j, const vpHomogeneousMatrix &cam);
+  friend void to_json(nlohmann::json &j, const vpHomogeneousMatrix &T);
   friend void from_json(const nlohmann::json &j, vpHomogeneousMatrix &T);
   // Conversion helper function to avoid circular dependencies and MSVC errors that are not exported in the DLL
   void parse_json(const nlohmann::json &j);
@@ -388,11 +419,11 @@ public:
     * \deprecated Provided only for compat with previous releases.
     *  This function does nothing.
     */
-  vp_deprecated void init() { }
+  VP_DEPRECATED void init() { }
   /*!
    *  \deprecated You should rather use eye().
    */
-  vp_deprecated void setIdentity();
+  VP_DEPRECATED void setIdentity();
   //@}
 #endif
 
@@ -405,10 +436,11 @@ inline void to_json(nlohmann::json &j, const vpHomogeneousMatrix &T)
 {
   T.convert_to_json(j);
 }
+
 inline void from_json(const nlohmann::json &j, vpHomogeneousMatrix &T)
 {
   T.parse_json(j);
 }
 #endif
-
+END_VISP_NAMESPACE
 #endif

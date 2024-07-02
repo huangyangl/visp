@@ -46,6 +46,7 @@
 
 #include <math.h>
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDisplay.h>
 #include <visp3/core/vpImage.h>
 #include <visp3/core/vpImageFilter.h>
@@ -55,6 +56,7 @@
 #include <visp3/tt/vpTemplateTracker.h>
 #include <visp3/vision/vpHomography.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpTemplateTrackerSSD
   \ingroup group_tt_tracker
@@ -72,10 +74,10 @@ protected:
   virtual void trackNoPyr(const vpImage<unsigned char> &I) = 0;
 
 public:
-  explicit vpTemplateTrackerSSD(vpTemplateTrackerWarp *warp);
+  VP_EXPLICIT vpTemplateTrackerSSD(vpTemplateTrackerWarp *warp);
 
   double getSSD(const vpImage<unsigned char> &I, const vpColVector &tp);
   void setGain(double g) { gain = g; }
 };
-
+END_VISP_NAMESPACE
 #endif

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,11 +38,12 @@
 
 */
 
-#ifndef vpHistogramValey_h
-#define vpHistogramValey_h
+#ifndef VP_HISTOGRAM_VALEY_H
+#define VP_HISTOGRAM_VALEY_H
 
 #include <visp3/core/vpHistogramPeak.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpHistogramValey
 
@@ -139,5 +140,5 @@ public:
  * c-basic-offset: 2
  * End:
  */
-
+END_VISP_NAMESPACE
 #endif

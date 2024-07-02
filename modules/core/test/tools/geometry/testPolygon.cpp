@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
@@ -30,8 +29,11 @@
  *
  * Description:
  * Example which test the polygon.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testPolygon.cpp
+ */
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpImagePoint.h>
 #include <visp3/core/vpPolygon.h>
@@ -103,6 +105,9 @@ OPTIONS: \n\
 */
 bool getOptions(int argc, const char **argv, bool &opt_display, bool &opt_click, int &method)
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   const char *optarg_;
   int c;
   while ((c = vpParseArgv::parse(argc, argv, GETOPTARGS, &optarg_)) > 1) {
@@ -148,6 +153,9 @@ bool getOptions(int argc, const char **argv, bool &opt_display, bool &opt_click,
 
 int main(int argc, const char **argv)
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   try {
     bool opt_display = true;
     bool opt_click = true;
@@ -166,7 +174,7 @@ int main(int argc, const char **argv)
     vec1.push_back(vpImagePoint(380, 300));
     vec1.push_back(vpImagePoint(280, 280));
     vpPolygon p1;
-    p1.buildFrom(vec1);
+    p1.build(vec1);
 
     std::vector<vpImagePoint> vec2;
     vec2.push_back(vpImagePoint(20, 20));

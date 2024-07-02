@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +29,7 @@
  *
  * Description:
  * Test for Virtuose + Glove SDK wrapper.
- *
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testVirtuoseWithGlove.cpp
@@ -58,6 +55,9 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   int port = 53210;
   std::string ip = "localhost";
 
@@ -77,11 +77,11 @@ int main()
   std::cout << "After init" << std::endl;
 #if 0
   // Get joint position
-  for (size_t device=0; device < virtuose.size(); device ++) {
+  for (size_t device = 0; device < virtuose.size(); device++) {
     std::cout << "Number of joints: " << virtuose[device].getJointsNumber()
-              << " Joint position: " << virtuose[device].getArticularPosition().t() << std::endl
-              << " Cartesian position: " << virtuose[device].getAvatarPosition().t() << std::endl;
-    //    std::cout << "Joint velocity: " << virtuose.getArticularVelocity().t() << std::endl;
+      << " Joint position: " << virtuose[device].getArticularPosition().t() << std::endl
+      << " Cartesian position: " << virtuose[device].getAvatarPosition().t() << std::endl;
+//    std::cout << "Joint velocity: " << virtuose.getArticularVelocity().t() << std::endl;
   }
 #endif
   bool end = false;
@@ -100,7 +100,7 @@ int main()
     for (size_t device = 0; device < virtuose.size(); device++) {
       vpPoseVector wpd = virtuose[device].getAvatarPosition();
       std::cout << "Device #" << device << " has position: " << wpd.t() << std::endl;
-      wMd[device].buildFrom(wpd);
+      wMd[device].build(wpd);
 
       vpHomogeneousMatrix cMd = wMc.inverse() * wMd[device];
       vpDisplay::displayFrame(I, cMd, cam, 0.1);

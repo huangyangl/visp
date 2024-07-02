@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +41,7 @@
 #include <Simd/SimdLib.hpp>
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
   Change the look up table (LUT) of an image. Considering pixel gray
   level values \f$ l \f$ in the range \f$[A, B]\f$, this method allows
@@ -71,29 +71,33 @@
   thresholding this image at level 127 can be done by:
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/core/vpImageTools.h>
-#include <visp3/io/vpImageIo.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/core/vpImageTools.h>
+  #include <visp3/io/vpImageIo.h>
 
-int main()
-{
-  vpImage<unsigned char> I;
-#ifdef _WIN32
-  std::string filename("C:/Temp/visp-images/Klimt/Klimt.ppm");
-#else
-  std::string filename("/local/soft/ViSP/ViSP-images/Klimt/Klimt.ppm");
-#endif
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  // Read an image from the disk
-  vpImageIo::read(I, filename);
+  int main()
+  {
+    vpImage<unsigned char> I;
+  #ifdef _WIN32
+    std::string filename("C:/Temp/visp-images/Klimt/Klimt.ppm");
+  #else
+    std::string filename("/local/soft/ViSP/ViSP-images/Klimt/Klimt.ppm");
+  #endif
 
-  // Binarize image I:
-  // - gray level values less than or equal to 127 are set to 0,
-  // - gray level values greater than 128 are set to 255
-  vpImageTools::changeLUT(I, 127, 0, 128, 255);
+    // Read an image from the disk
+    vpImageIo::read(I, filename);
 
-  vpImageIo::write(I, "Klimt.pgm"); // Write the image in a PGM P5 image file format
-}
+    // Binarize image I:
+    // - gray level values less than or equal to 127 are set to 0,
+    // - gray level values greater than 128 are set to 255
+    vpImageTools::changeLUT(I, 127, 0, 128, 255);
+
+    vpImageIo::write(I, "Klimt.pgm"); // Write the image in a PGM P5 image file format
+  }
   \endcode
 
 */
@@ -102,7 +106,6 @@ void vpImageTools::changeLUT(vpImage<unsigned char> &I, unsigned char A, unsigne
 {
   // Test if input values are valid
   if (B <= A) {
-    vpERROR_TRACE("Bad gray levels");
     throw(vpImageException(vpImageException::incorrectInitializationError, "Bad gray levels"));
   }
   unsigned char v;
@@ -155,7 +158,7 @@ void vpImageTools::imageDifference(const vpImage<unsigned char> &I1, const vpIma
   SimdImageDifference(I1.bitmap, I2.bitmap, I1.getSize(), Idiff.bitmap);
 #else
   for (unsigned int i = 0; i < I1.getSize(); ++i) {
-    int diff = I1.bitmap[i] - I2.bitmap[i] + 128;
+    int diff = (I1.bitmap[i] - I2.bitmap[i]) + 128;
     Idiff.bitmap[i] = static_cast<unsigned char>(std::max<unsigned char>(std::min<unsigned char>(diff, 255), 0));
   }
 #endif
@@ -191,11 +194,12 @@ void vpImageTools::imageDifference(const vpImage<vpRGBa> &I1, const vpImage<vpRG
   SimdImageDifference(reinterpret_cast<unsigned char *>(I1.bitmap), reinterpret_cast<unsigned char *>(I2.bitmap),
                       I1.getSize() * 4, reinterpret_cast<unsigned char *>(Idiff.bitmap));
 #else
-  for (unsigned int i = 0; i < I1.getSize() * 4; ++i) {
-    int diffR = I1.bitmap[i].R - I2.bitmap[i].R + 128;
-    int diffG = I1.bitmap[i].G - I2.bitmap[i].G + 128;
-    int diffB = I1.bitmap[i].B - I2.bitmap[i].B + 128;
-    int diffA = I1.bitmap[i].A - I2.bitmap[i].A + 128;
+  unsigned int i1_size = I1.getSize();
+  for (unsigned int i = 0; i < (i1_size * 4); ++i) {
+    int diffR = (I1.bitmap[i].R - I2.bitmap[i].R) + 128;
+    int diffG = (I1.bitmap[i].G - I2.bitmap[i].G) + 128;
+    int diffB = (I1.bitmap[i].B - I2.bitmap[i].B) + 128;
+    int diffA = (I1.bitmap[i].A - I2.bitmap[i].A) + 128;
     Idiff.bitmap[i].R = static_cast<unsigned char>(vpMath::maximum(vpMath::minimum(diffR, 255), 0));
     Idiff.bitmap[i].G = static_cast<unsigned char>(vpMath::maximum(vpMath::minimum(diffG, 255), 0));
     Idiff.bitmap[i].B = static_cast<unsigned char>(vpMath::maximum(vpMath::minimum(diffB, 255), 0));
@@ -328,8 +332,9 @@ void vpImageTools::imageAdd(const vpImage<unsigned char> &I1, const vpImage<unsi
   unsigned char *ptr_I1 = I1.bitmap;
   unsigned char *ptr_I2 = I2.bitmap;
   unsigned char *ptr_Ires = Ires.bitmap;
-  for (unsigned int cpt = 0; cpt < Ires.getSize(); cpt++, ++ptr_I1, ++ptr_I2, ++ptr_Ires) {
-    *ptr_Ires = saturate ? vpMath::saturate<unsigned char>((short int)*ptr_I1 + (short int)*ptr_I2) : *ptr_I1 + *ptr_I2;
+  unsigned int ires_size = Ires.getSize();
+  for (unsigned int cpt = 0; cpt < ires_size; ++cpt, ++ptr_I1, ++ptr_I2, ++ptr_Ires) {
+    *ptr_Ires = saturate ? vpMath::saturate<unsigned char>(static_cast<short int>(*ptr_I1) + static_cast<short int>(*ptr_I2)) : ((*ptr_I1) + (*ptr_I2));
   }
 #endif
 }
@@ -370,10 +375,11 @@ void vpImageTools::imageSubtract(const vpImage<unsigned char> &I1, const vpImage
   unsigned char *ptr_I1 = I1.bitmap;
   unsigned char *ptr_I2 = I2.bitmap;
   unsigned char *ptr_Ires = Ires.bitmap;
-  for (unsigned int cpt = 0; cpt < Ires.getSize(); cpt++, ++ptr_I1, ++ptr_I2, ++ptr_Ires) {
+  unsigned int ires_size = Ires.getSize();
+  for (unsigned int cpt = 0; cpt < ires_size; ++cpt, ++ptr_I1, ++ptr_I2, ++ptr_Ires) {
     *ptr_Ires = saturate ?
       vpMath::saturate<unsigned char>(static_cast<short int>(*ptr_I1) - static_cast<short int>(*ptr_I2)) :
-      *ptr_I1 - *ptr_I2;
+      ((*ptr_I1) - (*ptr_I2));
   }
 #endif
 }
@@ -439,6 +445,10 @@ void vpImageTools::initUndistortMap(const vpCameraParameters &cam, unsigned int 
   double r, scale;
   double theta, theta_d;
   double theta2, theta4, theta6, theta8;
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int index_3 = 3;
 
   invpx = 1.0f / px;
   invpy = 1.0f / py;
@@ -478,8 +488,8 @@ void vpImageTools::initUndistortMap(const vpCameraParameters &cam, unsigned int 
         theta6 = theta2 * theta4;
         theta8 = vpMath::sqr(theta4);
 
-        theta_d = theta * (1 + (dist_coefs[0] * theta2) + (dist_coefs[1] * theta4) + (dist_coefs[2] * theta6) +
-                           (dist_coefs[3] * theta8));
+        theta_d = theta * (1 + (dist_coefs[index_0] * theta2) + (dist_coefs[index_1] * theta4) + (dist_coefs[index_2] * theta6) +
+                           (dist_coefs[index_3] * theta8));
 
         // --comment: scale eq (r == 0) 1.0 otherwise theta_d / r
         scale = (std::fabs(r) < std::numeric_limits<double>::epsilon()) ? 1.0 : (theta_d / r);
@@ -556,7 +566,8 @@ double vpImageTools::normalizedCorrelation(const vpImage<double> &I1, const vpIm
 #if defined(VISP_HAVE_SIMDLIB)
   SimdNormalizedCorrelation(I1.bitmap, a, I2.bitmap, b, I1.getSize(), a2, b2, ab, useOptimized);
 #else
-  for (unsigned int cpt = 0; cpt < I1.getSize(); ++cpt) {
+  unsigned int i1_size = I1.getSize();
+  for (unsigned int cpt = 0; cpt < i1_size; ++cpt) {
     ab += (I1.bitmap[cpt] - a) * (I2.bitmap[cpt] - b);
     a2 += vpMath::sqr(I1.bitmap[cpt] - a);
     b2 += vpMath::sqr(I2.bitmap[cpt] - b);
@@ -604,6 +615,35 @@ void vpImageTools::normalize(vpImage<double> &I)
   }
 }
 
+namespace
+{
+/*!
+* Get the interpolated value at a given location using the nearest points.
+* \param I : The image to perform intepolation in.
+* \param point : The image point.
+*/
+double interpolationNearest(const vpImage<unsigned char> &I, const vpImagePoint &point)
+{
+  int x1 = static_cast<int>(floor(point.get_i()));
+  int x2 = static_cast<int>(ceil(point.get_i()));
+  int y1 = static_cast<int>(floor(point.get_j()));
+  int y2 = static_cast<int>(ceil(point.get_j()));
+  double v1, v2;
+  if (x1 == x2) {
+    v1 = I(x1, y1);
+    v2 = I(x1, y2);
+  }
+  else {
+    v1 = ((x2 - point.get_i()) * I(x1, y1)) + ((point.get_i() - x1) * I(x2, y1));
+    v2 = ((x2 - point.get_i()) * I(x1, y2)) + ((point.get_i() - x1) * I(x2, y2));
+  }
+  if (y1 == y2) {
+    return v1;
+  }
+  return ((y2 - point.get_j()) * v1) + ((point.get_j() - y1) * v2);
+}
+}
+
 /*!
   Get the interpolated value at a given location.
   \param I : The image to perform intepolation in.
@@ -618,23 +658,7 @@ double vpImageTools::interpolate(const vpImage<unsigned char> &I, const vpImageP
   case INTERPOLATION_NEAREST:
     return I(vpMath::round(point.get_i()), vpMath::round(point.get_j()));
   case INTERPOLATION_LINEAR: {
-    int x1 = static_cast<int>(floor(point.get_i()));
-    int x2 = static_cast<int>(ceil(point.get_i()));
-    int y1 = static_cast<int>(floor(point.get_j()));
-    int y2 = static_cast<int>(ceil(point.get_j()));
-    double v1, v2;
-    if (x1 == x2) {
-      v1 = I(x1, y1);
-      v2 = I(x1, y2);
-    }
-    else {
-      v1 = ((x2 - point.get_i()) * I(x1, y1)) + ((point.get_i() - x1) * I(x2, y1));
-      v2 = ((x2 - point.get_i()) * I(x1, y2)) + ((point.get_i() - x1) * I(x2, y2));
-    }
-    if (y1 == y2) {
-      return v1;
-    }
-    return ((y2 - point.get_j()) * v1) + ((point.get_j() - y1) * v2);
+    return interpolationNearest(I, point);
   }
   case INTERPOLATION_CUBIC: {
     throw vpException(vpException::notImplementedError,
@@ -833,8 +857,10 @@ double vpImageTools::normalizedCorrelation(const vpImage<double> &I1, const vpIm
 #if defined(VISP_HAVE_SIMDLIB)
   SimdNormalizedCorrelation2(I1.bitmap, I1.getWidth(), I2.bitmap, I2.getWidth(), I2.getHeight(), i0, j0, ab);
 #else
-  for (unsigned int i = 0; i < I2.getHeight(); ++i) {
-    for (unsigned int j = 0; j < I2.getWidth(); ++j) {
+  unsigned int i2_height = I2.getHeight();
+  unsigned int i2_width = I2.getWidth();
+  for (unsigned int i = 0; i < i2_height; ++i) {
+    for (unsigned int j = 0; j < i2_width; ++j) {
       ab += (I1[i0 + i][j0 + j]) * I2[i][j];
     }
   }
@@ -924,7 +950,8 @@ void vpImageTools::remap(const vpImage<vpRGBa> &I, const vpArray2D<int> &mapU, c
               mapV.data, mapDu.data, mapDv.data, reinterpret_cast<unsigned char *>(Iundist.bitmap));
 #else
     const unsigned int i_ = static_cast<unsigned int>(i);
-    for (unsigned int j = 0; j < I.getWidth(); ++j) {
+    unsigned int i_width = I.getWidth();
+    for (unsigned int j = 0; j < i_width; ++j) {
 
       int u_round = mapU[i_][j];
       int v_round = mapV[i_][j];
@@ -932,8 +959,8 @@ void vpImageTools::remap(const vpImage<vpRGBa> &I, const vpArray2D<int> &mapU, c
       float du = mapDu[i_][j];
       float dv = mapDv[i_][j];
 
-      if (0 <= u_round && 0 <= v_round && u_round < static_cast<int>(I.getWidth()) - 1
-          && v_round < static_cast<int>(I.getHeight()) - 1) {
+      if ((0 <= u_round) && (0 <= v_round) && (u_round < (static_cast<int>(I.getWidth()) - 1))
+          && (v_round < (static_cast<int>(I.getHeight()) - 1))) {
         // process interpolation
         float col0 = lerp(I[v_round][u_round].R, I[v_round][u_round + 1].R, du);
         float col1 = lerp(I[v_round + 1][u_round].R, I[v_round + 1][u_round + 1].R, du);
@@ -995,15 +1022,18 @@ void vpImageTools::resizeSimdlib(const vpImage<unsigned char> &Isrc, unsigned in
 
 bool vpImageTools::checkFixedPoint(unsigned int x, unsigned int y, const vpMatrix &T, bool affine)
 {
-  double a0 = T[0][0];
-  double a1 = T[0][1];
-  double a2 = T[0][2];
-  double a3 = T[1][0];
-  double a4 = T[1][1];
-  double a5 = T[1][2];
-  double a6 = affine ? 0.0 : T[2][0];
-  double a7 = affine ? 0.0 : T[2][1];
-  double a8 = affine ? 1.0 : T[2][2];
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  double a0 = T[index_0][index_0];
+  double a1 = T[index_0][index_1];
+  double a2 = T[index_0][index_2];
+  double a3 = T[index_1][index_0];
+  double a4 = T[index_1][index_1];
+  double a5 = T[index_1][index_2];
+  double a6 = affine ? 0.0 : T[index_2][index_0];
+  double a7 = affine ? 0.0 : T[index_2][index_1];
+  double a8 = affine ? 1.0 : T[index_2][index_2];
 
   double w = (a6 * x) + (a7 * y) + a8;
   double x2 = ((a0 * x) + (a1 * y) + a2) / w;
@@ -1105,12 +1135,18 @@ int vpImageTools::inRange(const unsigned char *hue, const unsigned char *saturat
     throw(vpImageException(vpImageException::notInitializedError,
                            "Error in vpImageTools::inRange(): wrong values vector size (%d)", hsv_range.size()));
   }
-  unsigned char h_low = static_cast<unsigned char>(hsv_range[0]);
-  unsigned char h_high = static_cast<unsigned char>(hsv_range[1]);
-  unsigned char s_low = static_cast<unsigned char>(hsv_range[2]);
-  unsigned char s_high = static_cast<unsigned char>(hsv_range[3]);
-  unsigned char v_low = static_cast<unsigned char>(hsv_range[4]);
-  unsigned char v_high = static_cast<unsigned char>(hsv_range[5]);
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int index_3 = 3;
+  const unsigned int index_4 = 4;
+  const unsigned int index_5 = 5;
+  unsigned char h_low = static_cast<unsigned char>(hsv_range[index_0]);
+  unsigned char h_high = static_cast<unsigned char>(hsv_range[index_1]);
+  unsigned char s_low = static_cast<unsigned char>(hsv_range[index_2]);
+  unsigned char s_high = static_cast<unsigned char>(hsv_range[index_3]);
+  unsigned char v_low = static_cast<unsigned char>(hsv_range[index_4]);
+  unsigned char v_high = static_cast<unsigned char>(hsv_range[index_5]);
   int size_ = static_cast<int>(size);
   int cpt_in_range = 0;
 #if defined(_OPENMP)
@@ -1159,12 +1195,18 @@ int vpImageTools::inRange(const unsigned char *hue, const unsigned char *saturat
     throw(vpImageException(vpImageException::notInitializedError,
                            "Error in vpImageTools::inRange(): wrong values vector size (%d)", hsv_range.size()));
   }
-  unsigned char h_low = static_cast<unsigned char>(hsv_range[0]);
-  unsigned char h_high = static_cast<unsigned char>(hsv_range[1]);
-  unsigned char s_low = static_cast<unsigned char>(hsv_range[2]);
-  unsigned char s_high = static_cast<unsigned char>(hsv_range[3]);
-  unsigned char v_low = static_cast<unsigned char>(hsv_range[4]);
-  unsigned char v_high = static_cast<unsigned char>(hsv_range[5]);
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int index_3 = 3;
+  const unsigned int index_4 = 4;
+  const unsigned int index_5 = 5;
+  unsigned char h_low = static_cast<unsigned char>(hsv_range[index_0]);
+  unsigned char h_high = static_cast<unsigned char>(hsv_range[index_1]);
+  unsigned char s_low = static_cast<unsigned char>(hsv_range[index_2]);
+  unsigned char s_high = static_cast<unsigned char>(hsv_range[index_3]);
+  unsigned char v_low = static_cast<unsigned char>(hsv_range[index_4]);
+  unsigned char v_high = static_cast<unsigned char>(hsv_range[index_5]);
   int size_ = static_cast<int>(size);
   int cpt_in_range = 0;
 #if defined(_OPENMP)
@@ -1184,3 +1226,4 @@ int vpImageTools::inRange(const unsigned char *hue, const unsigned char *saturat
   }
   return cpt_in_range;
 }
+END_VISP_NAMESPACE

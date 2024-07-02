@@ -31,6 +31,11 @@
  * Linear Programming with simplex
  */
 
+/*!
+  \file vpLinProg.h
+  \brief Implementation of Linear Program with simplex algorithm.
+*/
+
 #ifndef vpLinProgh
 #define vpLinProgh
 
@@ -41,11 +46,7 @@
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMatrix.h>
 
-/*!
-  \file vpLinProg.h
-  \brief Implementation of Linear Program with simplex algorithm.
-*/
-
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpLinProg
   \ingroup group_core_optim
@@ -79,6 +80,10 @@ public:
    *
    * \code
    * #include <visp3/core/vpLinProg.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -222,4 +227,5 @@ public:
   }
   //@}
 };
+END_VISP_NAMESPACE
 #endif

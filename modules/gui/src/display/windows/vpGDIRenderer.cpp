@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * GDI renderer for windows 32 display
- *
- * Authors:
- * Bruno Renier
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpConfig.h>
 #define GDI_ROBUST
@@ -43,6 +38,8 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <visp3/gui/vpGDIRenderer.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
   Constructor.
@@ -523,6 +520,7 @@ void vpGDIRenderer::drawLine(const vpImagePoint &ip1, const vpImagePoint &ip2, c
   double start = vpTime::measureTimeMs();
   while (vpTime::measureTimeMs() - start < 1000) {
     hDCScreen = GetDC(m_hWnd);
+
     if (!hDCScreen)
       continue;
     hDCMem = CreateCompatibleDC(hDCScreen);
@@ -1027,8 +1025,10 @@ void vpGDIRenderer::getImage(vpImage<vpRGBa> &I)
 
   delete[] imBuffer;
 }
+
+END_VISP_NAMESPACE
 #endif
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpGDIRenderer.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpGDIRenderer.cpp.o) has no symbols
 void dummy_vpGDIRenderer() { };
 #endif

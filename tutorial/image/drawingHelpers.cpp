@@ -32,6 +32,12 @@
 
 #include <visp3/core/vpImageConvert.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 #if defined(VISP_HAVE_X11)
 vpDisplayX drawingHelpers::d_Iinput;
 vpDisplayX drawingHelpers::d_dIx;
@@ -65,7 +71,7 @@ vpDisplayD3D drawingHelpers::d_IcannyImgFilter;
 #endif
 
 void drawingHelpers::init(vpImage<unsigned char> &Iinput, vpImage<unsigned char> &IcannyVisp, vpImage<unsigned char> *p_dIx,
-                          vpImage<unsigned char> *p_dIy, vpImage<unsigned char> *p_IcannyimgFilter)
+                           vpImage<unsigned char> *p_dIy, vpImage<unsigned char> *p_IcannyimgFilter)
 {
 #if defined(VISP_HAVE_DISPLAY)
   d_Iinput.init(Iinput, 10, 10);
@@ -110,3 +116,5 @@ bool drawingHelpers::waitForClick(const vpImage<unsigned char> &I, const bool &b
 
   return hasToContinue;
 }
+
+#endif

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Benchmark matrix transpose.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example perfMatrixTranspose.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -48,6 +50,10 @@
 
 #ifdef VISP_HAVE_EIGEN3
 #include <Eigen/Dense>
+#endif
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
 #endif
 
 namespace
@@ -176,7 +182,7 @@ TEST_CASE("Benchmark vpMatrix transpose", "[benchmark]")
     const std::vector<std::pair<int, int> > sizes = {
         {701, 1503}, {1791, 837}, {1201, 1201}, {1024, 1024}, {2000, 2000}, {10, 6},    {25, 6},    {100, 6},  {200, 6},
         {500, 6},    {1000, 6},   {1500, 6},    {2000, 6},    {6, 10},      {6, 25},    {6, 100},   {6, 200},  {6, 500},
-        {6, 1000},   {6, 1500},   {6, 2000},    {640, 1000},  {800, 640},   {640, 500}, {500, 640}, {640, 837}};
+        {6, 1000},   {6, 1500},   {6, 2000},    {640, 1000},  {800, 640},   {640, 500}, {500, 640}, {640, 837} };
 
     for (auto sz : sizes) {
       vpMatrix M = generateMatrix(sz.first, sz.second);
@@ -270,7 +276,8 @@ TEST_CASE("Benchmark vpMatrix transpose", "[benchmark]")
       };
 #endif
     }
-  } else {
+  }
+  else {
     vpMatrix M = generateMatrix(11, 17);
     vpMatrix Mt_true = generateMatrixTranspose(11, 17);
 
@@ -286,12 +293,12 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()         // Get Catch's composite command line parser
-             | Opt(g_runBenchmark) // bind variable to a new option, with a hint string
-                   ["--benchmark"] // the option names it will respond to
-             ("run benchmark?")    // description string for the help output
-             | Opt(g_tileSize, "tileSize")["--tileSize"]("Tile size?");
+    | Opt(g_runBenchmark) // bind variable to a new option, with a hint string
+    ["--benchmark"] // the option names it will respond to
+    ("run benchmark?")    // description string for the help output
+    | Opt(g_tileSize, "tileSize")["--tileSize"]("Tile size?");
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,13 @@
  * feature misssing in OpenCV 3.0.
  */
 
+/*!
+  \example testKeyPoint-5.cpp
+
+  \brief   Test keypoints detection with OpenCV, specially the Pyramid
+  implementation feature missing in OpenCV 3.0.
+*/
+
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
@@ -48,12 +55,12 @@
 #include <visp3/io/vpParseArgv.h>
 #include <visp3/vision/vpKeyPoint.h>
 
-
-
-
-
 // List of allowed command line options
 #define GETOPTARGS "cdh"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam);
 bool getOptions(int argc, const char **argv, bool &click_allowed, bool &display);
@@ -307,12 +314,6 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   }
 }
 
-/*!
-  \example testKeyPoint-5.cpp
-
-  \brief   Test keypoints detection with OpenCV, specially the Pyramid
-  implementation feature missing in OpenCV 3.0.
-*/
 int main(int argc, const char **argv)
 {
   try {

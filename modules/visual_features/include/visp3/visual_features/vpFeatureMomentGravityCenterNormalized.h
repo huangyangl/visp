@@ -39,8 +39,10 @@
 #ifndef _vpFeatureMomentGravityCenterNormalized_h_
 #define _vpFeatureMomentGravityCenterNormalized_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
+BEGIN_VISP_NAMESPACE
 #ifdef VISP_MOMENTS_COMBINE_MATRICES
 class vpMomentDatabase;
 /*!
@@ -83,7 +85,7 @@ class vpMomentDatabase;
  * - vpMomentGravityCenter
  * - vpMomentAreaNormalized
  * - vpFeatureMomentAreaNormalized
- */
+*/
 class VISP_EXPORT vpFeatureMomentGravityCenterNormalized : public vpFeatureMoment
 {
 public:
@@ -102,17 +104,17 @@ public:
     : vpFeatureMoment(database, A_, B_, C_, featureMoments, 2)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override { return "vpMomentGravityCenterNormalized"; }
+  const std::string momentName() const VP_OVERRIDE { return "vpMomentGravityCenterNormalized"; }
 
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override { return "vpFeatureMomentGravityCenterNormalized"; }
+  const std::string name() const VP_OVERRIDE { return "vpFeatureMomentGravityCenterNormalized"; }
 
   /*!
    * Shortcut selector for \f$x_n\f$.
@@ -256,17 +258,17 @@ public:
                                          vpFeatureMomentDatabase *featureMoments = nullptr)
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 2)
   { }
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override { return "vpMomentGravityCenterNormalized"; }
+  const std::string momentName() const VP_OVERRIDE { return "vpMomentGravityCenterNormalized"; }
 
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override { return "vpFeatureMomentGravityCenterNormalized"; }
+  const std::string name() const VP_OVERRIDE { return "vpFeatureMomentGravityCenterNormalized"; }
 
   /*!
    * Shortcut selector for \f$x_n\f$.
@@ -279,4 +281,5 @@ public:
   static unsigned int selectYn() { return 1 << 1; }
 };
 #endif
+END_VISP_NAMESPACE
 #endif

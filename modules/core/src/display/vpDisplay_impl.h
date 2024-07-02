@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,13 +29,13 @@
  *
  * Description:
  * Display implementation.
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpMeterPixelConversion.h>
 #include <visp3/core/vpPoint.h>
 
+BEGIN_VISP_NAMESPACE
 template <class Type> void vp_display_close(vpImage<Type> &I)
 {
   if (I.display != nullptr) {
@@ -80,23 +79,30 @@ void vp_display_display_camera(const vpImage<Type> &I, const vpHomogeneousMatrix
                                double size, const vpColor &color, unsigned int thickness)
 {
   // used by display
+  const unsigned int index_0 = 0;
+  const unsigned int index_1 = 1;
+  const unsigned int index_2 = 2;
+  const unsigned int index_3 = 3;
+  const unsigned int index_4 = 4;
+  const unsigned int val_5 = 5;
   double halfSize = size / 2.0;
   vpPoint pt[5];
-  pt[0].setWorldCoordinates(-halfSize, -halfSize, 0.0);
-  pt[1].setWorldCoordinates(halfSize, -halfSize, 0.0);
-  pt[2].setWorldCoordinates(halfSize, halfSize, 0.0);
-  pt[3].setWorldCoordinates(-halfSize, halfSize, 0.0);
-  pt[4].setWorldCoordinates(0.0, 0.0, -size);
+  pt[index_0].setWorldCoordinates(-halfSize, -halfSize, 0.0);
+  pt[index_1].setWorldCoordinates(halfSize, -halfSize, 0.0);
+  pt[index_2].setWorldCoordinates(halfSize, halfSize, 0.0);
+  pt[index_3].setWorldCoordinates(-halfSize, halfSize, 0.0);
+  pt[index_4].setWorldCoordinates(0.0, 0.0, -size);
 
-  for (int i = 0; i < 5; ++i)
+  for (unsigned int i = 0; i < val_5; ++i) {
     pt[i].track(cMo);
+  }
 
   vpImagePoint ip, ip_1, ip0;
-  vpMeterPixelConversion::convertPoint(cam, pt[4].p[0], pt[4].p[1], ip0);
+  vpMeterPixelConversion::convertPoint(cam, pt[index_4].p[index_0], pt[index_4].p[index_1], ip0);
 
   for (int i = 0; i < 4; ++i) {
-    vpMeterPixelConversion::convertPoint(cam, pt[i].p[0], pt[i].p[1], ip_1);
-    vpMeterPixelConversion::convertPoint(cam, pt[(i + 1) % 4].p[0], pt[(i + 1) % 4].p[1], ip);
+    vpMeterPixelConversion::convertPoint(cam, pt[i].p[index_0], pt[i].p[index_1], ip_1);
+    vpMeterPixelConversion::convertPoint(cam, pt[(i + index_1) % index_4].p[0], pt[(i + 1) % index_4].p[1], ip);
     vpDisplay::displayLine(I, ip_1, ip, color, thickness);
     vpDisplay::displayLine(I, ip0, ip_1, color, thickness);
   }
@@ -206,11 +212,12 @@ void vp_display_display_ellipse(const vpImage<Type> &I, const vpImagePoint &cent
       double n11_p = coef2;
       double n02_p = coef3;
       double num = n20_p - n02_p;
-      double d = num * num + 4.0 * n11_p * n11_p; // always >= 0
+      double d = (num * num) + (4.0 * n11_p * n11_p); // always >= 0
 
       if (d <= std::numeric_limits<double>::epsilon()) { // circle
         e = 0.0;                                         // case n20 = n02 and n11 = 0 : circle, e undefined
-        a = b = 2.0 * sqrt(n20_p);
+        b = 2.0 * sqrt(n20_p);
+        a = b;
       }
       else {                             // real ellipse
         e = atan2(2.0 * n11_p, num) / 2.0; // e in [-Pi/2 ; Pi/2]
@@ -241,7 +248,7 @@ void vp_display_display_ellipse(const vpImage<Type> &I, const vpImagePoint &cent
     double t = (a - b) / (a + b);
     t *= t; // t^2
     double circumference = (angle / 2.0) * (a + b) * (1.0 + 3.0 * t / (10.0 + sqrt(4.0 - 3.0 * t)));
-    unsigned int nbpoints = (unsigned int)(floor(circumference / 20));
+    unsigned int nbpoints = static_cast<unsigned int>(floor(circumference / 20));
     if (nbpoints < 10) {
       nbpoints = 10;
     }
@@ -562,15 +569,15 @@ template <class Type> void vp_display_display_roi(const vpImage<Type> &I, const 
   double left = floor(roi.getLeft());
   double roiheight = floor(roi.getHeight());
   double roiwidth = floor(roi.getWidth());
-  double iheight = (double)(I.getHeight());
-  double iwidth = (double)(I.getWidth());
+  double iheight = static_cast<double>(I.getHeight());
+  double iwidth = static_cast<double>(I.getWidth());
 
   if (top < 0 || top > iheight || left < 0 || left > iwidth || top + roiheight > iheight || left + roiwidth > iwidth) {
     throw(vpException(vpException::dimensionError, "Region of interest outside of the image"));
   }
 
   if (I.display != nullptr) {
-    (I.display)->displayImageROI(I, vpImagePoint(top, left), (unsigned int)roiwidth, (unsigned int)roiheight);
+    (I.display)->displayImageROI(I, vpImagePoint(top, left), static_cast<unsigned int>(roiwidth), static_cast<unsigned int>(roiheight));
   }
 }
 
@@ -584,7 +591,7 @@ template <class Type> void vp_display_flush(const vpImage<Type> &I)
 template <class Type> void vp_display_flush_roi(const vpImage<Type> &I, const vpRect &roi)
 {
   if (I.display != nullptr) {
-    (I.display)->flushDisplayROI(roi.getTopLeft(), (unsigned int)roi.getWidth(), (unsigned int)roi.getHeight());
+    (I.display)->flushDisplayROI(roi.getTopLeft(), static_cast<unsigned int>(roi.getWidth()), static_cast<unsigned int>(roi.getHeight()));
   }
 }
 
@@ -724,3 +731,4 @@ template <class Type> unsigned int vp_display_get_down_scaling_factor(const vpIm
     return 1;
   }
 }
+END_VISP_NAMESPACE

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image conversion.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testColorConversion.cpp
@@ -47,7 +45,12 @@
 #include <catch.hpp>
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/core/vpIoTools.h>
+#include <visp3/core/vpEndian.h>
 #include <visp3/io/vpImageIo.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 static const double maxMeanPixelError = 1.5; // conversion to gray produce an error = 1.0
 static const unsigned int width = 223, height = 151;

@@ -32,6 +32,13 @@
  * Sick LD-MRS laser driver.
  *
 *****************************************************************************/
+
+/*!
+ * \file vpSickLDMRS.h
+ *
+ * \brief Driver for the Sick LD-MRS laser scanner.
+ */
+
 #ifndef vpSickLDMRS_h
 #define vpSickLDMRS_h
 
@@ -50,12 +57,7 @@
 #include <visp3/sensor/vpLaserScanner.h>
 #include <visp3/sensor/vpScanPoint.h>
 
-/*!
- * \file vpSickLDMRS.h
- *
- * \brief Driver for the Sick LD-MRS laser scanner.
- */
-
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpSickLDMRS
  *
@@ -70,6 +72,10 @@
  *
  * \code
  * #include "visp3/sensor/vpSickLDMRS.h"
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -98,7 +104,7 @@
  * #endif
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpSickLDMRS : public vpLaserScanner
 {
 public:
@@ -121,7 +127,7 @@ public:
   {
     *this = sick;
   };
-  virtual ~vpSickLDMRS() vp_override;
+  virtual ~vpSickLDMRS() VP_OVERRIDE;
 
   /*! Copy operator. */
   vpSickLDMRS &operator=(const vpSickLDMRS &sick)
@@ -156,7 +162,7 @@ protected:
   bool isFirstMeasure;
   size_t maxlen_body;
 };
-
+END_VISP_NAMESPACE
 #endif
 
 #endif

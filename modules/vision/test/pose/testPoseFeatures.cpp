@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@
  */
 
 #include <iostream>
-#include <limits>
 #include <vector>
 
 #include <visp3/core/vpCameraParameters.h>
@@ -49,6 +48,10 @@
   Compute the pose from different visual features.
 
 */
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 #if defined(VISP_HAVE_MODULE_VISUAL_FEATURES) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -181,7 +184,7 @@ int test_pose(bool use_robust)
   else
     std::cout << "\nRobust estimated pose from visual features : " << std::endl;
 
-  pose_est.buildFrom(cMo_est);
+  pose_est.build(cMo_est);
   std::cout << pose_est.t() << std::endl;
 
   std::cout << "\nResulting covariance (Diag): " << std::endl;

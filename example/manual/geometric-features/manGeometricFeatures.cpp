@@ -45,6 +45,7 @@
 
 */
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDebug.h>
 #include <visp3/io/vpImageIo.h>
 // For 2D image
@@ -71,12 +72,16 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
+
   try {
     std::cout << "ViSP geometric features display example" << std::endl;
     unsigned int height = 288;
     unsigned int width = 384;
     vpImage<unsigned char> I(height, width);
-    I = 255; // I is a white image
+    I = 255u; // I is a white image
 
     // create a display window
 #if defined(VISP_HAVE_X11)

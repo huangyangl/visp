@@ -46,15 +46,17 @@
 
 #include <vector>
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/tt/vpTemplateTrackerZNCC.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpTemplateTrackerZNCCInverseCompositional
   \ingroup group_tt_tracker
   The algorithm implemented in this class is described in \cite Irani98a and
   \cite Marchand16a.
  */
-class VISP_EXPORT vpTemplateTrackerZNCCInverseCompositional : public vpTemplateTrackerZNCC
+  class VISP_EXPORT vpTemplateTrackerZNCCInverseCompositional : public vpTemplateTrackerZNCC
 {
 protected:
   bool compoInitialised;
@@ -66,6 +68,7 @@ protected:
   void trackNoPyr(const vpImage<unsigned char> &I);
 
 public:
-  explicit vpTemplateTrackerZNCCInverseCompositional(vpTemplateTrackerWarp *warp);
+  VP_EXPLICIT vpTemplateTrackerZNCCInverseCompositional(vpTemplateTrackerWarp *warp);
 };
+END_VISP_NAMESPACE
 #endif

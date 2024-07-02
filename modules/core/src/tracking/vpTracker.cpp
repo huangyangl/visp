@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +32,18 @@
  *
 *****************************************************************************/
 
-#include <visp3/core/vpDebug.h>
-#include <visp3/core/vpTracker.h>
-
 /*!
   \file vpTracker.cpp
   \brief Class that defines what is a generic tracker.
 */
 
+#include <visp3/core/vpTracker.h>
+
+BEGIN_VISP_NAMESPACE
+
 void vpTracker::init() { cPAvailable = false; }
 
-vpTracker::vpTracker() : p(), cP(), cPAvailable(false) {}
+vpTracker::vpTracker() : p(), cP(), cPAvailable(false) { }
 
 vpTracker::vpTracker(const vpTracker &tracker) : p(), cP(), cPAvailable(false) { *this = tracker; }
 
@@ -55,7 +55,7 @@ vpTracker &vpTracker::operator=(const vpTracker &tracker)
 
   return *this;
 }
-
+END_VISP_NAMESPACE
 /*
  * Local variables:
  * c-basic-offset: 2

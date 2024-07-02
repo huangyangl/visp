@@ -17,6 +17,10 @@
 
 #include "drawingHelpers.h"
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 bool run_detection(const vpImage<unsigned char> &I_src, vpCircleHoughTransform &detector, const int &nbCirclesToDetect, const bool &blockingMode, const bool &displayCanny)
 {
   double t0 = vpTime::measureTimeMicros();
@@ -462,7 +466,7 @@ int main(int argc, char **argv)
   }
 
   //! [Algo params]
-  vpCircleHoughTransform::vpCircleHoughTransformParameters
+  vpCircleHoughTransform::vpCircleHoughTransformParams
     algoParams(opt_gaussianKernelSize
       , opt_gaussianSigma
       , opt_sobelKernelSize

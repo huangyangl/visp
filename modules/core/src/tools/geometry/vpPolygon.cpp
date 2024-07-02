@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Defines a generic 2D polygon.
- *
-*****************************************************************************/
+ */
 
 // System
 #include <limits>
@@ -49,13 +47,17 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
+
 /*!
  * Compute convex hull corners.
  *
  * \param[in] ips : List of 2D points.
  */
-template <typename IpContainer> std::vector<vpImagePoint> convexHull(const IpContainer &ips)
+template <typename IpContainer> std::vector<VISP_NAMESPACE_ADDRESSING vpImagePoint> convexHull(const IpContainer &ips)
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   if (ips.size() == 0) {
     throw vpException(vpException::badValue,
                       "Convex Hull can not be computed as the input does not contain any image point.");
@@ -105,6 +107,7 @@ template <typename IpContainer> std::vector<vpImagePoint> convexHull(const IpCon
 
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
    Default constructor that creates an empty polygon.
 */
@@ -178,7 +181,9 @@ vpPolygon &vpPolygon::operator=(const vpPolygon &poly)
   return *this;
 }
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
 /*!
+  \deprecated You should use build(const std::vector<vpImagePoint> &, const bool &) instead.
   Initialises the triangle thanks to the collection of 2D points (in pixel).
 
   \warning the corners must be ordered (either clockwise or counter
@@ -189,19 +194,11 @@ vpPolygon &vpPolygon::operator=(const vpPolygon &poly)
 */
 void vpPolygon::buildFrom(const std::vector<vpImagePoint> &corners, const bool create_convex_hull)
 {
-  if (create_convex_hull) {
-#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
-    init(convexHull(corners));
-#else
-    vpException(vpException::notImplementedError, "Cannot build a convex hull without OpenCV imgproc module");
-#endif
-  }
-  else {
-    init(corners);
-  }
+  build(corners, create_convex_hull);
 }
 
 /*!
+  \deprecated You should use build(const std::list<vpImagePoint> &, const bool &) instead.
   Initialises the polygon thanks to the collection of 2D points (in pixel).
 
   \warning the corners must be ordered (either clockwise or counter
@@ -212,19 +209,11 @@ void vpPolygon::buildFrom(const std::vector<vpImagePoint> &corners, const bool c
 */
 void vpPolygon::buildFrom(const std::list<vpImagePoint> &corners, const bool create_convex_hull)
 {
-  if (create_convex_hull) {
-#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
-    init(convexHull(corners));
-#else
-    vpException(vpException::notImplementedError, "Cannot build a convex hull without OpenCV imgproc module");
-#endif
-  }
-  else {
-    init(corners);
-  }
+  build(corners, create_convex_hull);
 }
 
 /*!
+  \deprecated You should use build(const std::vector<vpPoint> &, const vpCameraParameters &, const bool &) instead.
   Initialises the triangle thanks to the collection of 2D points (in meter).
   The fields \e x and \e y are used to compute the corresponding coordinates
   in pixel thanks to the camera parameters \e cam.
@@ -239,12 +228,80 @@ void vpPolygon::buildFrom(const std::list<vpImagePoint> &corners, const bool cre
 void vpPolygon::buildFrom(const std::vector<vpPoint> &corners, const vpCameraParameters &cam,
                           const bool create_convex_hull)
 {
+  build(corners, cam, create_convex_hull);
+}
+#endif
+
+/*!
+  Initialises the triangle thanks to the collection of 2D points (in pixel).
+
+  \warning the corners must be ordered (either clockwise or counter
+  clockwise).
+
+  \param corners : The corners of the polygon.
+  \param create_convex_hull: Create a convex hull from the given corners.
+*/
+vpPolygon &vpPolygon::build(const std::vector<vpImagePoint> &corners, const bool &create_convex_hull)
+{
+  if (create_convex_hull) {
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
+    init(convexHull(corners));
+#else
+    vpException(vpException::notImplementedError, "Cannot build a convex hull without OpenCV imgproc module");
+#endif
+  }
+  else {
+    init(corners);
+  }
+  return *this;
+}
+
+/*!
+  Initialises the polygon thanks to the collection of 2D points (in pixel).
+
+  \warning the corners must be ordered (either clockwise or counter
+  clockwise).
+
+  \param corners : The corners of the polygon.
+  \param create_convex_hull: Create a convex hull from the given corners.
+*/
+vpPolygon &vpPolygon::build(const std::list<vpImagePoint> &corners, const bool &create_convex_hull)
+{
+  if (create_convex_hull) {
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
+    init(convexHull(corners));
+#else
+    vpException(vpException::notImplementedError, "Cannot build a convex hull without OpenCV imgproc module");
+#endif
+  }
+  else {
+    init(corners);
+  }
+  return *this;
+}
+
+/*!
+  Initialises the triangle thanks to the collection of 2D points (in meter).
+  The fields \e x and \e y are used to compute the corresponding coordinates
+  in pixel thanks to the camera parameters \e cam.
+
+  \warning the corners must be ordered (either clockwise or counter
+  clockwise).
+
+  \param corners : The corners of the polygon.
+  \param cam : The camera parameters used to convert the coordinates from meter to pixel.
+  \param create_convex_hull: Create a convex hull from the given corners.
+*/
+vpPolygon &vpPolygon::build(const std::vector<vpPoint> &corners, const vpCameraParameters &cam,
+                          const bool &create_convex_hull)
+{
   std::vector<vpImagePoint> ipCorners(corners.size());
-  unsigned int corners_size = corners.size();
-  for (unsigned int i = 0; i < corners_size; ++i) {
+  size_t corners_size = corners.size();
+  for (size_t i = 0; i < corners_size; ++i) {
     vpMeterPixelConversion::convertPoint(cam, corners[i].get_x(), corners[i].get_y(), ipCorners[i]);
   }
-  buildFrom(ipCorners, create_convex_hull);
+  build(ipCorners, create_convex_hull);
+  return *this;
 }
 
 /*!
@@ -273,7 +330,7 @@ void vpPolygon::initClick(const vpImage<unsigned char> &I, unsigned int size, co
     }
   }
 
-  buildFrom(cornersClick);
+  build(cornersClick);
 }
 
 /*!
@@ -301,7 +358,7 @@ void vpPolygon::initClick(const vpImage<vpRGBa> &I, unsigned int size, const vpC
     }
   }
 
-  buildFrom(cornersClick);
+  build(cornersClick);
 }
 
 /*!
@@ -409,8 +466,8 @@ bool vpPolygon::isInside(const vpImagePoint &ip, const PointInPolygonMethod &met
     infPoint.set_j(infPoint.get_j() + (1000 * generator()));
 
     bool oddNbIntersections = false;
-    unsigned int v_corners_size = _corners.size();
-    for (unsigned int i = 0; i < v_corners_size; ++i) {
+    size_t v_corners_size = _corners.size();
+    for (size_t i = 0; i < v_corners_size; ++i) {
       vpImagePoint ip1 = _corners[i];
       vpImagePoint ip2 = _corners[(i + 1) % _corners.size()];
       bool intersection = false;
@@ -421,7 +478,6 @@ bool vpPolygon::isInside(const vpImagePoint &ip, const PointInPolygonMethod &met
         // continue
       }
       else {
-
         try {
           intersection = testIntersectionSegments(ip1, ip2, ip, infPoint);
         }
@@ -504,9 +560,9 @@ void vpPolygon::updateArea()
   }
   _area = 0;
 
-  unsigned int v_corners_size = _corners.size();
-  for (unsigned int i = 0; i < v_corners_size; ++i) {
-    unsigned int i_p_1 = (i + 1) % _corners.size();
+  size_t v_corners_size = _corners.size();
+  for (size_t i = 0; i < v_corners_size; ++i) {
+    size_t i_p_1 = (i + 1) % _corners.size();
     _area += (_corners[i].get_j() * _corners[i_p_1].get_i()) - (_corners[i_p_1].get_j() * _corners[i].get_i());
   }
 
@@ -536,25 +592,16 @@ void vpPolygon::updateCenter()
   }
   double i_tmp = 0;
   double j_tmp = 0;
-#if 0
-  for (unsigned int i = 0; i < (_corners.size() - 1); ++i) {
-    i_tmp += (_corners[i].get_i() + _corners[i + 1].get_i()) *
-      (_corners[i + 1].get_i() * _corners[i].get_j() - _corners[i + 1].get_j() * _corners[i].get_i());
 
-    j_tmp += (_corners[i].get_j() + _corners[i + 1].get_j()) *
-      (_corners[i + 1].get_i() * _corners[i].get_j() - _corners[i + 1].get_j() * _corners[i].get_i());
-  }
-#else
-  unsigned int v_corners_size = _corners.size();
-  for (unsigned int i = 0; i < v_corners_size; ++i) {
-    unsigned int i_p_1 = (i + 1) % _corners.size();
+  size_t v_corners_size = _corners.size();
+  for (size_t i = 0; i < v_corners_size; ++i) {
+    size_t i_p_1 = (i + 1) % _corners.size();
     i_tmp += (_corners[i].get_i() + _corners[i_p_1].get_i()) *
       ((_corners[i_p_1].get_i() * _corners[i].get_j()) - (_corners[i_p_1].get_j() * _corners[i].get_i()));
 
     j_tmp += (_corners[i].get_j() + _corners[i_p_1].get_j()) *
       ((_corners[i_p_1].get_i() * _corners[i].get_j()) - (_corners[i_p_1].get_j() * _corners[i].get_i()));
   }
-#endif
 
   if (_area > 0) {
     _center.set_i(fabs(i_tmp / (6 * _area)));
@@ -611,8 +658,8 @@ void vpPolygon::updateBoundingBox()
 */
 void vpPolygon::display(const vpImage<unsigned char> &I, const vpColor &color, unsigned int thickness) const
 {
-  const unsigned int N = static_cast<unsigned int>(_corners.size());
-  for (unsigned int i = 0; i < N; ++i) {
+  const size_t N = _corners.size();
+  for (size_t i = 0; i < N; ++i) {
     vpDisplay::displayLine(I, _corners[i], _corners[(i + 1) % N], color, thickness);
   }
 }
@@ -642,3 +689,4 @@ unsigned int vpPolygon::getSize() const
 {
   return (static_cast<unsigned int>(_corners.size()));
 }
+END_VISP_NAMESPACE

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,8 @@
  *
  * Description:
  * Test vpPolygon class.
- *
- * Authors:
- * Julien Dufour
- *
-*****************************************************************************/
+ */
+
 /*!
   \example testPolygon2.cpp
 
@@ -50,6 +46,10 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 #ifdef VISP_HAVE_OPENCV
 TEST_CASE("Check OpenCV-bsed convex hull")
 {
@@ -60,7 +60,7 @@ TEST_CASE("Check OpenCV-bsed convex hull")
                                                  rect.getBottomLeft() };
 
     vpPolygon poly {};
-    poly.buildFrom(rect_corners, true);
+    poly.build(rect_corners, true);
 
   // Check if std:c++14 or higher
 #if ((__cplusplus >= 201402L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L)))
@@ -97,7 +97,7 @@ bool testConvexHull()
   rect_corners.push_back(rect.getBottomLeft());
 
   vpPolygon poly;
-  poly.buildFrom(rect_corners, true);
+  poly.build(rect_corners, true);
 
   // Check if std:c++14 or higher
 #if ((__cplusplus >= 201402L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L)))

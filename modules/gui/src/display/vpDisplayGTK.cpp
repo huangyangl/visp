@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Image display.
- *
- * Authors:
- * Christophe Collewet
- *
-*****************************************************************************/
+ */
 
 /*!
   \file vpDisplayGTK.cpp
@@ -56,7 +51,6 @@
 #include <visp3/gui/vpDisplayGTK.h>
 
 // debug / exception
-#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpDisplayException.h>
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/core/vpImageTools.h>
@@ -67,6 +61,8 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkrgb.h>
 #include <gtk/gtk.h>
+
+BEGIN_VISP_NAMESPACE
 
 class vpDisplayGTK::Impl
 {
@@ -568,13 +564,13 @@ private:
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 
 */
@@ -597,13 +593,13 @@ vpDisplayGTK::vpDisplayGTK(vpImage<unsigned char> &I, vpScaleType scaleType) : v
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 
 */
@@ -625,13 +621,13 @@ vpDisplayGTK::vpDisplayGTK(vpImage<unsigned char> &I, int win_x, int win_y, cons
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayGTK::vpDisplayGTK(vpImage<vpRGBa> &I, vpScaleType scaleType) : vpDisplay(), m_impl(new Impl())
@@ -652,13 +648,13 @@ vpDisplayGTK::vpDisplayGTK(vpImage<vpRGBa> &I, vpScaleType scaleType) : vpDispla
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayGTK::vpDisplayGTK(vpImage<vpRGBa> &I, int win_x, int win_y, const std::string &win_title,
@@ -680,15 +676,19 @@ vpDisplayGTK::vpDisplayGTK(vpImage<vpRGBa> &I, int win_x, int win_y, const std::
   To initialize the display size, you need to call init().
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayGTK.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayGTK.h>
 
-int main()
-{
-  vpDisplayGTK d(100, 200, "My display");
-  vpImage<unsigned char> I(240,384);
-  d.init(I);
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayGTK d(100, 200, "My display");
+    vpImage<unsigned char> I(240,384);
+    d.init(I);
+  }
   \endcode
 */
 vpDisplayGTK::vpDisplayGTK(int win_x, int win_y, const std::string &win_title) : vpDisplay(), m_impl(new Impl())
@@ -706,15 +706,19 @@ vpDisplayGTK::vpDisplayGTK(int win_x, int win_y, const std::string &win_title) :
   init(vpImage<vpRGBa> &, int, int, const std::string &).
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayGTK.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayGTK.h>
 
-int main()
-{
-  vpDisplayGTK d;
-  vpImage<unsigned char> I(240,384);
-  d.init(I, 100, 200, "My display");
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayGTK d;
+    vpImage<unsigned char> I(240,384);
+    d.init(I, 100, 200, "My display");
+  }
   \endcode
 */
 vpDisplayGTK::vpDisplayGTK() : vpDisplay(), m_impl(new Impl()) { }
@@ -983,7 +987,10 @@ void vpDisplayGTK::displayImageROI(const vpImage<vpRGBa> &I, const vpImagePoint 
 
   \sa init(), closeDisplay()
 */
-void vpDisplayGTK::displayImage(const unsigned char * /* I */) { vpTRACE(" not implemented "); }
+void vpDisplayGTK::displayImage(const unsigned char * /* I */)
+{
+  // not implemented
+}
 
 /*!
   Close the window.
@@ -1031,7 +1038,10 @@ void vpDisplayGTK::flushDisplayROI(const vpImagePoint & /*iP*/, const unsigned i
 /*!
   \warning Not implemented yet.
 */
-void vpDisplayGTK::clearDisplay(const vpColor & /* color */) { vpTRACE("Not implemented"); }
+void vpDisplayGTK::clearDisplay(const vpColor & /* color */)
+{
+  // Not implemented
+}
 
 /*!
   Display an arrow from image point \e ip1 to image point \e ip2.
@@ -1588,7 +1598,9 @@ unsigned int vpDisplayGTK::getScreenHeight()
   return height;
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpDisplayGTK.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpDisplayGTK.cpp.o) has no symbols
 void dummy_vpDisplayGTK() { };
 #endif

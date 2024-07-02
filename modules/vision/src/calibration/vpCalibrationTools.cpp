@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,15 @@
  * Camera calibration.
  */
 
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpPixelMeterConversion.h>
 #include <visp3/vision/vpCalibration.h>
 #include <visp3/vision/vpPose.h>
 
 #include <cmath>  // std::fabs
-#include <limits> // numeric_limits
 
-#define DEBUG_LEVEL1 0
-#define DEBUG_LEVEL2 0
-
-#undef MAX /* FC unused anywhere */
-#undef MIN /* FC unused anywhere */
-
+BEGIN_VISP_NAMESPACE
 void vpCalibration::calibLagrange(vpCameraParameters &cam_est, vpHomogeneousMatrix &cMo_est)
 {
 
@@ -1222,6 +1217,4 @@ void vpCalibration::calibVVSWithDistortionMulti(unsigned int nbPose, vpCalibrati
     table_cal[i] = v_table_cal[i];
   }
 }
-
-#undef DEBUG_LEVEL1
-#undef DEBUG_LEVEL2
+END_VISP_NAMESPACE

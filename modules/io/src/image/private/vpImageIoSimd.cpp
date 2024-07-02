@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 #if defined(VISP_HAVE_SIMDLIB)
 #include "vpImageIoBackend.h"
 #include <Simd/SimdLib.h>
+
+BEGIN_VISP_NAMESPACE
 
 void readSimdlib(vpImage<unsigned char> &I, const std::string &filename)
 {
@@ -91,4 +93,7 @@ void writePNGSimdlib(const vpImage<vpRGBa> &I, const std::string &filename)
   SimdImageSaveToFile((const uint8_t *)I.bitmap, I.getWidth() * 4, I.getWidth(), I.getHeight(), SimdPixelFormatRgba32,
                       SimdImageFilePng, 90, filename.c_str());
 }
+
+END_VISP_NAMESPACE
+
 #endif

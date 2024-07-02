@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test some vpMath functionalities.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testRobust.cpp
@@ -49,6 +47,10 @@
 #include <visp3/io/vpParseArgv.h>
 // List of allowed command line options
 #define GETOPTARGS "cdho:"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam, std::string ofilename);
 bool getOptions(int argc, const char **argv, std::string &ofilename);
@@ -162,7 +164,8 @@ int main(int argc, const char **argv)
       try {
         // Create the dirname
         vpIoTools::makeDirectory(ofilename);
-      } catch (...) {
+      }
+      catch (...) {
         usage(argv[0], nullptr, ofilename);
         std::cerr << std::endl << "ERROR:" << std::endl;
         std::cerr << "  Cannot create " << ofilename << std::endl;
@@ -196,14 +199,16 @@ int main(int argc, const char **argv)
     while (x < 10) {
       if (fabs(x / sig) <= (4.6851)) {
         w = vpMath::sqr(1 - vpMath::sqr(x / (sig * 4.6851)));
-      } else {
+      }
+      else {
         w = 0;
       }
       f << x << "  " << w << std::endl;
       x += 0.01;
     }
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

@@ -32,9 +32,17 @@
  * Single laser scanner point.
  *
 *****************************************************************************/
+
+/*!
+  \file vpScanPoint.h
+
+  \brief Implements a single laser scanner point.
+*/
+
 #ifndef vpScanPoint_h
 #define vpScanPoint_h
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMath.h>
 
 #include <cmath>  // std::fabs
@@ -43,12 +51,7 @@
 #include <ostream>
 #include <sstream>
 
-/*!
-  \file vpScanPoint.h
-
-  \brief Implements a single laser scanner point.
-*/
-
+BEGIN_VISP_NAMESPACE
 /*!
 
   \class vpScanPoint
@@ -211,24 +214,28 @@ private:
   The following code
 
   \code
-#include <iostream>
-#include <visp3/sensor/vpScanPoint.h>
+  #include <iostream>
+  #include <visp3/sensor/vpScanPoint.h>
 
-int main()
-{
-  vpScanPoint p;
-  double radialDistance = 3; // 3 meters
-  double horizontalAngle = 1.12; // 1.12 radian
-  double verticalAngle = 0; // 0 radian for a horizontal layer
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  p.setPolar(radialDistance, horizontalAngle, verticalAngle);
+  int main()
+  {
+    vpScanPoint p;
+    double radialDistance = 3; // 3 meters
+    double horizontalAngle = 1.12; // 1.12 radian
+    double verticalAngle = 0; // 0 radian for a horizontal layer
 
-  std::cout << p << std::endl;
-}
+    p.setPolar(radialDistance, horizontalAngle, verticalAngle);
+
+    std::cout << p << std::endl;
+  }
   \endcode
   will produce the prints
   \code
-"3 1.12 0 1.307047339 2.700301327 0"
+  "3 1.12 0 1.307047339 2.700301327 0"
   \endcode
 
  */
@@ -244,5 +251,5 @@ inline std::ostream &operator<<(std::ostream &s, const vpScanPoint &p)
 
   return s;
 }
-
+END_VISP_NAMESPACE
 #endif

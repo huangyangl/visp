@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 
 #if defined(VISP_HAVE_JPEG)
 
+BEGIN_VISP_NAMESPACE
 /*!
   Write the content of the image bitmap in the file which name is given by \e
   filename. This function writes a JPEG file.
@@ -332,4 +333,7 @@ void readJPEGLibjpeg(vpImage<vpRGBa> &I, const std::string &filename)
   jpeg_destroy_decompress(&cinfo);
   fclose(file);
 }
+
+END_VISP_NAMESPACE
+
 #endif

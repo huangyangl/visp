@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@
  * Color to Depth conversion.
  */
 
-#pragma once
+#ifndef VP_COLOR_DEPTH_CONVERSION_H
+#define VP_COLOR_DEPTH_CONVERSION_H
 
 #include <visp3/core/vpConfig.h>
 
@@ -39,6 +40,7 @@
 #include "vpCameraParameters.h"
 #include "vpImage.h"
 
+BEGIN_VISP_NAMESPACE
 class VISP_EXPORT vpColorDepthConversion
 {
 public:
@@ -54,3 +56,6 @@ public:
                                           const vpHomogeneousMatrix &color_M_depth,
                                           const vpHomogeneousMatrix &depth_M_color, const vpImagePoint &from_pixel);
 };
+END_VISP_NAMESPACE
+
+#endif

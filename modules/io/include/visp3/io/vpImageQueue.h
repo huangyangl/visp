@@ -47,6 +47,9 @@
 #include <visp3/core/vpDisplay.h>
 #include <visp3/core/vpIoTools.h>
 
+BEGIN_VISP_NAMESPACE
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 /*!
   \class vpImageQueue
 
@@ -283,5 +286,7 @@ private:
   bool m_recording_trigger;
 };
 
+#endif // DOXYGEN_SHOULD_SKIP_THIS
+END_VISP_NAMESPACE
 #endif
 #endif

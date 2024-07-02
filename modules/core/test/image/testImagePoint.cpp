@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test for vpImagePoint class.
- *
-*****************************************************************************/
+ */
 /*!
   \example testImagePoint.cpp
 
@@ -48,6 +46,9 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 TEST_CASE("Test comparison operator", "[operator]")
 {
   vpImagePoint ip1, ip2, ip3;
@@ -152,7 +153,8 @@ int main()
 
   if (ip1 == ip2) {
     std::cout << "ip1 == ip2" << std::endl;
-  } else {
+  }
+  else {
     std::cout << "ip1 != ip2 (bad result)" << std::endl;
     return EXIT_FAILURE;
   }
@@ -160,20 +162,23 @@ int main()
   if (ip1 != ip2) {
     std::cout << "ip1 != ip2 (bad result)" << std::endl;
     return EXIT_FAILURE;
-  } else {
+  }
+  else {
     std::cout << "ip1 == ip2" << std::endl;
   }
 
   if (ip1 == ip3) {
     std::cout << "ip1 == ip3 (bad result)" << std::endl;
     return EXIT_FAILURE;
-  } else {
+  }
+  else {
     std::cout << "ip1 != ip3" << std::endl;
   }
 
   if (ip1 != ip3) {
     std::cout << "ip1 != ip3" << std::endl;
-  } else {
+  }
+  else {
     std::cout << "ip1 == ip3 (bad result)" << std::endl;
     return EXIT_FAILURE;
   }

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,17 +29,14 @@
  *
  * Description:
  * Mask on a vpColVector.
- *
- * Authors:
- * Laneurit Jean
- *
-*****************************************************************************/
+ */
 
 #include <stdlib.h>
 
 #include <visp3/core/vpException.h>
 #include <visp3/core/vpSubColVector.h>
 
+BEGIN_VISP_NAMESPACE
 //! Default constructor that creates an empty vector.
 vpSubColVector::vpSubColVector() : vpColVector(), m_pRowNum(0), m_parent(nullptr) { }
 
@@ -247,3 +243,4 @@ vpSubColVector &vpSubColVector::operator=(const vpPoseVector &p)
   memcpy(data, p.data, rowNum * sizeof(double));
   return *this;
 }
+END_VISP_NAMESPACE

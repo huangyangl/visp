@@ -50,6 +50,7 @@
 #include <list>
 #include <math.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpMeNurbs
  *
@@ -70,12 +71,16 @@
  * #include <visp3/core/vpImagePoint.h>
  * #include <visp3/me/vpMeNurbs.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpImage<unsigned char> I(240, 320);
  *
  *   // Fill the image with a black rectangle
- *   I = 0;
+ *   I = 0u;
  *   for (int i = 100; i < 180; i ++) {
  *     for (int j = 0; j < 320; j ++) {
  *       I[i][j] = 255;
@@ -123,7 +128,7 @@
  * setEnableCannyDetection to enable it.
  *
  * \warning : This function requires OpenCV.
- */
+*/
 class VISP_EXPORT vpMeNurbs : public vpMeTracker
 {
 #ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
@@ -337,5 +342,5 @@ public:
    */
   static void display(const vpImage<vpRGBa> &I, vpNurbs &n, const vpColor &color = vpColor::green, unsigned int thickness = 1);
 };
-
+END_VISP_NAMESPACE
 #endif

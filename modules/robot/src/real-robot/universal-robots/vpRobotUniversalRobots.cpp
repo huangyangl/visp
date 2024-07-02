@@ -40,6 +40,7 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/robot/vpRobotUniversalRobots.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * Default constructor.
  * - set eMc transformation to eye()
@@ -47,7 +48,7 @@
  * - set max joint speed to 180 deg/s
  * - set max joint acceleration to 800 deg/s^2
  */
-vpRobotUniversalRobots::vpRobotUniversalRobots() : m_rtde_receive(), m_rtde_control(), m_db_client(), m_eMc()
+  vpRobotUniversalRobots::vpRobotUniversalRobots() : m_rtde_receive(), m_rtde_control(), m_db_client(), m_eMc()
 {
   init();
 }
@@ -560,38 +561,42 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
  * setMaxTranslationVelocity() and setMaxRotationVelocity().
  *
  * \code
-#include <visp3/core/vpColVector.h>
-#include <visp3/core/vpMath.h>
-#include <visp3/robot/vpRobotUniversalRobots.h>
-
-int main()
-{
-#if defined(VISP_HAVE_UR_RTDE)
-  vpRobotUniversalRobots robot;
-
-  vpColVector qd(6);
-  // Set a joint velocity
-  qd[0] = 0.1;             // Joint 1 velocity in rad/s
-  qd[1] = vpMath::rad(15); // Joint 2 velocity in rad/s
-  qd[2] = 0;               // Joint 3 velocity in rad/s
-  qd[3] = M_PI/8;          // Joint 4 velocity in rad/s
-  qd[4] = 0;               // Joint 5 velocity in rad/s
-  qd[5] = 0;               // Joint 6 velocity in rad/s
-
-  // Initialize the controller to velocity control
-  robot.setRobotState(vpRobot::STATE_VELOCITY_CONTROL);
-
-  while (1) {
-    // Apply a velocity in the joint space
-    robot.setVelocity(vpRobot::JOINT_STATE, qvel);
-
-    // Compute new velocities qvel...
-  }
-
-  // Stop the robot
-  robot.setRobotState(vpRobot::STATE_STOP);
-#endif
-}
+ * #include <visp3/core/vpColVector.h>
+ * #include <visp3/core/vpMath.h>
+ * #include <visp3/robot/vpRobotUniversalRobots.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
+ * int main()
+ * {
+ * #if defined(VISP_HAVE_UR_RTDE)
+ *   vpRobotUniversalRobots robot;
+ *
+ *   vpColVector qd(6);
+ *   // Set a joint velocity
+ *   qd[0] = 0.1;             // Joint 1 velocity in rad/s
+ *   qd[1] = vpMath::rad(15); // Joint 2 velocity in rad/s
+ *   qd[2] = 0;               // Joint 3 velocity in rad/s
+ *   qd[3] = M_PI/8;          // Joint 4 velocity in rad/s
+ *   qd[4] = 0;               // Joint 5 velocity in rad/s
+ *   qd[5] = 0;               // Joint 6 velocity in rad/s
+ *
+ *   // Initialize the controller to velocity control
+ *   robot.setRobotState(vpRobot::STATE_VELOCITY_CONTROL);
+ *
+ *   while (1) {
+ *     // Apply a velocity in the joint space
+ *     robot.setVelocity(vpRobot::JOINT_STATE, qvel);
+ *
+ *     // Compute new velocities qvel...
+ *   }
+ *
+ *   // Stop the robot
+ *   robot.setRobotState(vpRobot::STATE_STOP);
+ * #endif
+ * }
  * \endcode
  */
 void vpRobotUniversalRobots::setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel)
@@ -872,7 +877,7 @@ vpRobot::vpRobotStateType vpRobotUniversalRobots::setRobotState(vpRobot::vpRobot
 
   return vpRobot::setRobotState(newState);
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_robot.a(vpRobotUniversalRobots.cpp.o) has no symbols
 void dummy_vpRobotUniversalRobots() { };

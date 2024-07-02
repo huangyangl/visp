@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +42,7 @@
 
 #include <visp3/core/vpHistogramValey.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
 
   Copy operator.
@@ -85,6 +85,7 @@ VISP_EXPORT std::ostream &operator<<(std::ostream &s, const vpHistogramValey &v)
   return s;
 }
 
+END_VISP_NAMESPACE
 /*
  * Local variables:
  * c-basic-offset: 2

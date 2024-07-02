@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image I/O for PFM file format.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testIoPFM.cpp
@@ -49,6 +47,10 @@
 #include <limits>
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 namespace
 {
@@ -80,7 +82,7 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Color")
     {
       const std::string imgPath =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPath));
 
       vpImage<vpRGBf> I;
@@ -90,7 +92,7 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Gray")
     {
       const std::string imgPath =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPath));
 
       vpImage<float> I;
@@ -104,7 +106,7 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Color")
     {
       const std::string imgPath =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_MSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_MSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPath));
 
       vpImage<vpRGBf> I;
@@ -114,7 +116,7 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Gray")
     {
       const std::string imgPath =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_MSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_MSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPath));
 
       vpImage<float> I;
@@ -128,9 +130,9 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Color")
     {
       const std::string imgPathLSB =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
       const std::string imgPathMSB =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_MSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_MSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPathLSB));
       REQUIRE(vpIoTools::checkFilename(imgPathMSB));
 
@@ -150,9 +152,9 @@ TEST_CASE("HDR PFM image read", "[hdr_pfm_image_io]")
     SECTION("Gray")
     {
       const std::string imgPathLSB =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
       const std::string imgPathMSB =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_MSB.pfm");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_MSB.pfm");
       REQUIRE(vpIoTools::checkFilename(imgPathLSB));
       REQUIRE(vpIoTools::checkFilename(imgPathMSB));
 
@@ -182,7 +184,7 @@ TEST_CASE("HDR PFM image write", "[hdr_pfm_image_io]")
   SECTION("Color")
   {
     const std::string imgPath =
-        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
+      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
     REQUIRE(vpIoTools::checkFilename(imgPath));
 
     vpImage<vpRGBf> I;
@@ -201,7 +203,7 @@ TEST_CASE("HDR PFM image write", "[hdr_pfm_image_io]")
   SECTION("Gray")
   {
     const std::string imgPath =
-        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
+      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
     REQUIRE(vpIoTools::checkFilename(imgPath));
 
     vpImage<float> I;

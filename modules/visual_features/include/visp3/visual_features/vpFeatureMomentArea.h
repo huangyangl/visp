@@ -39,8 +39,10 @@
 #ifndef _vpFeatureMomentArea_h_
 #define _vpFeatureMomentArea_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
+BEGIN_VISP_NAMESPACE
 class vpMomentDatabase;
 
 /*!
@@ -50,7 +52,7 @@ class vpMomentDatabase;
  *
  * \brief Surface moment feature. Computes the interaction matrix associated
  * with vpMomentArea.
- */
+*/
 class VISP_EXPORT vpFeatureMomentArea : public vpFeatureMoment
 {
 public:
@@ -69,12 +71,12 @@ public:
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 1)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentArea";
   }
@@ -82,9 +84,10 @@ public:
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentArea";
   }
 };
+END_VISP_NAMESPACE
 #endif

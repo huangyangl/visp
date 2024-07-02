@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test vpMbGenericTracker JSON parse / save.
- *
-*****************************************************************************/
+ */
 
 /*!
   \file testMbtJsonSettings.cpp
@@ -48,6 +46,10 @@ using json = nlohmann::json; //! json namespace shortcut
 
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 vpMbGenericTracker baseTrackerConstructor()
 {
@@ -158,7 +160,7 @@ SCENARIO("MBT JSON Serialization", "[json]")
         json j = loadJson(jsonPath);
         modify(j);
         saveJson(j, jsonPath);
-      };
+        };
 
       REQUIRE_NOTHROW(t1.saveConfigFile(jsonPath));
       THEN("Reloading this tracker has the same basic properties")

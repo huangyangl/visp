@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image morphology.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testImageMorphology.cpp
@@ -48,6 +46,9 @@
 #include <visp3/core/vpImageFilter.h>
 #include <visp3/core/vpImageMorphology.h>
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 TEST_CASE("Binary image morphology", "[image_morphology]")
 {
   unsigned char image_data[8 * 16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -45,13 +45,15 @@
 
 #include <vector>
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/tt/vpTemplateTrackerSSD.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \ingroup group_tt_tracker
   The algorithm implemented in this class is described in \cite Baker04a and
   \cite Marchand16a.
- */
+*/
 class VISP_EXPORT vpTemplateTrackerSSDInverseCompositional : public vpTemplateTrackerSSD
 {
 protected:
@@ -66,10 +68,11 @@ protected:
   void trackNoPyr(const vpImage<unsigned char> &I);
 
 public:
-  explicit vpTemplateTrackerSSDInverseCompositional(vpTemplateTrackerWarp *warp);
+  VP_EXPLICIT vpTemplateTrackerSSDInverseCompositional(vpTemplateTrackerWarp *warp);
 
   /*! Use only the strong gradient pixels to compute the Jabobian. By default
    * this feature is disabled. */
   void setUseTemplateSelect(bool b) { useTemplateSelect = b; }
 };
+END_VISP_NAMESPACE
 #endif

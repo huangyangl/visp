@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +26,7 @@
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example photometricVisualServoingWithoutVpServo.cpp
@@ -36,6 +34,7 @@
   Implemented from \cite Collewet08c.
 */
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDebug.h>
 
 #include <visp3/core/vpImage.h>
@@ -66,6 +65,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdi:n:h"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam, std::string ipath, int niter);
 bool getOptions(int argc, const char **argv, std::string &ipath, bool &click_allowed, bool &display, int &niter);
@@ -298,13 +301,13 @@ int main(int argc, const char **argv)
 
     // camera desired position
     vpHomogeneousMatrix cMo;
-    cMo.buildFrom(0, 0, 1.2, vpMath::rad(15), vpMath::rad(-5), vpMath::rad(20));
+    cMo.build(0, 0, 1.2, vpMath::rad(15), vpMath::rad(-5), vpMath::rad(20));
     vpHomogeneousMatrix wMo; // Set to identity
     vpHomogeneousMatrix wMc; // Camera position in the world frame
 
     // set the robot at the desired position
     sim.setCameraPosition(cMo);
-    I = 0;
+    I = 0u;
     sim.getImage(I, cam); // and aquire the image Id
 
 #if defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI) || defined(VISP_HAVE_GTK)
@@ -354,13 +357,13 @@ int main(int argc, const char **argv)
     vpFeatureLuminance sI;
     sI.init(I.getHeight(), I.getWidth(), Z);
     sI.setCameraParameters(cam);
-    sI.buildFrom(I);
+    sI.build(I);
 
     // desired visual feature built from the image
     vpFeatureLuminance sId;
     sId.init(I.getHeight(), I.getWidth(), Z);
     sId.setCameraParameters(cam);
-    sId.buildFrom(Id);
+    sId.build(Id);
 
     // Matrice d'interaction, Hessien, erreur,...
     vpMatrix Lsd;      // matrice d'interaction a la position desiree
@@ -432,7 +435,7 @@ int main(int argc, const char **argv)
       }
 #endif
       // Compute current visual feature
-      sI.buildFrom(I);
+      sI.build(I);
 
       // compute current error
       sI.error(sId, error);

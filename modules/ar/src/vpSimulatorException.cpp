@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,18 +29,16 @@
  *
  * Description:
  * Exceptions that can be emitted by the simulator classes.
- *
-*****************************************************************************/
+ */
 
-/* \file vpSimulatorException.h
+/*! \file vpSimulatorException.h
    \brief error that can be emitted by the vpSimulator class and its derivatives
  */
-/* Classes standards. */
 
 #include <visp3/ar/vpSimulatorException.h>
 
 #ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
-
+BEGIN_VISP_NAMESPACE
 vpSimulatorException::vpSimulatorException(int id, const char *format, ...)
 {
   this->code = id;
@@ -54,9 +51,9 @@ vpSimulatorException::vpSimulatorException(int id, const char *format, ...)
 vpSimulatorException::vpSimulatorException(int id, const std::string &msg) : vpException(id, msg) { ; }
 
 vpSimulatorException::vpSimulatorException(int id) : vpException(id) { ; }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_ar.a(vpSimulatorException.cpp.o) has no symbols
-void dummy_vpSimulatorException(){};
+void dummy_vpSimulatorException() { };
 
 #endif

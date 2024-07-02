@@ -43,6 +43,7 @@
 #include <memory>
 #include <visp3/dnn_tracker/vpMegaPose.h>
 
+BEGIN_VISP_NAMESPACE
 /**
  * \class vpMegaPoseTracker
  * \ingroup module_dnn_tracker
@@ -54,6 +55,10 @@
  *
  * \code{.cpp}
  * #include <visp3/dnn_tracker/vpMegaPoseTracker.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -94,7 +99,7 @@
  * }
  * \endcode
  * For a more detailed usage see \ref tutorial-tracking-megapose.
- */
+*/
 class VISP_EXPORT vpMegaPoseTracker
 {
 public:
@@ -119,7 +124,7 @@ public:
    * @param[in] bb : The bounding box of the object.
    * @return A future object that will contain the result of the pose estimation.
    */
-  std::future<vpMegaPoseEstimate> init(const vpImage<vpRGBa> &I, const vpRect & bb);
+  std::future<vpMegaPoseEstimate> init(const vpImage<vpRGBa> &I, const vpRect &bb);
   /**
    * @brief Initialize tracking from an initial pose. The initial pose should be in the neighborhood of the true pose.
    * The pose should be expressed in the camera frame.
@@ -146,7 +151,7 @@ public:
    *
    * @param[in] cTo : The new pose estimate.
    */
-  void updatePose(const vpHomogeneousMatrix& cTo);
+  void updatePose(const vpHomogeneousMatrix &cTo);
 
 private:
   std::shared_ptr<vpMegaPose> m_megapose;
@@ -155,7 +160,7 @@ private:
   int m_refinerIterations;
   bool m_initialized;
 };
-
+END_VISP_NAMESPACE
 #endif // VISP_HAVE_NLOHMANN_JSON
 
 #endif

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,8 @@
  *                 0 else.
  */
 
-#ifndef _vpDebug_h_
-#define _vpDebug_h_
+#ifndef VP_DEBUG_H
+#define VP_DEBUG_H
 
 #include <iostream>
 #include <stdarg.h>
@@ -61,6 +61,7 @@
 #define VP_DEBUG_MODE 0
 #endif
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpTraceOutput
 
@@ -97,6 +98,10 @@
 
   #include <visp3/core/vpDebug.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpIN_FCT("main()");
@@ -131,16 +136,6 @@
 */
 class vpTraceOutput
 {
-private:
-  const char *currentFile; // Name of the file to use in the displays
-  const char *currentFunc; // Name of the function to use in the displays
-  int currentLine;         // Line to use in the displays
-
-  // if true, output to std::cerr/stderr else std::cout/stdout
-  bool err;
-  // string to display before anything else
-  const char *header;
-
 public:
   /*!
     Constructor.
@@ -169,10 +164,12 @@ public:
       va_list args;
       va_start(args, format);
 
-      if (err)
+      if (err) {
         std::cerr << "(L" << level << ") ";
-      else
+      }
+      else {
         std::cout << "(L" << level << ") ";
+      }
 
       // calls display with it
       display(format, args);
@@ -240,6 +237,16 @@ public:
       fflush(stdout);
     }
   }
+private:
+  const char *currentFile; // Name of the file to use in the displays
+  const char *currentFunc; // Name of the function to use in the displays
+  int currentLine;         // Line to use in the displays
+
+  // if true, output to std::cerr/stderr else std::cout/stdout
+  bool err;
+  // string to display before anything else
+  const char *header;
+
 };
 
 /* ------------------------------------------------------------------------- */
@@ -255,6 +262,10 @@ public:
   \code
   #define VP_TRACE // To activate the trace mode
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -275,6 +286,10 @@ public:
   \code
   #define VP_TRACE // To activate the trace mode
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -313,6 +328,10 @@ inline void vpOUT_FCT(const char * /* a */, ...) { }
 
   #include <visp3/core/vpDebug.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     // C++-like debug printings
@@ -339,6 +358,10 @@ inline void vpOUT_FCT(const char * /* a */, ...) { }
   #define VP_DEBUG_MODE 2 // To activate debug level 1 and 2
 
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -369,6 +392,10 @@ inline void vpOUT_FCT(const char * /* a */, ...) { }
 
   #include <visp3/core/vpDebug.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     // Printing depend only VP_DEBUG_MODE value is >= 1
@@ -392,6 +419,10 @@ inline void vpOUT_FCT(const char * /* a */, ...) { }
   \code
   #define VP_TRACE // To activate trace mode
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -437,6 +468,10 @@ inline void vpTRACE(int /* level */, const char * /* a */, ...) { }
 
   #include <visp3/core/vpDebug.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     // Printing if VP_DEBUG defined and VP_DEBUG_MODE value >= 2
@@ -460,6 +495,10 @@ inline void vpTRACE(int /* level */, const char * /* a */, ...) { }
 
   #include <visp3/core/vpDebug.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     // Printing if VP_DEBUG defined and VP_DEBUG_MODE value >= 2
@@ -480,6 +519,10 @@ inline void vpTRACE(int /* level */, const char * /* a */, ...) { }
   #define VP_DEBUG_MODE 2 // Activate debug level 1 and 2
 
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -511,6 +554,10 @@ inline void vpTRACE(int /* level */, const char * /* a */, ...) { }
   #define VP_DEBUG_MODE 2 // Activate debug level 1 and 2
 
   #include <visp3/core/vpDebug.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -545,5 +592,5 @@ inline void vpDEBUG_TRACE(int /* level */, const char * /* a */, ...) { }
 #else
 #define DEFENSIF(a) (0)
 #endif /*#ifdef DEFENSIF*/
-
+END_VISP_NAMESPACE
 #endif /* #ifdef __DEBUG_HH */

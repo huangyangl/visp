@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Benchmark matrix multiplication.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example perfMatrixMultiplication.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -48,6 +50,10 @@
 
 #ifdef VISP_HAVE_EIGEN3
 #include <Eigen/Dense>
+#endif
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
 #endif
 
 namespace
@@ -214,8 +220,8 @@ bool equalMatrix(const vpMatrix &A, const vpMatrix &B, double tol = 1e-9)
 TEST_CASE("Benchmark matrix-matrix multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
-                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600}};
+    std::vector<std::pair<int, int> > sizes = { {3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
+                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -273,7 +279,7 @@ TEST_CASE("Benchmark matrix-matrix multiplication", "[benchmark]")
 
         oss.str("");
         oss << "(" << eigenA.rows() << "x" << eigenA.cols() << ")x(" << eigenB.rows() << "x" << eigenB.cols()
-            << ") - Eigen";
+          << ") - Eigen";
         BENCHMARK(oss.str().c_str())
         {
           Eigen::MatrixXd eigenC = eigenA * eigenB;
@@ -298,7 +304,7 @@ TEST_CASE("Benchmark matrix-matrix multiplication", "[benchmark]")
 TEST_CASE("Benchmark matrix-rotation matrix multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{3, 3}};
+    std::vector<std::pair<int, int> > sizes = { {3, 3} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -310,7 +316,7 @@ TEST_CASE("Benchmark matrix-rotation matrix multiplication", "[benchmark]")
       vpMatrix AB, AB_true;
       BENCHMARK(oss.str().c_str())
       {
-        AB_true = dgemm_regular(A, B);
+        AB_true = dgemm_regular(A, static_cast<vpMatrix>(B));
         return AB_true;
       };
 
@@ -365,7 +371,7 @@ TEST_CASE("Benchmark matrix-rotation matrix multiplication", "[benchmark]")
 
         oss.str("");
         oss << "(" << eigenA.rows() << "x" << eigenA.cols() << ")x(" << eigenB.rows() << "x" << eigenB.cols()
-            << ") - Eigen";
+          << ") - Eigen";
         BENCHMARK(oss.str().c_str())
         {
           Eigen::MatrixXd eigenC = eigenA * eigenB;
@@ -382,7 +388,7 @@ TEST_CASE("Benchmark matrix-rotation matrix multiplication", "[benchmark]")
     vpRotationMatrix B(vpMath::deg(getRandomValues(0, 360)), vpMath::deg(getRandomValues(0, 360)),
                        vpMath::deg(getRandomValues(0, 360)));
 
-    vpMatrix AB_true = dgemm_regular(A, B);
+    vpMatrix AB_true = dgemm_regular(A, static_cast<vpMatrix>(B));
     vpMatrix AB = A * B;
     REQUIRE(equalMatrix(AB, AB_true));
   }
@@ -391,7 +397,7 @@ TEST_CASE("Benchmark matrix-rotation matrix multiplication", "[benchmark]")
 TEST_CASE("Benchmark matrix-homogeneous matrix multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{4, 4}};
+    std::vector<std::pair<int, int> > sizes = { {4, 4} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -404,7 +410,7 @@ TEST_CASE("Benchmark matrix-homogeneous matrix multiplication", "[benchmark]")
       vpMatrix AB, AB_true;
       BENCHMARK(oss.str().c_str())
       {
-        AB_true = dgemm_regular(A, B);
+        AB_true = dgemm_regular(A, static_cast<vpMatrix>(B));
         return AB_true;
       };
 
@@ -459,7 +465,7 @@ TEST_CASE("Benchmark matrix-homogeneous matrix multiplication", "[benchmark]")
 
         oss.str("");
         oss << "(" << eigenA.rows() << "x" << eigenA.cols() << ")x(" << eigenB.rows() << "x" << eigenB.cols()
-            << ") - Eigen";
+          << ") - Eigen";
         BENCHMARK(oss.str().c_str())
         {
           Eigen::MatrixXd eigenC = eigenA * eigenB;
@@ -477,9 +483,9 @@ TEST_CASE("Benchmark matrix-homogeneous matrix multiplication", "[benchmark]")
                           vpMath::deg(getRandomValues(0, 360)), vpMath::deg(getRandomValues(0, 360)),
                           vpMath::deg(getRandomValues(0, 360)));
 
-    vpMatrix AB_true = dgemm_regular(A, B);
+    vpMatrix AB_true = dgemm_regular(A, static_cast<vpMatrix>(B));
     vpMatrix AB;
-    vpMatrix::mult2Matrices(A, B, AB);
+    vpMatrix::mult2Matrices(A, static_cast<vpMatrix>(B), AB);
     REQUIRE(equalMatrix(AB, AB_true));
   }
 }
@@ -487,8 +493,8 @@ TEST_CASE("Benchmark matrix-homogeneous matrix multiplication", "[benchmark]")
 TEST_CASE("Benchmark matrix-vector multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
-                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600}};
+    std::vector<std::pair<int, int> > sizes = { {3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
+                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -499,7 +505,7 @@ TEST_CASE("Benchmark matrix-vector multiplication", "[benchmark]")
       vpColVector C, C_true;
       BENCHMARK(oss.str().c_str())
       {
-        C_true = dgemv_regular(A, B);
+        C_true = dgemv_regular(A, static_cast<vpColVector>(B));
         return C_true;
       };
 
@@ -510,7 +516,7 @@ TEST_CASE("Benchmark matrix-vector multiplication", "[benchmark]")
         C = A * B;
         return C;
       };
-      REQUIRE(equalMatrix(C, C_true));
+      REQUIRE(equalMatrix(static_cast<vpMatrix>(C), static_cast<vpMatrix>(C_true)));
 
       if (runBenchmarkAll) {
 #if (VISP_HAVE_OPENCV_VERSION >= 0x030000)
@@ -550,7 +556,7 @@ TEST_CASE("Benchmark matrix-vector multiplication", "[benchmark]")
 
         oss.str("");
         oss << "(" << eigenA.rows() << "x" << eigenA.cols() << ")x(" << eigenB.rows() << "x" << eigenB.cols()
-            << ") - Eigen";
+          << ") - Eigen";
         BENCHMARK(oss.str().c_str())
         {
           Eigen::MatrixXd eigenC = eigenA * eigenB;
@@ -568,15 +574,15 @@ TEST_CASE("Benchmark matrix-vector multiplication", "[benchmark]")
 
     vpColVector C_true = dgemv_regular(A, B);
     vpColVector C = A * B;
-    REQUIRE(equalMatrix(C, C_true));
+    REQUIRE(equalMatrix(static_cast<vpMatrix>(C), static_cast<vpMatrix>(C_true)));
   }
 }
 
 TEST_CASE("Benchmark AtA", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
-                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600}};
+    std::vector<std::pair<int, int> > sizes = { {3, 3},   {6, 6},     {8, 8},    {10, 10},   {20, 20},  {6, 200},
+                                               {200, 6}, {207, 119}, {83, 201}, {600, 400}, {400, 600} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -654,7 +660,7 @@ TEST_CASE("Benchmark AAt", "[benchmark]")
   if (runBenchmark || runBenchmarkAll) {
     std::vector<std::pair<int, int> > sizes = {
         {3, 3},   {6, 6},   {8, 8},  {10, 10},
-        {20, 20}, {6, 200}, {200, 6}}; //, {207, 119}, {83, 201}, {600, 400}, {400, 600} };
+        {20, 20}, {6, 200}, {200, 6} }; //, {207, 119}, {83, 201}, {600, 400}, {400, 600} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -730,7 +736,7 @@ TEST_CASE("Benchmark AAt", "[benchmark]")
 TEST_CASE("Benchmark matrix-velocity twist multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{6, 6}, {20, 6}, {207, 6}, {600, 6}, {1201, 6}};
+    std::vector<std::pair<int, int> > sizes = { {6, 6}, {20, 6}, {207, 6}, {600, 6}, {1201, 6} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -741,7 +747,7 @@ TEST_CASE("Benchmark matrix-velocity twist multiplication", "[benchmark]")
       vpMatrix AV, AV_true;
       BENCHMARK(oss.str().c_str())
       {
-        AV_true = dgemm_regular(A, V);
+        AV_true = dgemm_regular(A, static_cast<vpMatrix>(V));
         return AV_true;
       };
 
@@ -811,7 +817,7 @@ TEST_CASE("Benchmark matrix-velocity twist multiplication", "[benchmark]")
     vpMatrix A = generateRandomMatrix(rows, cols);
     vpVelocityTwistMatrix V(vpTranslationVector(0.1, -0.4, 1.5), vpThetaUVector(0.4, -0.1, 0.7));
 
-    vpMatrix AV_true = dgemm_regular(A, V);
+    vpMatrix AV_true = dgemm_regular(A, static_cast<vpMatrix>(V));
     vpMatrix AV = A * V;
     REQUIRE(equalMatrix(AV, AV_true));
   }
@@ -820,7 +826,7 @@ TEST_CASE("Benchmark matrix-velocity twist multiplication", "[benchmark]")
 TEST_CASE("Benchmark matrix-force twist multiplication", "[benchmark]")
 {
   if (runBenchmark || runBenchmarkAll) {
-    std::vector<std::pair<int, int> > sizes = {{6, 6}, {20, 6}, {207, 6}, {600, 6}, {1201, 6}};
+    std::vector<std::pair<int, int> > sizes = { {6, 6}, {20, 6}, {207, 6}, {600, 6}, {1201, 6} };
 
     for (auto sz : sizes) {
       vpMatrix A = generateRandomMatrix(sz.first, sz.second);
@@ -831,7 +837,7 @@ TEST_CASE("Benchmark matrix-force twist multiplication", "[benchmark]")
       vpMatrix AV, AV_true;
       BENCHMARK(oss.str().c_str())
       {
-        AV_true = dgemm_regular(A, V);
+        AV_true = dgemm_regular(A, static_cast<vpMatrix>(V));
         return AV_true;
       };
 
@@ -901,7 +907,7 @@ TEST_CASE("Benchmark matrix-force twist multiplication", "[benchmark]")
     vpMatrix A = generateRandomMatrix(rows, cols);
     vpForceTwistMatrix V(vpTranslationVector(0.1, -0.4, 1.5), vpThetaUVector(0.4, -0.1, 0.7));
 
-    vpMatrix AV_true = dgemm_regular(A, V);
+    vpMatrix AV_true = dgemm_regular(A, static_cast<vpMatrix>(V));
     vpMatrix AV = A * V;
     REQUIRE(equalMatrix(AV, AV_true));
   }
@@ -921,18 +927,18 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()         // Get Catch's composite command line parser
-             | Opt(runBenchmark)   // bind variable to a new option, with a hint string
-                   ["--benchmark"] // the option names it will respond to
-             ("run benchmark comparing naive code with ViSP implementation") // description string for the help output
-             | Opt(runBenchmarkAll)    // bind variable to a new option, with a hint string
-                   ["--benchmark-all"] // the option names it will respond to
-             ("run benchmark comparing naive code with ViSP, OpenCV, Eigen implementation") // description string for
-                                                                                            // the help output
-             | Opt(lapackMinSize, "min size") // bind variable to a new option, with a hint string
-                   ["--lapack-min-size"]      // the option names it will respond to
-             ("matrix/vector min size to enable blas/lapack usage"); // description string for the help output
+    | Opt(runBenchmark)   // bind variable to a new option, with a hint string
+    ["--benchmark"] // the option names it will respond to
+    ("run benchmark comparing naive code with ViSP implementation") // description string for the help output
+    | Opt(runBenchmarkAll)    // bind variable to a new option, with a hint string
+    ["--benchmark-all"] // the option names it will respond to
+    ("run benchmark comparing naive code with ViSP, OpenCV, Eigen implementation") // description string for
+                                                                                   // the help output
+    | Opt(lapackMinSize, "min size") // bind variable to a new option, with a hint string
+    ["--lapack-min-size"]      // the option names it will respond to
+    ("matrix/vector min size to enable blas/lapack usage"); // description string for the help output
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line
@@ -940,7 +946,7 @@ int main(int argc, char *argv[])
 
   vpMatrix::setLapackMatrixMinSize(lapackMinSize);
   std::cout << "Used matrix/vector min size to enable Blas/Lapack optimization: " << vpMatrix::getLapackMatrixMinSize()
-            << std::endl;
+    << std::endl;
 
   int numFailed = session.run();
 

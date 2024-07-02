@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Mask on a vpMatrix .
- *
- * Authors:
- * Laneurit Jean
- *
-*****************************************************************************/
+ */
 
 #include <stdlib.h>
 #include <visp3/core/vpDebug.h>
@@ -42,6 +37,7 @@
 #include <visp3/core/vpMatrixException.h>
 #include <visp3/core/vpSubMatrix.h>
 
+BEGIN_VISP_NAMESPACE
 vpSubMatrix::vpSubMatrix() : pRowNum(0), pColNum(0), parent(nullptr) { }
 
 /*!
@@ -180,3 +176,4 @@ vpSubMatrix &vpSubMatrix::operator=(const double &x)
 }
 
 vpSubMatrix::~vpSubMatrix() { data = nullptr; }
+END_VISP_NAMESPACE

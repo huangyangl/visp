@@ -48,6 +48,7 @@
 #include <visp3/tt_mi/vpTemplateTrackerMI.h>
 #include <visp3/tt_mi/vpTemplateTrackerMIBSpline.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpTemplateTrackerMIForwardCompositional
   \ingroup group_tt_mi_tracker
@@ -65,7 +66,7 @@ protected:
   void trackNoPyr(const vpImage<unsigned char> &I);
 
 public:
-  explicit vpTemplateTrackerMIForwardCompositional(vpTemplateTrackerWarp *_warp);
+  VP_EXPLICIT vpTemplateTrackerMIForwardCompositional(vpTemplateTrackerWarp *_warp);
 };
-
+END_VISP_NAMESPACE
 #endif

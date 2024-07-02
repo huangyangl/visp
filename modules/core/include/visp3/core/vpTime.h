@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@
  * Time management and measurement.
  */
 
-#ifndef vpTime_h
-#define vpTime_h
-
 /*!
   \file vpTime.h
   \brief Time management and measurement
  */
+
+#ifndef VP_TIME_H
+#define VP_TIME_H
+
 #include <iostream>
 #include <string>
 #include <visp3/core/vpConfig.h>
@@ -47,6 +48,7 @@
 
 #include <visp3/core/vpException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \ingroup group_core_time
  * \brief Time management and measurement.
@@ -55,6 +57,10 @@
  *
  * \code
  * #include <visp3/core/vpTime.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -66,7 +72,7 @@
  *   }
  * }
  * \endcode
- */
+*/
 
 namespace vpTime
 {
@@ -99,5 +105,5 @@ private:
   double m_lastTimePoint;
 #endif
 };
-
+END_VISP_NAMESPACE
 #endif

@@ -34,6 +34,7 @@
 *****************************************************************************/
 
 #include <visp3/core/vpImageConvert.h>
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpTrackingException.h>
 #include <visp3/core/vpVelocityTwistMatrix.h>
 #include <visp3/mbt/vpMbKltTracker.h>
@@ -45,6 +46,9 @@
 #include <TargetConditionals.h>             // To detect OSX or IOS using TARGET_OS_IPHONE or TARGET_OS_IOS macro
 #endif
 
+BEGIN_VISP_NAMESPACE
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace
 {
 /*!
@@ -104,6 +108,8 @@ vpMatrix homography2collineation(const vpMatrix &H, const vpCameraParameters &ca
   return G;
 }
 } // namespace
+
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 vpMbKltTracker::vpMbKltTracker()
   :
@@ -818,7 +824,7 @@ void vpMbKltTracker::computeVVS()
         L_true = m_L_klt;
         if (!isoJoIdentity) {
           vpVelocityTwistMatrix cVo;
-          cVo.buildFrom(m_cMo);
+          cVo.build(m_cMo);
           LVJ_true = (m_L_klt * cVo * oJo);
         }
       }
@@ -1459,7 +1465,7 @@ void vpMbKltTracker::setUseKltTracking(const std::string &name, const bool &useK
     }
   }
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_mbt.a(vpMbKltTracker.cpp.o) has no symbols
 void dummy_vpMbKltTracker() { };

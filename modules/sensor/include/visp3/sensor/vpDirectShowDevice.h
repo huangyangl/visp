@@ -49,6 +49,7 @@
 #include <iostream>
 #include <string>
 
+BEGIN_VISP_NAMESPACE
 class VISP_EXPORT vpDirectShowDevice
 {
 
@@ -59,8 +60,8 @@ class VISP_EXPORT vpDirectShowDevice
   bool inUse; // true if the device is already used by a grabber
 
 public:
-  vpDirectShowDevice() : inUse(false) {}
-  explicit vpDirectShowDevice(const CComPtr<IMoniker> &moniker) : inUse(false) { init(moniker); }
+  vpDirectShowDevice() : inUse(false) { }
+  VP_EXPLICIT vpDirectShowDevice(const CComPtr<IMoniker> &moniker) : inUse(false) { init(moniker); }
 
   bool init(const CComPtr<IMoniker> &moniker);
 
@@ -76,6 +77,7 @@ public:
 
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, vpDirectShowDevice &dev);
 };
+END_VISP_NAMESPACE
 #endif
 #endif
 #endif

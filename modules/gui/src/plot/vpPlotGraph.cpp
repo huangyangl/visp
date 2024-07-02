@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +52,8 @@
 #include <sstream>
 
 #if defined(VISP_HAVE_DISPLAY)
+
+BEGIN_VISP_NAMESPACE
 
 int laFonctionSansNom(double delta);
 void getGrid3DPoint(double pente, vpImagePoint &iPunit, vpImagePoint &ip1, vpImagePoint &ip2, vpImagePoint &ip3);
@@ -152,7 +153,7 @@ void vpPlotGraph::initSize(vpImagePoint top_left, unsigned int w, unsigned int h
 
   findPose();
 
-  cMf.buildFrom(0, 0, cMo[2][3], 0, 0, 0);
+  cMf.build(0, 0, cMo[2][3], 0, 0, 0);
 }
 
 void vpPlotGraph::findPose()
@@ -173,7 +174,8 @@ void vpPlotGraph::findPose()
 
   // Instead of pose computation we use an approximation
   double Z = 0;
-  for (unsigned int i = 0; i < 4; ++i) {
+  const unsigned int val_4 = 4;
+  for (unsigned int i = 0; i < val_4; ++i) {
     vpPixelMeterConversion::convertPoint(cam, iP[i], x, y);
     Z = vpMath::maximum(Z, point_[i].get_oX() / x);
     Z = vpMath::maximum(Z, point_[i].get_oY() / y);
@@ -233,18 +235,18 @@ int laFonctionSansNom(double delta)
   if (d < 1) {
     while (d < 1) {
       d = d * 10;
-      power++;
+      ++power;
     }
-    power--;
+    --power;
     return power;
   }
 
   if (d >= 10) {
     while (d > 10) {
       d = d / 10;
-      power--;
+      --power;
     }
-    power--;
+    --power;
     return power;
   }
 
@@ -855,13 +857,14 @@ void getGrid3DPoint(double pente, vpImagePoint &iPunit, vpImagePoint &ip1, vpIma
 
 void vpPlotGraph::displayGrid3D(vpImage<unsigned char> &I)
 {
+  const unsigned int nparam = 6;
   computeGraphParameters3D();
 
   xdelt = (xmax - xmin) / nbDivisionx;
   ydelt = (ymax - ymin) / nbDivisiony;
   zdelt = (zmax - zmin) / nbDivisionz;
 
-  vpPoint pt[6];
+  vpPoint pt[nparam];
   pt[0].setWorldCoordinates(-w_xval, ptYorg, ptZorg);
   pt[1].setWorldCoordinates(w_xval, ptYorg, ptZorg);
   pt[2].setWorldCoordinates(ptXorg, -w_yval, ptZorg);
@@ -869,8 +872,8 @@ void vpPlotGraph::displayGrid3D(vpImage<unsigned char> &I)
   pt[4].setWorldCoordinates(ptXorg, ptYorg, -w_zval);
   pt[5].setWorldCoordinates(ptXorg, ptYorg, w_zval);
 
-  vpImagePoint iP[6];
-  for (unsigned int i = 0; i < 6; ++i) {
+  vpImagePoint iP[nparam];
+  for (unsigned int i = 0; i < nparam; ++i) {
     pt[i].track(cMo);
     double u = 0.0, v = 0.0;
     vpMeterPixelConversion::convertPoint(cam, pt[i].get_x(), pt[i].get_y(), u, v);
@@ -1319,7 +1322,7 @@ vpHomogeneousMatrix vpPlotGraph::navigation(const vpImage<unsigned char> &I, boo
 
     double anglei = diffi * 360 / width_;
     double anglej = diffj * 360 / width_;
-    mov.buildFrom(0, 0, 0, vpMath::rad(anglei), vpMath::rad(-anglej), 0);
+    mov.build(0, 0, 0, vpMath::rad(anglei), vpMath::rad(-anglej), 0);
     changed = true;
   }
 
@@ -1328,7 +1331,7 @@ vpHomogeneousMatrix vpPlotGraph::navigation(const vpImage<unsigned char> &I, boo
 
   if (old_iPz != vpImagePoint(-1, -1) && blockedz) {
     double diffi = iP.get_i() - old_iPz.get_i();
-    mov.buildFrom(0, 0, diffi * 0.01, 0, 0, 0);
+    mov.build(0, 0, diffi * 0.01, 0, 0, 0);
     changed = true;
   }
 
@@ -1338,8 +1341,10 @@ vpHomogeneousMatrix vpPlotGraph::navigation(const vpImage<unsigned char> &I, boo
   return mov;
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpPlotGraph.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpPlotGraph.cpp.o) has no symbols
 void dummy_vpPlotGraph() { };
 #endif
 #endif

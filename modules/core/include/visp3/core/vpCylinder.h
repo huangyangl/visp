@@ -40,11 +40,13 @@
 #define vpCylinder_hh
 
 #include <math.h>
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMath.h>
 
 #include <visp3/core/vpForwardProjection.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpCylinder
  * \ingroup group_core_geometry
@@ -94,7 +96,7 @@
  * Perspective projection is achieved using projection() methods. The methods
  * get_p(), getRho1(), getTheta1() and getRho2(), getTheta2() allow to access to the
  * projected line parameters.
- */
+*/
 class VISP_EXPORT vpCylinder : public vpForwardProjection
 {
 public:
@@ -105,24 +107,24 @@ public:
   } vpLineCylinderType;
 
   vpCylinder();
-  explicit vpCylinder(const vpColVector &oP);
+  VP_EXPLICIT vpCylinder(const vpColVector &oP);
   vpCylinder(double oA, double oB, double oC, double oX, double oY, double oZ, double R);
 
-  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const vp_override;
-  void changeFrame(const vpHomogeneousMatrix &cMo) vp_override;
+  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const VP_OVERRIDE;
+  void changeFrame(const vpHomogeneousMatrix &cMo) VP_OVERRIDE;
 
   double computeZ(double x, double y) const;
 
   void display(const vpImage<unsigned char> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) vp_override;
+               unsigned int thickness = 1) VP_OVERRIDE;
   void display(const vpImage<vpRGBa> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
                unsigned int thickness = 1);
   void display(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
-               const vpColor &color = vpColor::green, unsigned int thickness = 1) vp_override;
+               const vpColor &color = vpColor::green, unsigned int thickness = 1) VP_OVERRIDE;
   void display(const vpImage<vpRGBa> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
                const vpColor &color = vpColor::green, unsigned int thickness = 1);
 
-  vpCylinder *duplicate() const vp_override;
+  vpCylinder *duplicate() const VP_OVERRIDE;
 
 /*!
  * Return the \f$\rho_1\f$ parameter of the line corresponding to the
@@ -185,13 +187,13 @@ public:
    */
   double getR() const { return cP[6]; }
 
-  void init() vp_override;
+  void init() VP_OVERRIDE;
 
-  void projection() vp_override;
-  void projection(const vpColVector &cP, vpColVector &p) const vp_override;
+  void projection() VP_OVERRIDE;
+  void projection(const vpColVector &cP, vpColVector &p) const VP_OVERRIDE;
 
-  void setWorldCoordinates(const vpColVector &oP) vp_override;
+  void setWorldCoordinates(const vpColVector &oP) VP_OVERRIDE;
   void setWorldCoordinates(double oA, double oB, double oC, double oX, double oY, double oZ, double R);
 };
-
+END_VISP_NAMESPACE
 #endif

@@ -2,6 +2,12 @@
 
 #include <visp3/core/vpImageConvert.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 #if defined(VISP_HAVE_X11)
 vpDisplayX drawingHelpers::d;
 #elif defined(VISP_HAVE_OPENCV)
@@ -16,7 +22,7 @@ vpDisplayD3D drawingHelpers::d;
 
 vpImage<vpRGBa> drawingHelpers::I_disp;
 
-bool drawingHelpers::display(vpImage<vpRGBa> &I, const std::string &title, const bool &blockingMode)
+bool drawingHelpers::display(vpImage< vpRGBa> &I, const std::string &title, const bool &blockingMode)
 {
   I_disp = I;
 #if defined(VISP_HAVE_DISPLAY)
@@ -56,3 +62,5 @@ bool drawingHelpers::display(vpImage<double> &D, const std::string &title, const
   vpImageConvert::convert(D, I);
   return display(I, title, blockingMode);
 }
+
+#endif

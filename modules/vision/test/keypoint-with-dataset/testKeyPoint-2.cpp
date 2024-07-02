@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,12 @@
  * Test keypoint matching and pose estimation.
  */
 
+/*!
+  \example testKeyPoint-2.cpp
+
+  \brief Test keypoint matching and pose estimation.
+ */
+
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
@@ -51,6 +57,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdph"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam);
 bool getOptions(int argc, const char **argv, bool &click_allowed, bool &display);
@@ -265,7 +275,7 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   vpImageIo::read(I, filenameRef);
 
   // Init pose at image 150
-  cMo.buildFrom(0.02651282185, -0.03713587374, 0.6873765919, 2.314744454, 0.3492296488, -0.1226054828);
+  cMo.build(0.02651282185, -0.03713587374, 0.6873765919, 2.314744454, 0.3492296488, -0.1226054828);
   tracker.initFromPose(I, cMo);
 
   // Detect keypoints on the image 150
@@ -288,7 +298,7 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   vpImageIo::read(I, filenameRef);
 
   // Init pose at image 200
-  cMo.buildFrom(0.02965448956, -0.07283091786, 0.7253526051, 2.300529617, -0.4286674806, 0.1788761025);
+  cMo.build(0.02965448956, -0.07283091786, 0.7253526051, 2.300529617, -0.4286674806, 0.1788761025);
   tracker.initFromPose(I, cMo);
 
   // Detect keypoints on the image 200
@@ -421,11 +431,6 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   }
 }
 
-/*!
-  \example testKeyPoint-2.cpp
-
-  \brief   Test keypoint matching and pose estimation.
-*/
 int main(int argc, const char **argv)
 {
   try {

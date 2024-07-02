@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@
 
 #if defined(VISP_HAVE_PNG)
 
+BEGIN_VISP_NAMESPACE
 /*!
   Write the content of the image bitmap in the file which name is given by \e
   filename. This function writes a PNG file.
@@ -75,7 +76,6 @@ void writePNGLibpng(const vpImage<unsigned char> &I, const std::string &filename
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
   if (!png_ptr) {
     fclose(file);
-    vpERROR_TRACE("Error during png_create_write_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -83,7 +83,6 @@ void writePNGLibpng(const vpImage<unsigned char> &I, const std::string &filename
   if (!info_ptr) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, nullptr);
-    vpERROR_TRACE("Error during png_create_info_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -92,7 +91,6 @@ void writePNGLibpng(const vpImage<unsigned char> &I, const std::string &filename
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, &info_ptr);
-    vpERROR_TRACE("Error during init_io\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -109,7 +107,6 @@ void writePNGLibpng(const vpImage<unsigned char> &I, const std::string &filename
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, &info_ptr);
-    vpERROR_TRACE("Error during write header\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -172,7 +169,6 @@ void writePNGLibpng(const vpImage<vpRGBa> &I, const std::string &filename)
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
   if (!png_ptr) {
     fclose(file);
-    vpERROR_TRACE("Error during png_create_write_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -180,7 +176,6 @@ void writePNGLibpng(const vpImage<vpRGBa> &I, const std::string &filename)
   if (!info_ptr) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, nullptr);
-    vpERROR_TRACE("Error during png_create_info_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -189,7 +184,6 @@ void writePNGLibpng(const vpImage<vpRGBa> &I, const std::string &filename)
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, &info_ptr);
-    vpERROR_TRACE("Error during init_io\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -206,7 +200,6 @@ void writePNGLibpng(const vpImage<vpRGBa> &I, const std::string &filename)
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_write_struct(&png_ptr, &info_ptr);
-    vpERROR_TRACE("Error during write header\n");
     throw(vpImageException(vpImageException::ioError, "PNG write error"));
   }
 
@@ -314,7 +307,6 @@ void readPNGLibpng(vpImage<unsigned char> &I, const std::string &filename)
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
-    vpERROR_TRACE("Error during init io\n");
     throw(vpImageException(vpImageException::ioError, "PNG read error"));
   }
 
@@ -473,7 +465,6 @@ void readPNGLibpng(vpImage<vpRGBa> &I, const std::string &filename)
   png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
   if (!png_ptr) {
     fclose(file);
-    vpERROR_TRACE("Error during png_create_read_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG read error"));
   }
 
@@ -482,7 +473,6 @@ void readPNGLibpng(vpImage<vpRGBa> &I, const std::string &filename)
   if (!info_ptr) {
     fclose(file);
     png_destroy_read_struct(&png_ptr, nullptr, nullptr);
-    vpERROR_TRACE("Error during png_create_info_struct()\n");
     throw(vpImageException(vpImageException::ioError, "PNG read error"));
   }
 
@@ -491,7 +481,6 @@ void readPNGLibpng(vpImage<vpRGBa> &I, const std::string &filename)
   if (setjmp(png_jmpbuf(png_ptr))) {
     fclose(file);
     png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
-    vpERROR_TRACE("Error during init io\n");
     throw(vpImageException(vpImageException::ioError, "PNG read error"));
   }
 
@@ -598,4 +587,7 @@ void readPNGLibpng(vpImage<vpRGBa> &I, const std::string &filename)
   png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
   fclose(file);
 }
+
+END_VISP_NAMESPACE
+
 #endif

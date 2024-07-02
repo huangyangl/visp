@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@
  * Exceptions that can be emitted by the vpImage class and its derivatives.
  */
 
-#ifndef _vpImageException_h_
-#define _vpImageException_h_
-
 /*!
  * \file vpImageException.h
  * \brief error that can be emitted by the vpImage class and its derivatives
  */
+
+#ifndef VP_IMAGE_EXCEPTION_H
+#define VP_IMAGE_EXCEPTION_H
 
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpException.h>
@@ -45,12 +45,12 @@
 #include <iostream>
 #include <string>
 
-
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpImageException
  * \ingroup group_core_debug
  * \brief Error that can be emitted by the vpImage class and its derivatives.
- */
+*/
 class VISP_EXPORT vpImageException : public vpException
 {
 public:
@@ -88,7 +88,7 @@ public:
   /*!
    * Constructor.
    */
-  explicit vpImageException(int id) : vpException(id) { }
+  VP_EXPLICIT vpImageException(int id) : vpException(id) { }
 };
-
+END_VISP_NAMESPACE
 #endif

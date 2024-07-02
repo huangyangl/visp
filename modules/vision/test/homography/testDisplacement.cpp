@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@
 #include <visp3/core/vpRotationMatrix.h>
 #include <visp3/core/vpThetaUVector.h>
 #include <visp3/vision/vpHomography.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 bool test(const std::string &s, const vpHomography &H, const std::vector<double> &bench)
 {
@@ -177,12 +181,13 @@ int main()
       std::cout << "n" << std::endl << n.t() << std::endl;
 
       vpPlane p1(n[0], n[1], n[2], 1.0);
-      H.buildFrom(R, T, p1);
+      H.build(R, T, p1);
       std::cout << "H" << std::endl << H << std::endl;
     }
     std::cout << "All tests succeed" << std::endl;
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

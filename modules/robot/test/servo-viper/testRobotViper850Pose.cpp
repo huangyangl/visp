@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,9 +28,8 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * Test for Afma 6 dof robot.
- *
-*****************************************************************************/
+ * Test for Viper650 6 dof robot.
+ */
 
 /*!
   \example testRobotViper850Pose.cpp
@@ -61,6 +59,9 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   try {
     // Create an image B&W container
     vpImage<unsigned char> I;
@@ -169,12 +170,12 @@ int main()
 
     std::cout << "Pose cMo: " << std::endl << cMo;
     cMo.extract(R);
-    r.buildFrom(R);
+    r.build(R);
     std::cout << "  rotation: " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2]) << " deg"
-              << std::endl
-              << std::endl;
+      << std::endl
+      << std::endl;
 
-    // Get the robot position in the reference frame
+// Get the robot position in the reference frame
     vpHomogeneousMatrix rMc;
     vpColVector p; // position x,y,z,rx,ry,rz
     robot.getPosition(vpRobotViper850::REFERENCE_FRAME, p);
@@ -186,14 +187,14 @@ int main()
     r[0] = p[3];
     r[1] = p[4];
     r[2] = p[5];
-    R.buildFrom(r);
-    rMc.buildFrom(t, R);
+    R.build(r);
+    rMc.build(t, R);
     std::cout << "Pose rMc: " << std::endl << rMc;
     rMc.extract(R);
-    r.buildFrom(R);
+    r.build(R);
     std::cout << "  rotation: " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2]) << " deg"
-              << std::endl
-              << std::endl;
+      << std::endl
+      << std::endl;
 
     robot.getPosition(vpRobotViper850::ARTICULAR_FRAME, p);
     std::cout << "Robot pose in articular: " << p << std::endl;
@@ -201,21 +202,22 @@ int main()
     robot.get_fMc(p, rMc);
     std::cout << "Pose rMc from MGD: " << std::endl << rMc;
     rMc.extract(R);
-    r.buildFrom(R);
+    r.build(R);
     std::cout << "  rotation: " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2]) << " deg"
-              << std::endl
-              << std::endl;
+      << std::endl
+      << std::endl;
 
     vpHomogeneousMatrix rMo;
     rMo = rMc * cMo;
     std::cout << "Pose rMo = rMc * cMo: " << std::endl << rMo;
     rMo.extract(R);
-    r.buildFrom(R);
+    r.build(R);
     std::cout << "  rotation: " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2]) << " deg"
-              << std::endl
-              << std::endl;
+      << std::endl
+      << std::endl;
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

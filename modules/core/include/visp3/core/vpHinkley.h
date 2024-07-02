@@ -31,16 +31,19 @@
  * Hinkley's cumulative sum test implementation.
  */
 
-#ifndef vpHinkley_H
-#define vpHinkley_H
-
 /*!
   \file vpHinkley.h
   \brief class for Hinkley's cumulative test computation.
 */
+
+#ifndef vpHinkley_H
+#define vpHinkley_H
+
 #include <visp3/core/vpConfig.h>
 
 #if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
+
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpHinkley
   \deprecated This class is deprecated. You should rather use vpStatisticalTestHinkley.
@@ -104,9 +107,9 @@ public:
   } vpHinkleyJumpType;
 
 public:
-  vp_deprecated vpHinkley();
+  VP_DEPRECATED vpHinkley();
   virtual ~vpHinkley();
-  vp_deprecated vpHinkley(double alpha, double delta);
+  VP_DEPRECATED vpHinkley(double alpha, double delta);
 
   void init();
   void init(double alpha, double delta);
@@ -165,5 +168,6 @@ private:
   double Tk;
   double Nk;
 };
+END_VISP_NAMESPACE
 #endif
 #endif

@@ -66,6 +66,10 @@
 
 #if defined(VISP_HAVE_DISPLAY) && (defined(VISP_HAVE_LAPACK) || defined(VISP_HAVE_EIGEN3) || defined(VISP_HAVE_OPENCV))
 
+#if defined(ENABLE_VISP_NAMESPACE)
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 /*!
 
   Print the program options.
@@ -168,9 +172,9 @@ int main(int argc, const char **argv)
       return EXIT_FAILURE;
     }
 
-    vpImage<vpRGBa> Iint(480, 640, 255);
-    vpImage<vpRGBa> Iext1(480, 640, 255);
-    vpImage<vpRGBa> Iext2(480, 640, 255);
+    vpImage<vpRGBa> Iint(480, 640, vpRGBa(255));
+    vpImage<vpRGBa> Iext1(480, 640, vpRGBa(255));
+    vpImage<vpRGBa> Iext2(480, 640, vpRGBa(255));
 
 #if defined(VISP_HAVE_X11)
     vpDisplayX display[3];
@@ -416,7 +420,7 @@ int main(int argc, const char **argv)
 
       // Compute the position of the external view which is fixed in the
       // object frame
-      camoMf.buildFrom(0, 0.0, 1.5, 0, vpMath::rad(150), 0);
+      camoMf.build(0, 0.0, 1.5, 0, vpMath::rad(150), 0);
       camoMf = camoMf * (sim.get_fMo().inverse());
 
       if (opt_plot) {

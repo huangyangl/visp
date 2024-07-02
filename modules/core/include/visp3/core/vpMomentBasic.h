@@ -39,7 +39,10 @@
 #ifndef _vpMomentBasic_h_
 #define _vpMomentBasic_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMoment.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
   \class vpMomentBasic
@@ -47,7 +50,7 @@
   \ingroup group_core_moments
 
   \brief This class defines the 2D basic moment \f$m_{ij}\f$.
-    This class is a wrapper for vpMomentObject wich allows to use it as a
+    This class is a wrapper for vpMomentObject which allows to use it as a
   moment. This enables all common operations such as adding to a
   vpMomentDatabase.
 
@@ -81,4 +84,5 @@ public:
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMomentBasic &v);
   void printDependencies(std::ostream &os) const;
 };
+END_VISP_NAMESPACE
 #endif

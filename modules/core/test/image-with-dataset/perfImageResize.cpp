@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Benchmark image resize.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example perfImageResize.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -51,6 +53,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #endif
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 static const std::string ipath = vpIoTools::getViSPImagesDataPath();
 static std::string imagePathColor = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
 static std::string imagePathGray = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");

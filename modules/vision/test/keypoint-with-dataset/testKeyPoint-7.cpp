@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,12 @@
  * Test saving / loading learning files for vpKeyPoint class.
  */
 
+/*!
+  \example testKeyPoint-7.cpp
+
+  \brief   Test saving / loading learning file.
+*/
+
 #include <iomanip>
 #include <iostream>
 
@@ -47,6 +53,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdo:h"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 /*!
 
@@ -633,11 +643,6 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
 #endif
 }
 
-/*!
-  \example testKeyPoint-7.cpp
-
-  \brief   Test saving / loading learning file.
-*/
 int main(int argc, const char **argv)
 {
   try {

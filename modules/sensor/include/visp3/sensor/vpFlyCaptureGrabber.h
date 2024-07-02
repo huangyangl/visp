@@ -33,6 +33,12 @@
  *
 *****************************************************************************/
 
+/*!
+  \file vpFlyCaptureGrabber.h
+  \brief Wrapper over PointGrey FlyCapture SDK to capture images from
+  PointGrey cameras.
+*/
+
 #ifndef _vpFlyCaptureGrabber_h_
 #define _vpFlyCaptureGrabber_h_
 
@@ -44,11 +50,8 @@
 
 #include <FlyCapture2.h>
 
-/*!
-  \file vpFlyCaptureGrabber.h
-  \brief Wrapper over PointGrey FlyCapture SDK to capture images from
-  PointGrey cameras.
-*/
+BEGIN_VISP_NAMESPACE
+
 /*!
   \class vpFlyCaptureGrabber
   \ingroup group_sensor_camera
@@ -67,7 +70,7 @@
   Grab loop had an error: There is an image consistency issue with this image.
   \endcode
   follow instruction provide
-[here](https://www.flir.fr/support-center/iis/machine-vision/knowledge-base/lost-ethernet-data-packets-on-linux-systems)
+  [here](https://www.flir.fr/support-center/iis/machine-vision/knowledge-base/lost-ethernet-data-packets-on-linux-systems)
   to increase receive buffer size.
 
   Once installed configure ViSP using cmake to detect FlyCapture SDK and build
@@ -81,31 +84,35 @@
   The following example shows how to use this class to capture images
   from the first camera that is found.
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/io/vpImageIo.h>
-#include <visp3/sensor/vpFlyCaptureGrabber.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/io/vpImageIo.h>
+  #include <visp3/sensor/vpFlyCaptureGrabber.h>
 
-int main()
-{
-#if defined(VISP_HAVE_FLYCAPTURE)
-  try {
-  int nframes = 100;
-  vpImage<unsigned char> I;
-  char filename[FILENAME_MAX];
-  vpFlyCaptureGrabber g;
-  std::cout << "Number of cameras detected: " << g.getNumCameras() << std::endl;
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  g.setCameraIndex(0); // Default camera is the first on the bus
-  g.getCameraInfo(std::cout);
-  g.open(I);
+  int main()
+  {
+  #if defined(VISP_HAVE_FLYCAPTURE)
+    try {
+    int nframes = 100;
+    vpImage<unsigned char> I;
+    char filename[FILENAME_MAX];
+    vpFlyCaptureGrabber g;
+    std::cout << "Number of cameras detected: " << g.getNumCameras() << std::endl;
 
-  for(int i=0; i< nframes; i++) {
-    g.acquire(I);
-    snprintf(filename, FILENAME_MAX, "image%04d.pgm", i);
-    vpImageIo::write(I, filename);
+    g.setCameraIndex(0); // Default camera is the first on the bus
+    g.getCameraInfo(std::cout);
+    g.open(I);
+
+    for(int i=0; i< nframes; i++) {
+      g.acquire(I);
+      snprintf(filename, FILENAME_MAX, "image%04d.pgm", i);
+      vpImageIo::write(I, filename);
+    }
+  #endif
   }
-#endif
-}
   \endcode
 
   If more than one camera is detected, you can use setCamera(const unsigned int &)
@@ -115,40 +122,44 @@ int main()
   example shows how to capture simultaneously images from multiple cameras.
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/io/vpImageIo.h>
-#include <visp3/sensor/vpFlyCaptureGrabber.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/io/vpImageIo.h>
+  #include <visp3/sensor/vpFlyCaptureGrabber.h>
 
-int main()
-{
-#if defined(VISP_HAVE_FLYCAPTURE)
-  int nframes = 100;
-  char filename[FILENAME_MAX];
-  unsigned int numCameras = vpFlyCaptureGrabber::getNumCameras();
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  std::cout << "Number of cameras detected: " << numCameras << std::endl;
+  int main()
+  {
+  #if defined(VISP_HAVE_FLYCAPTURE)
+    int nframes = 100;
+    char filename[FILENAME_MAX];
+    unsigned int numCameras = vpFlyCaptureGrabber::getNumCameras();
 
-  vpFlyCaptureGrabber *g = new vpFlyCaptureGrabber [numCameras];
-  std::vector< vpImage<unsigned char> > I(numCameras);
+    std::cout << "Number of cameras detected: " << numCameras << std::endl;
 
-  for(unsigned int cam=0; cam < numCameras; cam++) {
-    g[cam].setCameraIndex(cam); // Default camera is the first on the bus
-    g[cam].getCameraInfo(std::cout);
-    g[cam].open(I[cam]);
-  }
+    vpFlyCaptureGrabber *g = new vpFlyCaptureGrabber [numCameras];
+    std::vector< vpImage<unsigned char> > I(numCameras);
 
-  for(int i=0; i< nframes; i++) {
     for(unsigned int cam=0; cam < numCameras; cam++) {
-      g[cam].acquire(I[cam]);
-      snprintf(filename, FILENAME_MAX, "image-camera%d-%04d.pgm", cam, i);
-      vpImageIo::write(I[cam], filename);
+      g[cam].setCameraIndex(cam); // Default camera is the first on the bus
+      g[cam].getCameraInfo(std::cout);
+      g[cam].open(I[cam]);
     }
+
+    for(int i=0; i< nframes; i++) {
+      for(unsigned int cam=0; cam < numCameras; cam++) {
+        g[cam].acquire(I[cam]);
+        snprintf(filename, FILENAME_MAX, "image-camera%d-%04d.pgm", cam, i);
+        vpImageIo::write(I[cam], filename);
+      }
+    }
+    delete [] g;
+  #endif
   }
-  delete [] g;
-#endif
-}
   \endcode
- */
+*/
 class VISP_EXPORT vpFlyCaptureGrabber : public vpFrameGrabber
 {
 public:
@@ -231,6 +242,6 @@ protected:
   bool m_connected;              //!< true if camera connected
   bool m_capture;                //!< true is capture started
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

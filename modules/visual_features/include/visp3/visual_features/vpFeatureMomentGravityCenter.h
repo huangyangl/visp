@@ -39,8 +39,10 @@
 #ifndef _vpFeatureMomentGravityCenter_h_
 #define _vpFeatureMomentGravityCenter_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
+BEGIN_VISP_NAMESPACE
 #ifdef VISP_MOMENTS_COMBINE_MATRICES
 class vpMomentDatabase;
 /*!
@@ -72,6 +74,10 @@ class vpMomentDatabase;
  * #include <visp3/visual_features/vpFeatureMomentBasic.h>
  * #include <visp3/visual_features/vpFeatureMomentDatabase.h>
  * #include <visp3/visual_features/vpFeatureMomentGravityCenter.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -142,7 +148,7 @@ class vpMomentDatabase;
  * - vpFeatureMomentBasic
  *
  * Minimum vpMomentObject order needed to compute this feature: 2.
- */
+*/
 class VISP_EXPORT vpFeatureMomentGravityCenter : public vpFeatureMoment
 {
 public:
@@ -161,17 +167,17 @@ public:
     : vpFeatureMoment(database, A_, B_, C_, featureMoments, 2)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override { return "vpMomentGravityCenter"; }
+  const std::string momentName() const VP_OVERRIDE { return "vpMomentGravityCenter"; }
 
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override { return "vpFeatureMomentGravityCenter"; }
+  const std::string name() const VP_OVERRIDE { return "vpFeatureMomentGravityCenter"; }
 
   /*!
    * Shortcut selector for \f$x_g\f$.
@@ -233,17 +239,17 @@ public:
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 2)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override { return "vpMomentGravityCenter"; }
+  const std::string momentName() const VP_OVERRIDE { return "vpMomentGravityCenter"; }
 
  /*!
   * Feature name.
   */
-  const std::string name() const vp_override { return "vpFeatureMomentGravityCenter"; }
+  const std::string name() const VP_OVERRIDE { return "vpFeatureMomentGravityCenter"; }
 
   /*!
    * Shortcut selector for \f$x_g\f$.
@@ -255,6 +261,6 @@ public:
    */
   static unsigned int selectYg() { return 1 << 1; }
 };
-
 #endif
+END_VISP_NAMESPACE
 #endif

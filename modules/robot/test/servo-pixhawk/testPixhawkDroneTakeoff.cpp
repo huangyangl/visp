@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +30,7 @@
  * Description:
  * Simple example to demonstrate how takeoff and land using mavsdk on
  * a drone equipped with a Pixhawk connected to a Jetson TX2.
- *
-*****************************************************************************/
+ */
 
 /*!
  * \example testPixhawkDroneTakeoff.cpp
@@ -64,9 +62,15 @@ void usage(const std::string &bin_name)
 
 int main(int argc, char **argv)
 {
+<<<<<<< HEAD
   std::cout << "argc: " <<argc<< std::endl;
   std::cout << "argv[0]: " <<argv[0]<< std::endl;
   std::cout << "argv[1]: " <<argv[1]<< std::endl;
+=======
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
+>>>>>>> a19b3c588c6f507dd6d99c8ba783ba4113d011bb
   if (argc != 2) {
     usage(argv[0]);
     return EXIT_SUCCESS;

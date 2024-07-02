@@ -47,6 +47,7 @@
 #include <visp3/core/vpImage.h>
 #include <visp3/detection/vpDetectorBase.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpDetectorDataMatrixCode
  * \ingroup group_detection_barcode
@@ -64,6 +65,10 @@
  * \code
  * #include <visp3/detection/vpDetectorDataMatrixCode.h>
  * #include <visp3/io/vpImageIo.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -106,12 +111,12 @@
  * Other examples are also provided in tutorial-barcode-detector.cpp and
  * tutorial-barcode-detector-live.cpp
  */
-class VISP_EXPORT vpDetectorDataMatrixCode : public vpDetectorBase
+  class VISP_EXPORT vpDetectorDataMatrixCode : public vpDetectorBase
 {
 public:
   vpDetectorDataMatrixCode();
-  bool detect(const vpImage<unsigned char> &I) vp_override;
+  bool detect(const vpImage<unsigned char> &I) VP_OVERRIDE;
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

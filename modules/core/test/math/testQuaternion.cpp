@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
@@ -45,6 +44,10 @@
 
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 TEST_CASE("Quaternion interpolation", "[quaternion]")
 {

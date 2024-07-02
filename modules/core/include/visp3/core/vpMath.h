@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@
  * the C mathematics library (math.h)
  */
 
-#ifndef vpMATH_HH
-#define vpMATH_HH
+#ifndef VP_MATH_H
+#define VP_MATH_H
 
 #include <visp3/core/vpConfig.h>
 
@@ -77,20 +77,22 @@
 
 #endif
 
-#ifndef M_PIf
-#define M_PIf 3.14159265358979323846f
+#ifndef M_PI_FLOAT
+#define M_PI_FLOAT 3.14159265358979323846f
 #endif
 
-#ifndef M_PI_2f
-#define M_PI_2f (M_PIf / 2.0f)
+#ifndef M_PI_2_FLOAT
+#define M_PI_2_FLOAT (M_PI_FLOAT / 2.0f)
 #endif
 
-#ifndef M_PI_4f
-#define M_PI_4f (M_PIf / 4.0f)
+#ifndef M_PI_4_FLOAT
+#define M_PI_4_FLOAT (M_PI_FLOAT / 4.0f)
 #endif
 
 #include <visp3/core/vpException.h>
 #include <visp3/core/vpImagePoint.h>
+
+BEGIN_VISP_NAMESPACE
 
 class vpPoint;
 class vpHomogeneousMatrix;
@@ -104,7 +106,7 @@ class vpTranslationVector;
  * \ingroup group_core_math_tools
  * \brief Provides simple mathematics computation tools that are not
  * available in the C mathematics library (math.h)
- */
+*/
 class VISP_EXPORT vpMath
 {
 public:
@@ -137,11 +139,11 @@ public:
   static float getAngleBetweenMinPiAndPi(const float &theta)
   {
     float theta1 = theta;
-    if (theta1 > M_PIf) {
-      theta1 -= 2.0f * M_PIf;
+    if (theta1 > M_PI_FLOAT) {
+      theta1 -= 2.0f * M_PI_FLOAT;
     }
-    else if (theta1 <= -M_PIf) {
-      theta1 += 2.0f * M_PIf;
+    else if (theta1 <= -M_PI_FLOAT) {
+      theta1 += 2.0f * M_PI_FLOAT;
     }
     return theta1;
   }
@@ -175,7 +177,7 @@ public:
   static float modulo(const float &value, const float &modulo)
   {
     float quotient = std::floor(value / modulo);
-    float rest = value - quotient * modulo;
+    float rest = value - (quotient * modulo);
     return rest;
   }
 
@@ -190,7 +192,7 @@ public:
   static double modulo(const double &value, const double &modulo)
   {
     double quotient = std::floor(value / modulo);
-    double rest = value - quotient * modulo;
+    double rest = value - (quotient * modulo);
     return rest;
   }
 
@@ -345,8 +347,8 @@ public:
 
     double delta = (end - start) / (num - 1);
 
-    for (int i = 0; i < num - 1; ++i) {
-      linspaced.push_back(start + delta * i);
+    for (int i = 0; i < (num - 1); ++i) {
+      linspaced.push_back(start + (delta * i));
     }
     linspaced.push_back(end); // I want to ensure that start and end
     // are exactly the same as the input
@@ -373,8 +375,9 @@ private:
 */
 double vpMath::fact(unsigned int x)
 {
-  if ((x == 1) || (x == 0))
+  if ((x == 1) || (x == 0)) {
     return 1;
+  }
   return x * fact(x - 1);
 }
 
@@ -388,8 +391,9 @@ double vpMath::fact(unsigned int x)
 */
 long double vpMath::comb(unsigned int n, unsigned int p)
 {
-  if (n == p)
+  if (n == p) {
     return 1;
+  }
   return fact(n) / (fact(n - p) * fact(p));
 }
 
@@ -421,13 +425,16 @@ int vpMath::round(double x)
 */
 int vpMath::sign(double x)
 {
-  if (fabs(x) < std::numeric_limits<double>::epsilon())
+  if (fabs(x) < std::numeric_limits<double>::epsilon()) {
     return 0;
+  }
   else {
-    if (x < 0)
+    if (x < 0) {
       return -1;
-    else
+    }
+    else {
       return 1;
+    }
   }
 }
 
@@ -470,13 +477,15 @@ bool vpMath::greater(double x, double y, double threshold) { return (x > (y - th
  */
 double vpMath::sigmoid(double x, double x0, double x1, double n)
 {
-  if (x < x0)
+  if (x < x0) {
     return 0.;
-  else if (x > x1)
+  }
+  else if (x > x1) {
     return 1.;
+  }
   double l0 = 1. / (1. + exp(0.5 * n));
   double l1 = 1. / (1. + exp(-0.5 * n));
-  return (1. / (1. + exp(-n * ((x - x0) / (x1 - x0) - 0.5))) - l0) / (l1 - l0);
+  return ((1. / (1. + exp(-n * (((x - x0) / (x1 - x0)) - 0.5)))) - l0) / (l1 - l0);
 }
 
 // unsigned char
@@ -487,10 +496,12 @@ template <> inline unsigned char vpMath::saturate<unsigned char>(char v)
   // leading to (int)(char -127) = 129.
   // On little endian arch, CHAR_MIN=-127 and CHAR_MAX=128 leading to
   // (int)(char -127) = -127.
-  if (std::numeric_limits<char>::is_signed)
+  if (std::numeric_limits<char>::is_signed) {
     return static_cast<unsigned char>(std::max<int>(static_cast<int>(v), 0));
-  else
+  }
+  else {
     return static_cast<unsigned char>(static_cast<unsigned int>(v) > SCHAR_MAX ? 0 : v);
+  }
 }
 
 template <> inline unsigned char vpMath::saturate<unsigned char>(unsigned short v)
@@ -571,10 +582,12 @@ template <> inline unsigned short vpMath::saturate<unsigned short>(char v)
   // leading to (int)(char -127) = 129.
   // On little endian arch, CHAR_MIN=-127 and CHAR_MAX=128 leading to
   // (int)(char -127) = -127.
-  if (std::numeric_limits<char>::is_signed)
+  if (std::numeric_limits<char>::is_signed) {
     return static_cast<unsigned short>(std::max<int>(static_cast<int>(v), 0));
-  else
+  }
+  else {
     return static_cast<unsigned short>(static_cast<unsigned int>(v) > SCHAR_MAX ? 0 : v);
+  }
 }
 
 template <> inline unsigned short vpMath::saturate<unsigned short>(short v)
@@ -651,5 +664,5 @@ template <> inline unsigned int vpMath::saturate<unsigned int>(double v)
 {
   return static_cast<unsigned int>(vpMath::round(v));
 }
-
+END_VISP_NAMESPACE
 #endif

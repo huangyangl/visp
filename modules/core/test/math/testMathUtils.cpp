@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test additional math functions such as lon-lat generator or look-at function.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testMathUtils.cpp
@@ -55,6 +53,10 @@
 #include <visp3/core/vpIoTools.h>
 #endif
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 TEST_CASE("Lon-Lat generator", "[math_lonlat]")
 {
   const int lonStart = 0, lonEnd = 360, nlon = 20;
@@ -74,7 +76,7 @@ TEST_CASE("Lon-Lat generator", "[math_lonlat]")
   SECTION("NED")
   {
     std::vector<vpHomogeneousMatrix> ecef_M_ned_vec =
-        vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::ned2ecef);
+      vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::ned2ecef);
     for (const auto &ecef_M_ned : ecef_M_ned_vec) {
 #ifdef VERBOSE
       std::cout << "Lon-Lat ecef_M_ned:\n" << ecef_M_ned << std::endl;
@@ -108,7 +110,7 @@ TEST_CASE("Lon-Lat generator", "[math_lonlat]")
   SECTION("ENU")
   {
     std::vector<vpHomogeneousMatrix> ecef_M_enu_vec =
-        vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::enu2ecef);
+      vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::enu2ecef);
     for (const auto &ecef_M_enu : ecef_M_enu_vec) {
 #ifdef VERBOSE
       std::cout << "Lon-Lat ecef_M_enu:\n" << ecef_M_enu << std::endl;
@@ -147,7 +149,7 @@ TEST_CASE("Equidistributed sphere point", "[math_equi_sphere_pts]")
   SECTION("NED")
   {
     std::vector<vpHomogeneousMatrix> ecef_M_ned_vec =
-        vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::ned2ecef);
+      vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::ned2ecef);
     CHECK(!ecef_M_ned_vec.empty());
     for (const auto &ecef_M_ned : ecef_M_ned_vec) {
 #ifdef VERBOSE
@@ -182,7 +184,7 @@ TEST_CASE("Equidistributed sphere point", "[math_equi_sphere_pts]")
   SECTION("ENU")
   {
     std::vector<vpHomogeneousMatrix> ecef_M_enu_vec =
-        vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::enu2ecef);
+      vpMath::getLocalTangentPlaneTransformations(lonlatVec, radius, vpMath::enu2ecef);
     CHECK(!ecef_M_enu_vec.empty());
     for (const auto &ecef_M_enu : ecef_M_enu_vec) {
 #ifdef VERBOSE
@@ -216,7 +218,7 @@ TEST_CASE("Equidistributed sphere point", "[math_equi_sphere_pts]")
 TEST_CASE("Look-at", "[math_look_at]")
 {
   // Set camera to an arbitrary pose (only translation)
-  vpColVector from_blender = {8.867762565612793, -1.1965436935424805, 2.1211400032043457};
+  vpColVector from_blender = { 8.867762565612793, -1.1965436935424805, 2.1211400032043457 };
   // Transformation from OpenGL to Blender frame
   vpHomogeneousMatrix blender_M_gl;
   blender_M_gl[0][0] = 0;
@@ -229,9 +231,9 @@ TEST_CASE("Look-at", "[math_look_at]")
   // From is the current camera pose expressed in the OpenGL coordinate system
   vpColVector from = (blender_M_gl.getRotationMatrix().t() * from_blender);
   // To is the desired point toward the camera must look
-  vpColVector to = {0, 0, 0};
+  vpColVector to = { 0, 0, 0 };
   // Up is an arbitrary vector
-  vpColVector up = {0, 1, 0};
+  vpColVector up = { 0, 1, 0 };
 
   // Compute the look-at transformation
   vpHomogeneousMatrix gl_M_cam = vpMath::lookAt(from, to, up);
@@ -246,10 +248,10 @@ TEST_CASE("Look-at", "[math_look_at]")
   std::cout << "\nbl_M_cv:\n" << bl_M_cv << std::endl;
 
   // Ground truth using Blender look-at
-  vpHomogeneousMatrix bl_M_cv_gt = {0.13372008502483368, 0.22858507931232452,  -0.9642965197563171,
+  vpHomogeneousMatrix bl_M_cv_gt = vpHomogeneousMatrix({ 0.13372008502483368, 0.22858507931232452,  -0.9642965197563171,
                                     8.867762565612793,   0.9910191297531128,   -0.030843468382954597,
                                     0.13011434674263,    -1.1965436935424805,  -5.4016709327697754e-08,
-                                    -0.9730352163314819, -0.23065657913684845, 2.121140241622925};
+                                    -0.9730352163314819, -0.23065657913684845, 2.121140241622925 });
   std::cout << "\nbl_M_cv_gt:\n" << bl_M_cv_gt << std::endl;
 
   const double tolerance = 1e-6;

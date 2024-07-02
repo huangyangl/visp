@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test Munkres assignment algorithm.
- *
-*****************************************************************************/
+ */
 /*!
   \example testMunkres.cpp
 
@@ -62,6 +60,10 @@ ostream &operator<<(ostream &os, const pair<unsigned int, unsigned int> &val)
 #ifdef VISP_HAVE_CATCH2
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 TEST_CASE("Check Munkres-based assignment", "[visp_munkres]")
 {

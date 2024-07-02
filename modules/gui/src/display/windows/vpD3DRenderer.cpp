@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,21 +29,20 @@
  *
  * Description:
  * D3D renderer for windows 32 display
- *
- * Authors:
- * Bruno Renier
- *
-*****************************************************************************/
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+ */
 
 #include <algorithm>
 
 #include <visp3/core/vpConfig.h>
+
 #if (defined(_WIN32) & defined(VISP_HAVE_D3D9))
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <visp3/core/vpColor.h>
 #include <visp3/core/vpMath.h>
 #include <visp3/gui/vpD3DRenderer.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*
   Be careful, when using :
@@ -458,7 +456,7 @@ void vpD3DRenderer::setImg(const vpImage<vpRGBa> &im)
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -471,7 +469,7 @@ void vpD3DRenderer::setImg(const vpImage<vpRGBa> &im)
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -499,7 +497,7 @@ void vpD3DRenderer::setImgROI(const vpImage<vpRGBa> &im, const vpImagePoint &iP,
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -512,7 +510,7 @@ void vpD3DRenderer::setImgROI(const vpImage<vpRGBa> &im, const vpImagePoint &iP,
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -534,7 +532,7 @@ void vpD3DRenderer::setImg(const vpImage<unsigned char> &im)
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -547,7 +545,7 @@ void vpD3DRenderer::setImg(const vpImage<unsigned char> &im)
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -575,7 +573,7 @@ void vpD3DRenderer::setImgROI(const vpImage<unsigned char> &im, const vpImagePoi
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -588,7 +586,7 @@ void vpD3DRenderer::setImgROI(const vpImage<unsigned char> &im, const vpImagePoi
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -663,7 +661,7 @@ void vpD3DRenderer::setPixel(const vpImagePoint &iP, const vpColor &color)
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -676,7 +674,7 @@ void vpD3DRenderer::setPixel(const vpImagePoint &iP, const vpColor &color)
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -805,7 +803,6 @@ void vpD3DRenderer::drawRect(const vpImagePoint &topLeft, unsigned int width, un
 
       if (topLeftScaled.get_i() > (int)m_rheight - 1 || topLeftScaled.get_j() > (int)m_rwidth - 1 ||
           topLeftScaled.get_i() + height < 0 || topLeftScaled.get_j() + width < 0) {
-        //       vpCERROR<<"Invalid parameters!"<<std::endl;
         return;
       }
 
@@ -824,7 +821,7 @@ void vpD3DRenderer::drawRect(const vpImagePoint &topLeft, unsigned int width, un
 
       // locks the texture to directly access it
       if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-        vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+        std::cout << "D3D : Couldn't lock the texture!" << std::endl;
         return;
       }
 
@@ -842,7 +839,7 @@ void vpD3DRenderer::drawRect(const vpImagePoint &topLeft, unsigned int width, un
 
       // unlocks the texture
       if (pd3dText->UnlockRect(0) != D3D_OK)
-        vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+        std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
     }
   }
 }
@@ -865,7 +862,7 @@ void vpD3DRenderer::clear(const vpColor &color)
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -887,7 +884,7 @@ void vpD3DRenderer::clear(const vpColor &color)
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -965,7 +962,7 @@ void vpD3DRenderer::drawCircle(const vpImagePoint &center, unsigned int radius, 
 
     // locks the texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &rec, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -998,7 +995,7 @@ void vpD3DRenderer::drawCircle(const vpImagePoint &center, unsigned int radius, 
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
@@ -1173,7 +1170,7 @@ void vpD3DRenderer::getImage(vpImage<vpRGBa> &I)
 
     // locks the whole texture to directly access it
     if (pd3dText->LockRect(0, &d3dLRect, &r, 0) != D3D_OK) {
-      vpCERROR << "D3D : Couldn't lock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't lock the texture!" << std::endl;
       return;
     }
 
@@ -1186,12 +1183,14 @@ void vpD3DRenderer::getImage(vpImage<vpRGBa> &I)
 
     // unlocks the texture
     if (pd3dText->UnlockRect(0) != D3D_OK)
-      vpCERROR << "D3D : Couldn't unlock the texture!" << std::endl;
+      std::cout << "D3D : Couldn't unlock the texture!" << std::endl;
   }
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpD3DRenderer.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpD3DRenderer.cpp.o) has no symbols
 void dummy_vpD3DRenderer() { };
 #endif
 #endif

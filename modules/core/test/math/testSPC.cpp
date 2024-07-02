@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +44,10 @@
 #include <visp3/core/vpStatisticalTestMeanAdjustedCUSUM.h>
 #include <visp3/core/vpStatisticalTestShewhart.h>
 #include <visp3/core/vpStatisticalTestSigma.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 bool initializeShewhartTest(const float &mean, const float &stdev, const bool &verbose, const std::string &testName, vpStatisticalTestShewhart &tester)
 {

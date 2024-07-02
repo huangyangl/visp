@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +47,8 @@
 #include <visp3/gui/vpDisplayOpenCV.h>
 #include <visp3/gui/vpDisplayX.h>
 #include <visp3/gui/vpPlot.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
   Default constructor.
@@ -288,8 +289,9 @@ void vpPlot::plot(unsigned int graphNum, double x, const vpColVector &v_y)
     for (unsigned int i = 0; i < v_y.getRows(); ++i)
       this->plot(graphNum, i, x, v_y[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
 }
 /*!
   This function enables you to add new points in all curves of a plot. These
@@ -309,8 +311,9 @@ void vpPlot::plot(unsigned int graphNum, double x, const vpRowVector &v_y)
     for (unsigned int i = 0; i < v_y.getRows(); ++i)
       this->plot(graphNum, i, x, v_y[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
 }
 
 /*!
@@ -332,8 +335,9 @@ void vpPlot::plot(unsigned int graphNum, double x, const vpPoseVector &v_y)
     for (unsigned int i = 0; i < v_y.getRows(); ++i)
       this->plot(graphNum, i, x, v_y[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
 }
 /*!
   This function enables you to add new points in all curves of a plot. These
@@ -354,8 +358,9 @@ void vpPlot::plot(unsigned int graphNum, double x, const vpTranslationVector &v_
     for (unsigned int i = 0; i < v_y.getRows(); ++i)
       this->plot(graphNum, i, x, v_y[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
 }
 
 /*!
@@ -377,8 +382,9 @@ void vpPlot::plot(unsigned int graphNum, double x, const vpRotationVector &v_y)
     for (unsigned int i = 0; i < v_y.size(); ++i)
       this->plot(graphNum, i, x, v_y[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
 }
 
 /*!
@@ -427,8 +433,9 @@ vpMouseButton::vpMouseButtonType vpPlot::plot(unsigned int graphNum, double x, c
     for (unsigned int i = 0; i < v_y.getRows(); ++i)
       button = this->plot(graphNum, i, x, v_y[i], v_z[i]);
   }
-  else
-    vpTRACE("error in plot vector : not the right dimension");
+  else {
+    throw(vpException(vpException::dimensionError, "Error in plot vector: not the right dimension"));
+  }
   return button;
 }
 
@@ -727,8 +734,10 @@ void vpPlot::saveData(unsigned int graphNum, const std::string &dataFile, const 
   fichier.close();
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpPlot.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpPlot.cpp.o) has no symbols
 void dummy_vpPlot() { };
 #endif
 

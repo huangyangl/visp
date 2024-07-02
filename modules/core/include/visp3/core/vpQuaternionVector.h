@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,9 +31,6 @@
  * Quaternion definition.
  */
 
-#ifndef _vpQuaternionVector_h_
-#define _vpQuaternionVector_h_
-
 /*!
  * \file vpQuaternionVector.h
  *
@@ -41,11 +38,15 @@
  * operations on it.
  */
 
+#ifndef VP_QUATERNION_VECTOR_H
+#define VP_QUATERNION_VECTOR_H
+
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpRotationMatrix.h>
 #include <visp3/core/vpRotationVector.h>
 #include <visp3/core/vpThetaUVector.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpQuaternionVector
 
@@ -62,7 +63,7 @@
 
   This class allows to compute a quaternion from a rotation matrix
   using either vpQuaternionVector(const vpRotationMatrix &) constructor
-  or buildFrom() method.
+  or build() method.
 
   It also defines common operations on a quaternion such as:
   - multiplication (scalar and quaternion)
@@ -100,26 +101,31 @@
   double z = q.z();
   double w = q.w();
   \endcode
- */
+*/
 class VISP_EXPORT vpQuaternionVector : public vpRotationVector
 {
-private:
-  static const double minimum;
-
 public:
   vpQuaternionVector();
   vpQuaternionVector(const vpQuaternionVector &q);
   vpQuaternionVector(const double qx, const double qy, const double qz, const double qw);
-  explicit vpQuaternionVector(const vpRotationMatrix &R);
-  explicit vpQuaternionVector(const vpThetaUVector &tu);
-  explicit vpQuaternionVector(const vpColVector &q);
-  explicit vpQuaternionVector(const std::vector<double> &q);
+  VP_EXPLICIT vpQuaternionVector(const vpRotationMatrix &R);
+  VP_EXPLICIT vpQuaternionVector(const vpThetaUVector &tu);
+  VP_EXPLICIT vpQuaternionVector(const vpColVector &q);
+  VP_EXPLICIT vpQuaternionVector(const std::vector<double> &q);
 
-  vpQuaternionVector buildFrom(const double qx, const double qy, const double qz, const double qw);
-  vpQuaternionVector buildFrom(const vpRotationMatrix &R);
-  vpQuaternionVector buildFrom(const vpThetaUVector &tu);
-  vpQuaternionVector buildFrom(const vpColVector &q);
-  vpQuaternionVector buildFrom(const std::vector<double> &q);
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+  VP_DEPRECATED vpQuaternionVector buildFrom(const double qx, const double qy, const double qz, const double qw);
+  VP_DEPRECATED vpQuaternionVector buildFrom(const vpRotationMatrix &R);
+  VP_DEPRECATED vpQuaternionVector buildFrom(const vpThetaUVector &tu);
+  VP_DEPRECATED vpQuaternionVector buildFrom(const vpColVector &q);
+  VP_DEPRECATED vpQuaternionVector buildFrom(const std::vector<double> &q);
+#endif
+  vpQuaternionVector &build(const double &qx, const double &qy, const double &qz, const double &qw);
+  vpQuaternionVector &build(const vpRotationMatrix &R);
+  vpQuaternionVector &build(const vpThetaUVector &tu);
+  vpQuaternionVector &build(const vpColVector &q);
+  vpQuaternionVector &build(const std::vector<double> &q);
+
   void set(double x, double y, double z, double w);
 
   const double &x() const;
@@ -154,6 +160,10 @@ public:
   static vpQuaternionVector lerp(const vpQuaternionVector &q0, const vpQuaternionVector &q1, double t);
   static vpQuaternionVector nlerp(const vpQuaternionVector &q0, const vpQuaternionVector &q1, double t);
   static vpQuaternionVector slerp(const vpQuaternionVector &q0, const vpQuaternionVector &q1, double t);
-};
 
+private:
+  static const double minimum;
+
+};
+END_VISP_NAMESPACE
 #endif

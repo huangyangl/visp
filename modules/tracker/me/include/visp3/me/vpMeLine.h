@@ -46,6 +46,7 @@
 #include <iostream>
 #include <math.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpMeLine
  *
@@ -97,12 +98,16 @@
  * #include <visp3/core/vpImagePoint.h>
  * #include <visp3/me/vpMeLine.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpImage<unsigned char> I(240, 320);
  *
  *   // Fill the image with a black rectangle
- *   I = 0;
+ *   I = 0u;
  *   for (int i = 100; i < 180; i ++) {
  *     for (int j = 120; j < 250; j ++) {
  *       I[i][j] = 255;
@@ -142,7 +147,7 @@
  *
  * \note It is possible to display the line as an overlay. For that you
  * must use the display function of the class vpMeLine.
- */
+*/
 class VISP_EXPORT vpMeLine : public vpMeTracker
 {
 private:
@@ -181,7 +186,7 @@ public:
   /*!
    * Destructor.
    */
-  virtual ~vpMeLine() vp_override;
+  virtual ~vpMeLine() VP_OVERRIDE;
 
   /*!
    * Display line.
@@ -213,7 +218,7 @@ public:
    * \exception vpTrackingException::initializationError : Moving edges not
    * initialized.
    */
-  virtual void sample(const vpImage<unsigned char> &I, bool doNotTrack = false) vp_override;
+  virtual void sample(const vpImage<unsigned char> &I, bool doNotTrack = false) VP_OVERRIDE;
 
   /*!
    * Resample the line if the number of sample is less than 80% of the
@@ -432,31 +437,31 @@ public:
   /*!
    * \deprecated Use rather displayLine().
    */
-  vp_deprecated static void display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
+  VP_DEPRECATED static void display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
                                     const double &B, const double &C, const vpColor &color = vpColor::green,
                                     unsigned int thickness = 1);
 
   /*!
    * \deprecated Use rather displayLine().
    */
-  vp_deprecated static void display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
+  VP_DEPRECATED static void display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
                                     const double &B, const double &C, const vpColor &color = vpColor::green,
                                     unsigned int thickness = 1);
 
   /*!
    * \deprecated Use rather displayLine().
    */
-  vp_deprecated static void display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
+  VP_DEPRECATED static void display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
                                     const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
                                     const vpColor &color = vpColor::green, unsigned int thickness = 1);
 
   /*!
    * \deprecated Use rather displayLine().
    */
-  vp_deprecated static void display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
+  VP_DEPRECATED static void display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
                                     const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
                                     const vpColor &color = vpColor::green, unsigned int thickness = 1);
 #endif
 };
-
+END_VISP_NAMESPACE
 #endif

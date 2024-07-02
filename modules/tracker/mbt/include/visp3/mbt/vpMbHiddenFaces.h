@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,11 +31,12 @@
  * Generic model based tracker. This class declares the methods to implement
  * in order to have a model based tracker.
  */
-#pragma once
 
-#ifndef vpMbHiddenFaces_HH
-#define vpMbHiddenFaces_HH
+#ifndef VP_MB_HIDDEN_FACES_H
+#define VP_MB_HIDDEN_FACES_H
 
+#include <visp3/core/vpConfig.h>
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMeterPixelConversion.h>
 #include <visp3/core/vpPixelMeterConversion.h>
@@ -49,10 +50,14 @@
 #include <limits>
 #include <vector>
 
+BEGIN_VISP_NAMESPACE
 template <class PolygonType> class vpMbHiddenFaces;
 
+// Forward declaration to have the operator in the global namespace
 template <class PolygonType> void swap(vpMbHiddenFaces<PolygonType> &first, vpMbHiddenFaces<PolygonType> &second);
+END_VISP_NAMESPACE
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpMbHiddenFaces
  *
@@ -60,7 +65,7 @@ template <class PolygonType> void swap(vpMbHiddenFaces<PolygonType> &first, vpMb
  * trackers.
  *
  * \ingroup group_mbt_faces
- */
+*/
 template <class PolygonType = vpMbtPolygon> class vpMbHiddenFaces
 {
 private:
@@ -938,6 +943,7 @@ bool vpMbHiddenFaces<PolygonType>::isVisibleOgre(const vpTranslationVector &came
 
   return Lpol[index]->isvisible;
 }
-#endif // VISP_HAVE_OGRE
 
+#endif // VISP_HAVE_OGRE
+END_VISP_NAMESPACE
 #endif // vpMbHiddenFaces

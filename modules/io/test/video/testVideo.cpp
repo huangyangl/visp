@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test video i/o.
- *
-*****************************************************************************/
+ */
 
 /*!
   \file testVideo.cpp
@@ -47,6 +45,10 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpVideoReader.h>
 #include <visp3/io/vpVideoWriter.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 static long first_frame = 100;
 static int frame_step = 2;
@@ -72,7 +74,8 @@ bool test_createSequence(vpImage<Type> &I, const std::string &videoname, unsigne
       std::cout << "Frame saved in: " << writer.getFrameName() << std::endl;
     }
     return true;
-  } catch (...) {
+  }
+  catch (...) {
     return false;
   }
 }
@@ -177,7 +180,8 @@ int main(int argc, char *argv[])
     try {
       // Create the dirname
       vpIoTools::makeDirectory(tmp);
-    } catch (...) {
+    }
+    catch (...) {
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Cannot create " << tmp << std::endl;
     }

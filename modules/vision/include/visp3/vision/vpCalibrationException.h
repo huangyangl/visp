@@ -40,10 +40,11 @@
 #include <iostream>
 #include <string>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpCalibrationException
  * \brief Error that can be emitted by the vpCalibration class.
- */
+*/
 class VISP_EXPORT vpCalibrationException : public vpException
 {
 public:
@@ -88,7 +89,7 @@ public:
   /*!
    * Constructor.
    */
-  explicit vpCalibrationException(int id) : vpException(id) { }
+  VP_EXPLICIT vpCalibrationException(int id) : vpException(id) { }
 };
-
+END_VISP_NAMESPACE
 #endif

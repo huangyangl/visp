@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +30,7 @@
  * Description:
  * Asynchronous acquisition of images and odometry information with
  * RealSense T265 sensor and librealsense2.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testRealSense2_T265_images_odometry_async.cpp
@@ -55,6 +53,9 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   vpHomogeneousMatrix cMw, cMw_0;
   vpHomogeneousMatrix cextMw(0, 0, 2, 0, 0, 0); // External camera view for pose visualization.
   vpColVector odo_vel, odo_acc, imu_acc, imu_vel;
@@ -99,7 +100,7 @@ int main()
         vpQuaternionVector cqw(static_cast<double>(pose_data.rotation.x), static_cast<double>(pose_data.rotation.y),
                                static_cast<double>(pose_data.rotation.z), static_cast<double>(pose_data.rotation.w));
 
-        cMw.buildFrom(ctw, cqw);
+        cMw.build(ctw, cqw);
 
         odo_vel.resize(6, false);
         odo_vel[0] = static_cast<double>(pose_data.velocity.x);
@@ -128,7 +129,7 @@ int main()
         vpQuaternionVector cqw(static_cast<double>(pose_data.rotation.x), static_cast<double>(pose_data.rotation.y),
                                static_cast<double>(pose_data.rotation.z), static_cast<double>(pose_data.rotation.w));
 
-        cMw.buildFrom(ctw, cqw);
+        cMw.build(ctw, cqw);
 
         odo_vel.resize(6, false);
         odo_vel[0] = static_cast<double>(pose_data.velocity.x);

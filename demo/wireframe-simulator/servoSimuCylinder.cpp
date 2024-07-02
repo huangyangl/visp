@@ -66,6 +66,10 @@
 
 #if defined(VISP_HAVE_DISPLAY) && (defined(VISP_HAVE_LAPACK) || defined(VISP_HAVE_EIGEN3) || defined(VISP_HAVE_OPENCV))
 
+#if defined(ENABLE_VISP_NAMESPACE)
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 /*!
 
   Print the program options.
@@ -167,8 +171,8 @@ int main(int argc, const char **argv)
       return EXIT_FAILURE;
     }
 
-    vpImage<vpRGBa> Iint(480, 640, 255);
-    vpImage<vpRGBa> Iext(480, 640, 255);
+    vpImage<vpRGBa> Iint(480, 640, vpRGBa(255));
+    vpImage<vpRGBa> Iext(480, 640, vpRGBa(255));
 
 #if defined(VISP_HAVE_X11)
     vpDisplayX display[2];

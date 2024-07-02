@@ -36,8 +36,8 @@
  * \brief Contains abstract elements for a Distance to Feature type feature.
  */
 
-#ifndef _vpMeTracker_h_
-#define _vpMeTracker_h_
+#ifndef VP_ME_TRACKER_H
+#define VP_ME_TRACKER_H
 
 #include <visp3/core/vpColVector.h>
 #include <visp3/core/vpTracker.h>
@@ -48,6 +48,8 @@
 #include <list>
 #include <math.h>
 
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpMeTracker
  *
@@ -55,29 +57,9 @@
  * \brief Contains abstract elements for a Distance to Feature type feature.
  *
  * 2D state = list of points, 3D state = feature
- */
+*/
 class VISP_EXPORT vpMeTracker : public vpTracker
 {
-protected:
-  /** @name Protected Attributes Inherited from vpMeTracker */
-  //@{
-  //! Tracking dependent variables/functions
-  //! List of tracked moving edges points.
-  std::list<vpMeSite> m_meList;
-  //! Moving edges initialisation parameters
-  vpMe *m_me;
-  //! Initial range
-  unsigned int m_init_range;
-  //! Number of good moving-edges that are tracked
-  int m_nGoodElement;
-  //! Mask used to disable tracking on a part of image
-  const vpImage<bool> *m_mask;
-  //! Mask used to determine candidate points for initialization in an image
-  const vpImage<bool> *m_maskCandidates;
-  //! Moving-edges display type
-  vpMeSite::vpMeSiteDisplayType m_selectDisplay;
-  //@}
-
 public:
   /*!
    * Default constructor.
@@ -92,7 +74,7 @@ public:
   /*!
    * Destructor.
    */
-  virtual ~vpMeTracker() vp_override;
+  virtual ~vpMeTracker() VP_OVERRIDE;
 
   /** @name Public Member Functions Inherited from vpMeTracker */
   //@{
@@ -314,12 +296,35 @@ public:
    * \param i : Pixel coordinate along the rows.
    * \param j : Pixel coordinate along the columns.
    */
-  vp_deprecated static bool inMask(const vpImage<bool> *mask, unsigned int i, unsigned int j)
+  VP_DEPRECATED static bool inMask(const vpImage<bool> *mask, unsigned int i, unsigned int j)
   {
     return inRoiMask(mask, i, j);
   }
   //@}
 #endif
+
+protected:
+  /** @name Protected Attributes Inherited from vpMeTracker */
+  //@{
+  //! Tracking dependent variables/functions
+  //! List of tracked moving edges points.
+  std::list<vpMeSite> m_meList;
+  //! Moving edges initialisation parameters
+  vpMe *m_me;
+  //! Initial range
+  unsigned int m_init_range;
+  //! Number of good moving-edges that are tracked
+  int m_nGoodElement;
+  //! Mask used to disable tracking on a part of image
+  const vpImage<bool> *m_mask;
+  //! Mask used to determine candidate points for initialization in an image
+  const vpImage<bool> *m_maskCandidates;
+  //! Moving-edges display type
+  vpMeSite::vpMeSiteDisplayType m_selectDisplay;
+  //@}
+
 };
+
+END_VISP_NAMESPACE
 
 #endif

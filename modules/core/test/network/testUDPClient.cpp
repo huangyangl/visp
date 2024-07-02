@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test for UDP client.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testUDPClient.cpp
@@ -46,17 +44,21 @@
 
 namespace
 {
-struct vpDataType_t {
+struct vpDataType_t
+{
   double double_val;
   int int_val;
 
-  vpDataType_t() : double_val(0.0), int_val(0) {}
-  vpDataType_t(double dbl, int i) : double_val(dbl), int_val(i) {}
+  vpDataType_t() : double_val(0.0), int_val(0) { }
+  vpDataType_t(double dbl, int i) : double_val(dbl), int_val(i) { }
 };
 } // namespace
 
 int main(int argc, char **argv)
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
 // inet_ntop() used in vpUDPClient is not supported on win XP
 #ifdef VISP_HAVE_FUNC_INET_NTOP
   try {
@@ -65,9 +67,10 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; i++) {
       if (std::string(argv[i]) == "--ip" && i + 1 < argc) {
         servername = std::string(argv[i + 1]);
-      } else if (std::string(argv[i]) == "--help" || std::string(argv[i]) == "-h") {
+      }
+      else if (std::string(argv[i]) == "--help" || std::string(argv[i]) == "-h") {
         std::cout << argv[0] << " [--ip <address> (default: 127.0.0.1)] [--help] [-h]"
-                  << "\n";
+          << "\n";
         return EXIT_SUCCESS;
       }
     }
@@ -89,7 +92,7 @@ int main(int argc, char **argv)
       data_type.int_val = *reinterpret_cast<const int *>(msg.c_str() + sizeof(data_type.double_val));
 
       std::cout << "Receive from the server double_val: " << data_type.double_val << " ; int_val: " << data_type.int_val
-                << std::endl;
+        << std::endl;
     }
 
     // Send user message
@@ -104,7 +107,8 @@ int main(int argc, char **argv)
     }
 
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cerr << "Catch an exception: " << e.what() << std::endl;
     return EXIT_FAILURE;
   }

@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test some vpColVector functionalities.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testArray2D.cpp
@@ -50,6 +48,10 @@
 #include <vector>
 
 #include <visp3/core/vpTranslationVector.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 template <typename Type> bool test(const std::string &s, const vpArray2D<Type> &A, const std::vector<Type> &bench)
 {
@@ -145,7 +147,8 @@ TEST_CASE("Test constructors with double", "[constructors]")
     }
     SECTION("Keep row size to 0")
     {
-      vpArray2D<double> A(bench, 0, bench.size());
+      unsigned int size = static_cast<unsigned int>(bench.size());
+      vpArray2D<double> A(bench, 0, size);
       std::cout << "A with row size to 0:\n" << A << std::endl;
       CHECK(test("A", A, bench));
       CHECK(A.getRows() == 1);
@@ -153,7 +156,8 @@ TEST_CASE("Test constructors with double", "[constructors]")
     }
     SECTION("Keep col size to 0")
     {
-      vpArray2D<double> A(bench, bench.size(), 0);
+      unsigned int size = static_cast<unsigned int>(bench.size());
+      vpArray2D<double> A(bench, size, 0);
       std::cout << "A with col size to 0:\n" << A << std::endl;
       CHECK(test("A", A, bench));
       CHECK(A.getRows() == bench.size());
@@ -223,7 +227,8 @@ TEST_CASE("Test constructors with float", "[constructors]")
     }
     SECTION("Keep row size to 0")
     {
-      vpArray2D<float> A(bench, 0, bench.size());
+      unsigned int size = static_cast<unsigned int>(bench.size());
+      vpArray2D<float> A(bench, 0, size);
       std::cout << "A with row size to 0:\n" << A << std::endl;
       CHECK(test("A", A, bench));
       CHECK(A.getRows() == 1);
@@ -231,7 +236,8 @@ TEST_CASE("Test constructors with float", "[constructors]")
     }
     SECTION("Keep col size to 0")
     {
-      vpArray2D<float> A(bench, bench.size(), 0);
+      unsigned int size = static_cast<unsigned int>(bench.size());
+      vpArray2D<float> A(bench, size, 0);
       std::cout << "A with col size to 0:\n" << A << std::endl;
       CHECK(test("A", A, bench));
       CHECK(A.getRows() == bench.size());

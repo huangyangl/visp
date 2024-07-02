@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,17 +31,19 @@
  * Mask on a vpColVector.
  */
 
-#ifndef _vpSubColVector_h_
-#define _vpSubColVector_h_
-
-#include <visp3/core/vpColVector.h>
-
 /*!
  * \file vpSubColVector.h
  *
  * \brief Definition of the vpSubColVector class
  */
 
+#ifndef VP_SUBCOL_VECTOR_H
+#define VP_SUBCOL_VECTOR_H
+
+#include <visp3/core/vpConfig.h>
+#include <visp3/core/vpColVector.h>
+
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpSubColVector
  * \ingroup group_core_matrices
@@ -51,23 +53,13 @@
  * a vpSubColVector.
  *
  * \sa vpMatrix vpColVector vpRowVector
- */
+*/
 class VISP_EXPORT vpSubColVector : public vpColVector
 {
-private:
-  //! Copy constructor unavailable
-  vpSubColVector(const vpSubColVector & /* m */);
-
-protected:
-  //! Number of row of parent vpColVector at initialization
-  unsigned int m_pRowNum;
-  //! Parent vpColVector
-  vpColVector *m_parent;
-
 public:
   vpSubColVector();
   vpSubColVector(vpColVector &v, const unsigned int &offset, const unsigned int &nrows);
-  virtual ~vpSubColVector() vp_override;
+  virtual ~vpSubColVector() VP_OVERRIDE;
 
   void checkParentStatus() const;
 
@@ -82,6 +74,18 @@ public:
   vpSubColVector &operator=(const vpColVector &B);
   vpSubColVector &operator=(const vpMatrix &B);
   vpSubColVector &operator=(const double &x);
-};
 
+protected:
+  //! Number of row of parent vpColVector at initialization
+  unsigned int m_pRowNum;
+  //! Parent vpColVector
+  vpColVector *m_parent;
+
+private:
+  //! Copy constructor unavailable
+  vpSubColVector(const vpSubColVector &v /* m */);
+
+
+};
+END_VISP_NAMESPACE
 #endif

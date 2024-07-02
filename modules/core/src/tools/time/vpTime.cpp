@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +32,13 @@
  *
 *****************************************************************************/
 
+/*!
+  \file vpTime.cpp
+  \brief Time management and measurement
+*/
+
 #include <ctime>
 
-#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpTime.h>
 
 // https://devblogs.microsoft.com/cppblog/c14-stl-features-fixes-and-breaking-changes-in-visual-studio-14-ctp1/
@@ -45,11 +48,6 @@
 #else
 #define USE_CXX11_CHRONO 0
 #endif
-
-/*!
-  \file vpTime.cpp
-  \brief Time management and measurement
-*/
 
 // Unix depend version
 
@@ -61,6 +59,7 @@
 #include <windows.h>
 #endif
 
+BEGIN_VISP_NAMESPACE
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace vpTime
 {
@@ -335,26 +334,29 @@ characters| CDT | | %%        | A % sign                                        
 
   The following example shows how to use this function:
   \code
-#include <visp3/core/vpTime.h>
+  #include <visp3/core/vpTime.h>
 
-int main()
-{
-  std::cout << "%Y/%m/%d %H:%M:%S (default): " << vpTime::getDateTime() << std::endl;
-  std::cout << "%Y-%m-%d_%H.%M.%S format   : " << vpTime::getDateTime("%Y-%m-%d_%H.%M.%S") << std::endl;
-  std::cout << "%F format   : " << vpTime::getDateTime("%F") << std::endl;
-  std::cout << "%X format   : " << vpTime::getDateTime("%X") << std::endl;
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  return 0;
-}
-   \endcode
-   It produces the following output:
-   \code
-%Y/%m/%d %H:%M:%S (default): 2016/10/05 19:42:44
-%Y-%m-%d_%H.%M.%S format   : 2016-10-05_19.42.44
-%F                format   : 2016-10-05
-%X                format   : 19:42:44
-   \endcode
+  int main()
+  {
+    std::cout << "%Y/%m/%d %H:%M:%S (default): " << vpTime::getDateTime() << std::endl;
+    std::cout << "%Y-%m-%d_%H.%M.%S format   : " << vpTime::getDateTime("%Y-%m-%d_%H.%M.%S") << std::endl;
+    std::cout << "%F format   : " << vpTime::getDateTime("%F") << std::endl;
+    std::cout << "%X format   : " << vpTime::getDateTime("%X") << std::endl;
 
+    return 0;
+  }
+  \endcode
+  It produces the following output:
+  \code
+  %Y/%m/%d %H:%M:%S (default): 2016/10/05 19:42:44
+  %Y-%m-%d_%H.%M.%S format   : 2016-10-05_19.42.44
+  %F                format   : 2016-10-05
+  %X                format   : 19:42:44
+  \endcode
  */
 std::string getDateTime(const std::string &format)
 {
@@ -419,3 +421,4 @@ void vpChrono::stop()
   m_durationMs += vpTime::measureTimeMs() - m_lastTimePoint;
 #endif
 }
+END_VISP_NAMESPACE

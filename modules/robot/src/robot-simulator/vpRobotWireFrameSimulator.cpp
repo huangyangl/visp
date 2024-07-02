@@ -43,6 +43,7 @@
 #include "../wireframe-simulator/vpScene.h"
 #include "../wireframe-simulator/vpVwstack.h"
 
+BEGIN_VISP_NAMESPACE
 /*!
   Basic constructor
 */
@@ -61,7 +62,7 @@ vpRobotWireFrameSimulator::vpRobotWireFrameSimulator()
   setSamplingTime(0.010);
   velocity.resize(6);
   I.resize(480, 640);
-  I = 255;
+  I = vpRGBa(255);
 #if defined(VISP_HAVE_DISPLAY)
   display.init(I, 0, 0, "The External view");
 #endif
@@ -86,7 +87,7 @@ vpRobotWireFrameSimulator::vpRobotWireFrameSimulator(bool do_display)
   setSamplingTime(0.010);
   velocity.resize(6);
   I.resize(480, 640);
-  I = 255;
+  I = vpRGBa(255);
 
 #if defined(VISP_HAVE_DISPLAY)
   if (do_display)
@@ -354,7 +355,7 @@ vpHomogeneousMatrix vpRobotWireFrameSimulator::get_cMo()
   delete[] fMit;
   return cMoTemp;
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning:
 // libvisp_robot.a(vpRobotWireFrameSimulator.cpp.o) has no symbols

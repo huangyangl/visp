@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +34,10 @@
 #include <visp3/core/vpConfig.h>
 
 #include <visp3/detection/vpDetectorBase.h>
+BEGIN_VISP_NAMESPACE
 
 /*!
-        Default constructor.
+  Default constructor.
 */
 vpDetectorBase::vpDetectorBase() : m_polygon(), m_message(), m_nb_objects(0), m_timeout_ms(0) { }
 
@@ -120,3 +120,5 @@ vpRect vpDetectorBase::getBBox(size_t i) const
   vpRect roi(vpImagePoint(top, left), vpImagePoint(bottom, right));
   return roi;
 }
+
+END_VISP_NAMESPACE

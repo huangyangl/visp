@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test for mouse click manipulations.
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDebug.h>
@@ -64,6 +62,10 @@
 // List of allowed command line options
 #define GETOPTARGS "i:hlt:dc"
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
+
 typedef enum { vpX11, vpGTK, vpGDI, vpD3D, vpCV } vpDisplayType;
 
 void usage(const char *name, const char *badparam, std::string ipath, vpDisplayType &dtype);
@@ -89,7 +91,7 @@ SYNOPSIS\n\
   %s [-i <input image path>] \n\
      [-t <type of video device>] [-l] [-c] [-d] [-h]\n\
 ",
-          name);
+name);
 
   std::string display;
   switch (dtype) {
@@ -185,13 +187,17 @@ bool getOptions(int argc, const char **argv, std::string &ipath, vpDisplayType &
       // Parse the display type option
       if (sDisplayType.compare("X11") == 0) {
         dtype = vpX11;
-      } else if (sDisplayType.compare("GTK") == 0) {
+      }
+      else if (sDisplayType.compare("GTK") == 0) {
         dtype = vpGTK;
-      } else if (sDisplayType.compare("GDI") == 0) {
+      }
+      else if (sDisplayType.compare("GDI") == 0) {
         dtype = vpGDI;
-      } else if (sDisplayType.compare("D3D") == 0) {
+      }
+      else if (sDisplayType.compare("D3D") == 0) {
         dtype = vpD3D;
-      } else if (sDisplayType.compare("CV") == 0) {
+      }
+      else if (sDisplayType.compare("CV") == 0) {
         dtype = vpCV;
       }
 
@@ -304,8 +310,8 @@ int main(int argc, const char **argv)
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
         std::cout << "  Since -i <visp image path=" << ipath << "> "
-                  << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
-                  << "  we skip the environment variable." << std::endl;
+          << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
+          << "  we skip the environment variable." << std::endl;
       }
     }
 
@@ -314,9 +320,9 @@ int main(int argc, const char **argv)
       usage(argv[0], nullptr, ipath, opt_dtype);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
-                << "  environment variable to specify the location of the " << std::endl
-                << "  image path where test images are located." << std::endl
-                << std::endl;
+        << "  environment variable to specify the location of the " << std::endl
+        << "  image path where test images are located." << std::endl
+        << std::endl;
       return EXIT_FAILURE;
     }
 
@@ -440,7 +446,8 @@ int main(int argc, const char **argv)
       }
     }
     delete display;
-  } catch (...) {
+  }
+  catch (...) {
     vpERROR_TRACE("Error while displaying the image");
     return EXIT_FAILURE;
   }

@@ -39,17 +39,19 @@
 #ifndef vpMbtMeLine_HH
 #define vpMbtMeLine_HH
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpPoint.h>
 #include <visp3/me/vpMe.h>
 #include <visp3/me/vpMeTracker.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpMbtMeLine
  * \brief Implementation of a line used by the model-based tracker.
  * \ingroup group_mbt_features
- */
+*/
 class VISP_EXPORT vpMbtMeLine : public vpMeTracker
 {
 private:
@@ -66,7 +68,7 @@ public:
 
 public:
   vpMbtMeLine();
-  virtual ~vpMbtMeLine() vp_override;
+  virtual ~vpMbtMeLine() VP_OVERRIDE;
 
   void computeProjectionError(const vpImage<unsigned char> &_I, double &_sumErrorRad, unsigned int &_nbFeatures,
                               const vpMatrix &SobelX, const vpMatrix &SobelY, bool display, unsigned int length,
@@ -111,7 +113,7 @@ public:
 private:
   void bubbleSortI();
   void bubbleSortJ();
-  void sample(const vpImage<unsigned char> &image, bool doNotTrack = false) vp_override;
+  void sample(const vpImage<unsigned char> &image, bool doNotTrack = false) VP_OVERRIDE;
   void seekExtremities(const vpImage<unsigned char> &I);
   void setExtremities();
   void suppressPoints(const vpImage<unsigned char> &I);
@@ -119,7 +121,7 @@ private:
   void reSample(const vpImage<unsigned char> &image, const vpImagePoint &ip1, const vpImagePoint &ip2);
   void updateDelta();
 };
-
+END_VISP_NAMESPACE
 #endif // #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #endif

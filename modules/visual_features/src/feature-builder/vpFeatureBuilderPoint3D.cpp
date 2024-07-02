@@ -38,10 +38,13 @@
   \brief  conversion between tracker
   and visual feature 3D Point
 */
+
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpException.h>
 #include <visp3/visual_features/vpFeatureBuilder.h>
 #include <visp3/visual_features/vpFeatureException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
 
   Initialize a 3D point feature using the coordinates of the point
@@ -64,14 +67,10 @@ void vpFeatureBuilder::create(vpFeaturePoint3D &s, const vpPoint &t)
     s.set_Y(t.cP[1] / t.cP[3]);
     s.set_Z(t.cP[2] / t.cP[3]);
 
-  } catch (...) {
+  }
+  catch (...) {
     vpERROR_TRACE("Error caught");
     throw;
   }
 }
-
-/*
- * Local variables:
- * c-basic-offset: 2
- * End:
- */
+END_VISP_NAMESPACE

@@ -54,6 +54,7 @@
 #include <visp3/core/vpRGBa.h>
 #include <visp3/core/vpRect.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpV4l2Grabber
 
@@ -102,6 +103,10 @@
   \code
   #include <visp3/io/vpImageIo.h>
   #include <visp3/sensor/vpV4l2Grabber.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -208,7 +213,7 @@ public:
 
 public:
   vpV4l2Grabber();
-  explicit vpV4l2Grabber(bool verbose);
+  VP_EXPLICIT vpV4l2Grabber(bool verbose);
   vpV4l2Grabber(unsigned input, unsigned scale = vpV4l2Grabber::DEFAULT_SCALE);
   vpV4l2Grabber(vpImage<unsigned char> &I, unsigned input, unsigned scale = vpV4l2Grabber::DEFAULT_SCALE);
   vpV4l2Grabber(vpImage<vpRGBa> &I, unsigned input, unsigned scale = vpV4l2Grabber::DEFAULT_SCALE);
@@ -346,6 +351,6 @@ private:
   vpV4l2FrameFormatType m_frameformat;
   vpV4l2PixelFormatType m_pixelformat;
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

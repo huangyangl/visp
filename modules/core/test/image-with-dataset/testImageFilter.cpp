@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,8 @@
  *
  * Description:
  * Test some functions from vpImageFilter class.
- *
-*****************************************************************************/
+ */
+
 /*!
   \example testImageFilter.cpp
 
@@ -48,6 +47,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdi:p:h"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 namespace
 {

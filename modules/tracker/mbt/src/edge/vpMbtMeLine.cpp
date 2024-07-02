@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
@@ -30,11 +29,8 @@
  *
  * Description:
  * Make the complete tracking of an object by using its CAD model
- *
- * Authors:
- * Romain Tallonneau
- *
-*****************************************************************************/
+ */
+
 #include <visp3/core/vpConfig.h>
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -46,10 +42,12 @@
 #include <cmath>     // std::fabs
 #include <limits>    // numeric_limits
 
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpRobust.h>
 #include <visp3/core/vpTrackingException.h>
 #include <visp3/mbt/vpMbtMeLine.h>
 
+BEGIN_VISP_NAMESPACE
 //! Normalize an angle between -Pi and Pi
 static void normalizeAngle(double &delta)
 {
@@ -730,5 +728,5 @@ void vpMbtMeLine::bubbleSortJ()
 #endif
   m_meList.sort(sortByJ);
 }
-
+END_VISP_NAMESPACE
 #endif

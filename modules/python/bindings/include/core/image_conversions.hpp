@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,39 +75,39 @@ struct SimpleConversionStruct
   unsigned int srcBytesPerPixel;
   unsigned int destBytesPerPixel;
 
-  void add_conversion_binding(py::class_<vpImageConvert> &pyImageConvert)
+  void add_conversion_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert)
   {
     pyImageConvert.def_static(name.c_str(), [this](py::array_t<unsigned char, py::array::c_style> &src,
                                                    py::array_t<unsigned char, py::array::c_style> &dest) {
-      py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-      if (bufsrc.ndim < 2 || bufdest.ndim < 2) {
-        throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
-      }
-      if (bufsrc.shape[0] != bufdest.shape[0] || bufsrc.shape[1] != bufdest.shape[1]) {
-        std::stringstream ss;
-        ss << "src and dest must have the same number of pixels, but got src = " << shape_to_string(bufsrc.shape);
-        ss << "and dest = " << shape_to_string(bufdest.shape);
-        throw std::runtime_error(ss.str());
-      }
-      if (srcBytesPerPixel > 1 && (bufsrc.ndim != 3 || bufsrc.shape[2] != srcBytesPerPixel)) {
-        std::stringstream ss;
-        ss << "Source array should be a 3D array of shape (H, W, " << srcBytesPerPixel << ")";
-        throw std::runtime_error(ss.str());
-      }
-      else if (srcBytesPerPixel == 1 && bufsrc.ndim == 3 && bufsrc.shape[2] > 1) {
-        throw std::runtime_error("Source array should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
-      }
-      if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
-        std::stringstream ss;
-        ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
-        throw std::runtime_error(ss.str());
-      }
-      else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
-        throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
-      }
-      unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
-      unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
-      call_conversion_fn(fn, src_ptr, dest_ptr, bufsrc.shape[0], bufsrc.shape[1]);
+                                                     py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                     if (bufsrc.ndim < 2 || bufdest.ndim < 2) {
+                                                       throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
+                                                     }
+                                                     if (bufsrc.shape[0] != bufdest.shape[0] || bufsrc.shape[1] != bufdest.shape[1]) {
+                                                       std::stringstream ss;
+                                                       ss << "src and dest must have the same number of pixels, but got src = " << shape_to_string(bufsrc.shape);
+                                                       ss << "and dest = " << shape_to_string(bufdest.shape);
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     if (srcBytesPerPixel > 1 && (bufsrc.ndim != 3 || bufsrc.shape[2] != srcBytesPerPixel)) {
+                                                       std::stringstream ss;
+                                                       ss << "Source array should be a 3D array of shape (H, W, " << srcBytesPerPixel << ")";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     else if (srcBytesPerPixel == 1 && bufsrc.ndim == 3 && bufsrc.shape[2] > 1) {
+                                                       throw std::runtime_error("Source array should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
+                                                     }
+                                                     if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
+                                                       std::stringstream ss;
+                                                       ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
+                                                       throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
+                                                     }
+                                                     unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
+                                                     unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
+                                                     call_conversion_fn(fn, src_ptr, dest_ptr, bufsrc.shape[0], bufsrc.shape[1]);
     }, "See C++ documentation of the function for more info", py::arg("src"), py::arg("dest"));
   }
 };
@@ -123,39 +123,39 @@ struct SimpleConversionStruct<ConversionFunction2DWithFlip>
   unsigned int srcBytesPerPixel;
   unsigned int destBytesPerPixel;
 
-  void add_conversion_binding(py::class_<vpImageConvert> &pyImageConvert)
+  void add_conversion_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert)
   {
     pyImageConvert.def_static(name.c_str(), [this](py::array_t<unsigned char, py::array::c_style> &src,
                                                    py::array_t<unsigned char, py::array::c_style> &dest, bool flip) {
-      py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-      if (bufsrc.ndim < 2 || bufdest.ndim < 2) {
-        throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
-      }
-      if (bufsrc.shape[0] != bufdest.shape[0] || bufsrc.shape[1] != bufdest.shape[1]) {
-        std::stringstream ss;
-        ss << "src and dest must have the same number of pixels, but got src = " << shape_to_string(bufsrc.shape);
-        ss << "and dest = " << shape_to_string(bufdest.shape);
-        throw std::runtime_error(ss.str());
-      }
-      if (srcBytesPerPixel > 1 && (bufsrc.ndim != 3 || bufsrc.shape[2] != srcBytesPerPixel)) {
-        std::stringstream ss;
-        ss << "Source array should be a 3D array of shape (H, W, " << srcBytesPerPixel << ")";
-        throw std::runtime_error(ss.str());
-      }
-      else if (srcBytesPerPixel == 1 && bufsrc.ndim == 3 && bufsrc.shape[2] > 1) {
-        throw std::runtime_error("Source array should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
-      }
-      if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
-        std::stringstream ss;
-        ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
-        throw std::runtime_error(ss.str());
-      }
-      else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
-        throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
-      }
-      unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
-      unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
-      call_conversion_fn(fn, src_ptr, dest_ptr, bufsrc.shape[0], bufsrc.shape[1], flip);
+                                                     py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                     if (bufsrc.ndim < 2 || bufdest.ndim < 2) {
+                                                       throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
+                                                     }
+                                                     if (bufsrc.shape[0] != bufdest.shape[0] || bufsrc.shape[1] != bufdest.shape[1]) {
+                                                       std::stringstream ss;
+                                                       ss << "src and dest must have the same number of pixels, but got src = " << shape_to_string(bufsrc.shape);
+                                                       ss << "and dest = " << shape_to_string(bufdest.shape);
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     if (srcBytesPerPixel > 1 && (bufsrc.ndim != 3 || bufsrc.shape[2] != srcBytesPerPixel)) {
+                                                       std::stringstream ss;
+                                                       ss << "Source array should be a 3D array of shape (H, W, " << srcBytesPerPixel << ")";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     else if (srcBytesPerPixel == 1 && bufsrc.ndim == 3 && bufsrc.shape[2] > 1) {
+                                                       throw std::runtime_error("Source array should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
+                                                     }
+                                                     if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
+                                                       std::stringstream ss;
+                                                       ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
+                                                       throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
+                                                     }
+                                                     unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
+                                                     unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
+                                                     call_conversion_fn(fn, src_ptr, dest_ptr, bufsrc.shape[0], bufsrc.shape[1], flip);
     }, "See C++ documentation of the function for more info", py::arg("src"), py::arg("dest"), py::arg("flip") = false);
   }
 };
@@ -172,43 +172,43 @@ struct ConversionFromYUVLike
 
   unsigned int destBytesPerPixel;
 
-  void add_conversion_binding(py::class_<vpImageConvert> &pyImageConvert)
+  void add_conversion_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert)
   {
     pyImageConvert.def_static(name.c_str(), [this](py::array_t<unsigned char, py::array::c_style> &src,
                                                    py::array_t<unsigned char, py::array::c_style> &dest) {
-      py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-      if (bufdest.ndim < 2) {
-        throw std::runtime_error("Expected to have dest array with at least two dimensions.");
-      }
+                                                     py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                     if (bufdest.ndim < 2) {
+                                                       throw std::runtime_error("Expected to have dest array with at least two dimensions.");
+                                                     }
 
-      unsigned int height = bufdest.shape[0], width = bufdest.shape[1];
+                                                     unsigned int height = bufdest.shape[0], width = bufdest.shape[1];
 
-      unsigned expectedSourceBytes = sourceBytesFn(height, width);
+                                                     unsigned expectedSourceBytes = sourceBytesFn(height, width);
 
-      unsigned actualBytes = 1;
-      for (unsigned int i = 0; i < bufsrc.ndim; ++i) {
-        actualBytes *= bufsrc.shape[i];
-      }
+                                                     unsigned actualBytes = 1;
+                                                     for (unsigned int i = 0; i < bufsrc.ndim; ++i) {
+                                                       actualBytes *= bufsrc.shape[i];
+                                                     }
 
-      if (actualBytes != expectedSourceBytes) {
-        std::stringstream ss;
-        ss << "Expected to have " << expectedSourceBytes << " bytes in the input array, but got " << actualBytes << " elements.";
-        throw std::runtime_error(ss.str());
-      }
+                                                     if (actualBytes != expectedSourceBytes) {
+                                                       std::stringstream ss;
+                                                       ss << "Expected to have " << expectedSourceBytes << " bytes in the input array, but got " << actualBytes << " elements.";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
 
-      if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
-        std::stringstream ss;
-        ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
-        throw std::runtime_error(ss.str());
-      }
-      else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
-        throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
-      }
+                                                     if (destBytesPerPixel > 1 && (bufdest.ndim != 3 || bufdest.shape[2] != destBytesPerPixel)) {
+                                                       std::stringstream ss;
+                                                       ss << "Destination array should be a 3D array of shape (H, W, " << destBytesPerPixel << ")";
+                                                       throw std::runtime_error(ss.str());
+                                                     }
+                                                     else if (destBytesPerPixel == 1 && bufdest.ndim == 3 && bufdest.shape[2] > 1) {
+                                                       throw std::runtime_error("Destination should be a either a 2D array of shape H x W or a 3D array of shape (H, W, 1)");
+                                                     }
 
 
-      unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
-      unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
-      call_conversion_fn(fn, src_ptr, dest_ptr, bufdest.shape[0], bufdest.shape[1]);
+                                                     unsigned char *src_ptr = static_cast<unsigned char *>(bufsrc.ptr);
+                                                     unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
+                                                     call_conversion_fn(fn, src_ptr, dest_ptr, bufdest.shape[0], bufdest.shape[1]);
     }, py::arg("src"), py::arg("dest"));
   }
 };
@@ -228,139 +228,139 @@ unsigned size411(unsigned h, unsigned w)
 
 void rgb_or_rgba_to_hsv_verification(const py::buffer_info &bufsrc, const py::buffer_info &bufdest, const unsigned destBytes, const unsigned height, const unsigned width)
 {
-    if (bufsrc.ndim != 3 || bufdest.ndim != 3) {
-      throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
-    }
-    if (bufdest.shape[0] != 3) {
-      throw std::runtime_error("Source array should be a 3D array of shape (3, H, W) ");
-    }
-    if (bufsrc.shape[2] != destBytes) {
-      std::stringstream ss;
-      ss << "Target array should be a 3D array of shape (H, W, " << destBytes << ")";
-      throw std::runtime_error(ss.str());
-    }
-    if (bufsrc.shape[0] != height || bufsrc.shape[1] != width) {
-      std::stringstream ss;
-      ss << "src and dest must have the same number of pixels, but got HSV planes with dimensions (" << height << ", " << width << ")";
-      ss << "and RGB array with dimensions (" << bufdest.shape[0] << ", " << bufdest.shape[1] << ")";
-      throw std::runtime_error(ss.str());
-    }
+  if (bufsrc.ndim != 3 || bufdest.ndim != 3) {
+    throw std::runtime_error("Expected to have src and dest arrays with at least two dimensions.");
+  }
+  if (bufdest.shape[0] != 3) {
+    throw std::runtime_error("Source array should be a 3D array of shape (3, H, W) ");
+  }
+  if (bufsrc.shape[2] != destBytes) {
+    std::stringstream ss;
+    ss << "Target array should be a 3D array of shape (H, W, " << destBytes << ")";
+    throw std::runtime_error(ss.str());
+  }
+  if (bufsrc.shape[0] != height || bufsrc.shape[1] != width) {
+    std::stringstream ss;
+    ss << "src and dest must have the same number of pixels, but got HSV planes with dimensions (" << height << ", " << width << ")";
+    ss << "and RGB array with dimensions (" << bufdest.shape[0] << ", " << bufdest.shape[1] << ")";
+    throw std::runtime_error(ss.str());
+  }
 }
 
-void add_hsv_double_to_rgb_or_rgba_binding(py::class_<vpImageConvert> &pyImageConvert,
+void add_hsv_double_to_rgb_or_rgba_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert,
                                     void (*fn)(const double *, const double *, const double *, unsigned char *, unsigned int), const char *name, const unsigned destBytes)
 {
   pyImageConvert.def_static(name, [fn, destBytes](py::array_t<double, py::array::c_style> &src,
                                                   py::array_t<unsigned char, py::array::c_style> &dest) {
-    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-    const unsigned height = bufsrc.shape[1];
-    const unsigned width = bufsrc.shape[2];
-    rgb_or_rgba_to_hsv_verification(bufdest, bufsrc, destBytes, height, width);
+                                                    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                    const unsigned height = bufsrc.shape[1];
+                                                    const unsigned width = bufsrc.shape[2];
+                                                    rgb_or_rgba_to_hsv_verification(bufdest, bufsrc, destBytes, height, width);
 
-    const double *h = static_cast<double *>(bufsrc.ptr);
-    const double *s = h + (height * width);
-    const double *v = s + (height * width);
-    unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
-    fn(h, s, v, dest_ptr, height * width);
+                                                    const double *h = static_cast<double *>(bufsrc.ptr);
+                                                    const double *s = h + (height * width);
+                                                    const double *v = s + (height * width);
+                                                    unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
+                                                    fn(h, s, v, dest_ptr, height * width);
 
   }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("hsv"), py::arg("rgb"));
 }
 
-void add_hsv_uchar_to_rgb_or_rgba_binding(py::class_<vpImageConvert> &pyImageConvert,
+void add_hsv_uchar_to_rgb_or_rgba_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert,
                                     void (*fn)(const unsigned char *, const unsigned char *, const unsigned char *, unsigned char *, unsigned int, bool), const char *name, const unsigned destBytes)
 {
   pyImageConvert.def_static(name, [fn, destBytes](py::array_t<unsigned char, py::array::c_style> &src,
                                                   py::array_t<unsigned char, py::array::c_style> &dest, bool h_full) {
-    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-    const unsigned height = bufsrc.shape[1];
-    const unsigned width = bufsrc.shape[2];
-    rgb_or_rgba_to_hsv_verification(bufdest, bufsrc, destBytes, height, width);
+                                                    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                    const unsigned height = bufsrc.shape[1];
+                                                    const unsigned width = bufsrc.shape[2];
+                                                    rgb_or_rgba_to_hsv_verification(bufdest, bufsrc, destBytes, height, width);
 
-    const unsigned char *h = static_cast<unsigned char *>(bufsrc.ptr);
-    const unsigned char *s = h + (height * width);
-    const unsigned char *v = s + (height * width);
-    unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
-    fn(h, s, v, dest_ptr, height * width, h_full);
+                                                    const unsigned char *h = static_cast<unsigned char *>(bufsrc.ptr);
+                                                    const unsigned char *s = h + (height * width);
+                                                    const unsigned char *v = s + (height * width);
+                                                    unsigned char *dest_ptr = static_cast<unsigned char *>(bufdest.ptr);
+                                                    fn(h, s, v, dest_ptr, height * width, h_full);
 
-  }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("hsv"), py::arg("rgb"), py::arg("h_full")=true);
+  }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("hsv"), py::arg("rgb"), py::arg("h_full") = true);
 }
 
-void add_rgb_or_rgba_uchar_to_hsv_binding(py::class_<vpImageConvert> &pyImageConvert,
+void add_rgb_or_rgba_uchar_to_hsv_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert,
                                     void (*fn)(const unsigned char *, unsigned char *, unsigned char *, unsigned char *, unsigned int, bool), const char *name, const unsigned destBytes)
 {
   pyImageConvert.def_static(name, [fn, destBytes](py::array_t<unsigned char, py::array::c_style> &src,
                                                   py::array_t<unsigned char, py::array::c_style> &dest,
                                                   bool h_full) {
-    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-    const unsigned height = bufdest.shape[1];
-    const unsigned width = bufdest.shape[2];
-    rgb_or_rgba_to_hsv_verification(bufsrc, bufdest, destBytes, height, width);
+                                                    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                    const unsigned height = bufdest.shape[1];
+                                                    const unsigned width = bufdest.shape[2];
+                                                    rgb_or_rgba_to_hsv_verification(bufsrc, bufdest, destBytes, height, width);
 
-    unsigned char *h = static_cast<unsigned char *>(bufdest.ptr);
-    unsigned char *s = h + (height * width);
-    unsigned char *v = s + (height * width);
-    const unsigned char *rgb = static_cast<unsigned char *>(bufsrc.ptr);
-    fn(rgb, h, s, v, height * width, h_full);
+                                                    unsigned char *h = static_cast<unsigned char *>(bufdest.ptr);
+                                                    unsigned char *s = h + (height * width);
+                                                    unsigned char *v = s + (height * width);
+                                                    const unsigned char *rgb = static_cast<unsigned char *>(bufsrc.ptr);
+                                                    fn(rgb, h, s, v, height * width, h_full);
 
-  }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("rgb"), py::arg("hsv"), py::arg("h_full")=true);
+  }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("rgb"), py::arg("hsv"), py::arg("h_full") = true);
 }
 
-void add_rgb_or_rgba_double_to_hsv_binding(py::class_<vpImageConvert> &pyImageConvert,
+void add_rgb_or_rgba_double_to_hsv_binding(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert,
                                     void (*fn)(const unsigned char *, double *, double *, double *, unsigned int), const char *name, const unsigned destBytes)
 {
   pyImageConvert.def_static(name, [fn, destBytes](py::array_t<unsigned char, py::array::c_style> &src,
                                                   py::array_t<double, py::array::c_style> &dest) {
-    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-    const unsigned height = bufdest.shape[1];
-    const unsigned width = bufdest.shape[2];
-    rgb_or_rgba_to_hsv_verification(bufsrc, bufdest, destBytes, height, width);
+                                                    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                                    const unsigned height = bufdest.shape[1];
+                                                    const unsigned width = bufdest.shape[2];
+                                                    rgb_or_rgba_to_hsv_verification(bufsrc, bufdest, destBytes, height, width);
 
-    double *h = static_cast<double *>(bufdest.ptr);
-    double *s = h + (height * width);
-    double *v = s + (height * width);
-    const unsigned char *rgb = static_cast<unsigned char *>(bufsrc.ptr);
-    fn(rgb, h, s, v, height * width);
+                                                    double *h = static_cast<double *>(bufdest.ptr);
+                                                    double *s = h + (height * width);
+                                                    double *v = s + (height * width);
+                                                    const unsigned char *rgb = static_cast<unsigned char *>(bufsrc.ptr);
+                                                    fn(rgb, h, s, v, height * width);
 
   }, "Convert from HSV Planes (as a 3 x H x W array) to a an RGB/RGBA array (as an H x W x 3 or H x W x 4 array)", py::arg("rgb"), py::arg("hsv"));
 }
 
 /* Demosaicing implem */
 template <class DataType>
-void add_demosaic_to_rgba_fn(py::class_<vpImageConvert> &pyImageConvert, void (*fn)(const DataType *, DataType *, unsigned int, unsigned int, unsigned int), const char *name)
+void add_demosaic_to_rgba_fn(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert, void (*fn)(const DataType *, DataType *, unsigned int, unsigned int, unsigned int), const char *name)
 {
   pyImageConvert.def_static(name, [fn](py::array_t<DataType, py::array::c_style> &src,
                                        py::array_t<DataType, py::array::c_style> &dest,
                                        unsigned int num_threads) {
-    py::buffer_info bufsrc = src.request(), bufdest = dest.request();
-    const unsigned destBytes = 4;
+                                         py::buffer_info bufsrc = src.request(), bufdest = dest.request();
+                                         const unsigned destBytes = 4;
 
-    if (bufsrc.ndim != 2 || bufdest.ndim != 3) {
-      throw std::runtime_error("Expected to have source array with two dimensions and destination RGBA array with 3.");
-    }
-    if (bufdest.shape[2] != destBytes) {
-      std::stringstream ss;
-      ss << "Target array should be a 3D array of shape (H, W, " << destBytes << ")";
-      throw std::runtime_error(ss.str());
-    }
-    const unsigned height = bufdest.shape[0];
-    const unsigned width = bufdest.shape[1];
-    if (bufsrc.shape[0] != height || bufsrc.shape[1] != width) {
-      std::stringstream ss;
-      ss << "src and dest must have the same number of pixels, but got source with dimensions (" << height << ", " << width << ")";
-      ss << "and RGB array with dimensions (" << bufdest.shape[0] << ", " << bufdest.shape[1] << ")";
-      throw std::runtime_error(ss.str());
-    }
+                                         if (bufsrc.ndim != 2 || bufdest.ndim != 3) {
+                                           throw std::runtime_error("Expected to have source array with two dimensions and destination RGBA array with 3.");
+                                         }
+                                         if (bufdest.shape[2] != destBytes) {
+                                           std::stringstream ss;
+                                           ss << "Target array should be a 3D array of shape (H, W, " << destBytes << ")";
+                                           throw std::runtime_error(ss.str());
+                                         }
+                                         const unsigned height = bufdest.shape[0];
+                                         const unsigned width = bufdest.shape[1];
+                                         if (bufsrc.shape[0] != height || bufsrc.shape[1] != width) {
+                                           std::stringstream ss;
+                                           ss << "src and dest must have the same number of pixels, but got source with dimensions (" << height << ", " << width << ")";
+                                           ss << "and RGB array with dimensions (" << bufdest.shape[0] << ", " << bufdest.shape[1] << ")";
+                                           throw std::runtime_error(ss.str());
+                                         }
 
-    const DataType *bayer = static_cast<DataType *>(bufsrc.ptr);
-    DataType *rgba = static_cast<DataType *>(bufdest.ptr);
-    fn(bayer, rgba, height, width, num_threads);
+                                         const DataType *bayer = static_cast<DataType *>(bufsrc.ptr);
+                                         DataType *rgba = static_cast<DataType *>(bufdest.ptr);
+                                         fn(bayer, rgba, height, width, num_threads);
 
   }, "Demosaic function implementation, see C++ documentation.", py::arg("bayer_data"), py::arg("rgba"), py::arg("num_threads") = 0);
 }
 
 }
 
-void bindings_vpImageConvert(py::class_<vpImageConvert> &pyImageConvert)
+void bindings_vpImageConvert(py::class_<vpImageConvert, std::shared_ptr<vpImageConvert>> &pyImageConvert)
 {
   // Simple conversions where the size input is a single argument
   {

@@ -49,6 +49,7 @@
 #include <ur_rtde/rtde_control_interface.h>
 #include <ur_rtde/rtde_receive_interface.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpRobotUniversalRobots
 
@@ -95,7 +96,7 @@ public:
 
   void getForceTorque(const vpRobot::vpControlFrameType frame, vpColVector &force);
   std::string getPolyScopeVersion();
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) vp_override;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) VP_OVERRIDE;
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &pose);
   int getRobotMode() const;
   std::string getRobotModel() const;
@@ -105,12 +106,12 @@ public:
   bool readPosFile(const std::string &filename, vpColVector &q);
   bool savePosFile(const std::string &filename, const vpColVector &q);
 
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &position) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &position) VP_OVERRIDE;
   void setPosition(const vpRobot::vpControlFrameType frame, const vpPoseVector &pose);
   void setPositioningVelocity(double velocity);
 
   vpRobot::vpRobotStateType setRobotState(vpRobot::vpRobotStateType newState);
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
 
   void set_eMc(const vpHomogeneousMatrix &eMc);
 
@@ -118,9 +119,9 @@ public:
 
 private:
   // Not implemented yet
-  void get_eJe(vpMatrix &_eJe) vp_override { };
-  void get_fJe(vpMatrix &_fJe) vp_override { };
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override { };
+  void get_eJe(vpMatrix &_eJe) VP_OVERRIDE { };
+  void get_fJe(vpMatrix &_fJe) VP_OVERRIDE { };
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE { };
 
 protected:
   void init();
@@ -136,6 +137,6 @@ protected:
   double m_max_linear_acceleration;
   vpRobot::vpControlFrameType m_vel_control_frame;
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

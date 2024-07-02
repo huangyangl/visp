@@ -41,12 +41,14 @@
  */
 
 #include <visp3/core/vpColVector.h>
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMatrix.h>
 #include <visp3/robot/vpPioneer.h>
 #include <visp3/robot/vpRobot.h>
 #include <visp3/robot/vpRobotSimulator.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpSimulatorPioneer
  *
@@ -68,6 +70,10 @@
  * The following code shows how to control this robot in position and velocity.
  * \code
  * #include <visp3/robot/vpSimulatorPioneer.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -93,7 +99,7 @@
  *
  * The usage of this class is also highlighted in \ref
  * tutorial-simu-robot-pioneer.
- */
+*/
 class VISP_EXPORT vpSimulatorPioneer : public vpPioneer, public vpRobotSimulator
 {
 
@@ -115,20 +121,20 @@ public:
 public:
   /** @name Inherited functionalities from vpSimulatorPioneer */
   //@{
-  void get_eJe(vpMatrix &eJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
 
   void getPosition(vpHomogeneousMatrix &wMc) const;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
   //@}
 
 private:
-  void init() vp_override;
+  void init() VP_OVERRIDE;
 
   // Non implemented virtual pure functions
-  void get_fJe(vpMatrix & /*_fJe */) vp_override { };
-  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */) vp_override { };
-  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */) vp_override { };
+  void get_fJe(vpMatrix & /*_fJe */) VP_OVERRIDE { };
+  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */) VP_OVERRIDE { };
+  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */) VP_OVERRIDE { };
 };
-
+END_VISP_NAMESPACE
 #endif

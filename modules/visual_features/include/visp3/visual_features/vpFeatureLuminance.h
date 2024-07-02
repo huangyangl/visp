@@ -31,13 +31,6 @@
  * Luminance based feature.
  */
 
-#ifndef vpFeatureLuminance_h
-#define vpFeatureLuminance_h
-
-#include <visp3/core/vpImage.h>
-#include <visp3/core/vpMatrix.h>
-#include <visp3/visual_features/vpBasicFeature.h>
-
 /*!
  * \file vpFeatureLuminance.h
  * \brief Class that defines the image luminance visual feature
@@ -45,14 +38,23 @@
  * For more details see \cite Collewet08c.
  */
 
+#ifndef vpFeatureLuminance_h
+#define vpFeatureLuminance_h
+
+#include <visp3/core/vpConfig.h>
+#include <visp3/core/vpImage.h>
+#include <visp3/core/vpMatrix.h>
+#include <visp3/visual_features/vpBasicFeature.h>
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpLuminance
  * \brief Class that defines the luminance and gradient of a point.
  *
  * \sa vpFeatureLuminance
- */
+*/
 class VISP_EXPORT vpLuminance
 {
 public:
@@ -93,37 +95,44 @@ public:
   vpFeatureLuminance(const vpFeatureLuminance &f);
 
   //! Destructor.
-  virtual ~vpFeatureLuminance() vp_override;
+  virtual ~vpFeatureLuminance() VP_OVERRIDE;
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
   void buildFrom(vpImage<unsigned char> &I);
+#endif
+  vpFeatureLuminance &build(vpImage<unsigned char> &I);
 
   void display(const vpCameraParameters &cam, const vpImage<unsigned char> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
   void display(const vpCameraParameters &cam, const vpImage<vpRGBa> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
 
-  vpFeatureLuminance *duplicate() const vp_override;
+  vpFeatureLuminance *duplicate() const VP_OVERRIDE;
 
-  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) vp_override;
+  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) VP_OVERRIDE;
   void error(const vpBasicFeature &s_star, vpColVector &e);
 
   double get_Z() const;
+  unsigned int getBorder() const;
+
 
   void init(unsigned int _nbr, unsigned int _nbc, double _Z);
 
-  void init() vp_override;
-  vpMatrix interaction(unsigned int select = FEATURE_ALL) vp_override;
+  void init() VP_OVERRIDE;
+  vpMatrix interaction(unsigned int select = FEATURE_ALL) VP_OVERRIDE;
   void interaction(vpMatrix &L);
-  void print(unsigned int select = FEATURE_ALL) const vp_override;
+  void print(unsigned int select = FEATURE_ALL) const VP_OVERRIDE;
 
   vpFeatureLuminance &operator=(const vpFeatureLuminance &f);
 
 
-  void setCameraParameters(vpCameraParameters &_cam);
+  void setCameraParameters(const vpCameraParameters &_cam);
   void set_Z(double Z);
+
+  static const int DEFAULT_BORDER;
 
 public:
   vpCameraParameters cam;
 };
-
+END_VISP_NAMESPACE
 #endif

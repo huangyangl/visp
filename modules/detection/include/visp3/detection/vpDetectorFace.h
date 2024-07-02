@@ -46,6 +46,7 @@
 
 #include <visp3/detection/vpDetectorBase.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpDetectorFace
  * \ingroup group_detection_face
@@ -60,6 +61,10 @@
  * OpenCV.
  * \code
  * #include <visp3/detection/vpDetectorFace.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -81,7 +86,7 @@
  *
  * A more complete example that works with images acquired from a camera is
  * provided in tutorial-face-detector-live.cpp.
- */
+*/
 class VISP_EXPORT vpDetectorFace : public vpDetectorBase
 {
 protected:
@@ -92,10 +97,10 @@ protected:
 public:
   vpDetectorFace();
 
-  bool detect(const vpImage<unsigned char> &I) vp_override;
+  bool detect(const vpImage<unsigned char> &I) VP_OVERRIDE;
   bool detect(const cv::Mat &frame_gray);
   void setCascadeClassifierFile(const std::string &filename);
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

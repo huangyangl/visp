@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,18 +36,15 @@
  * \brief Tools for pose computation (pose from point only).
  */
 
-#ifndef _vpPose_h_
-#define _vpPose_h_
+#ifndef VP_POSE_H
+#define VP_POSE_H
 
 #include <visp3/core/vpCameraParameters.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpPixelMeterConversion.h>
+#include <visp3/core/vpPlane.h>
 #include <visp3/core/vpPoint.h>
 #include <visp3/core/vpRGBa.h>
-#include <visp3/vision/vpHomography.h>
-#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
-#include <visp3/core/vpList.h>
-#endif
 
 #include <list>
 #include <math.h>
@@ -62,6 +59,8 @@
 
 #include <visp3/core/vpUniRand.h>
 
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpPose
  * \ingroup group_vision_pose
@@ -73,7 +72,7 @@
  * vpPoseFeatures class.
  *
  * To see how to use this class you can follow the \ref tutorial-pose-estimation.
- */
+*/
 class VISP_EXPORT vpPose
 {
 public:
@@ -117,6 +116,9 @@ public:
   double residual; //!< Residual in meter
 
 public:
+  // Typedef a function that checks if a pose is valid.
+  typedef bool (*funcCheckValidityPose)(const vpHomogeneousMatrix &);
+
   /*!
    * Default constructor.
    */
@@ -125,7 +127,7 @@ public:
   /*!
    * Constructor from a vector of points.
    */
-  vpPose(const std::vector<vpPoint> &lP);
+  VP_EXPLICIT vpPose(const std::vector<vpPoint> &lP);
 
   /*!
    * Destructor that deletes the array of point (freed the memory).
@@ -181,7 +183,7 @@ public:
    *   has the smallest residual.
    * - vpPose::RANSAC: Robust Ransac aproach (doesn't need an initialization)
    */
-  bool computePose(vpPoseMethodType method, vpHomogeneousMatrix &cMo, bool (*func)(const vpHomogeneousMatrix &) = nullptr);
+  bool computePose(vpPoseMethodType method, vpHomogeneousMatrix &cMo, funcCheckValidityPose func = nullptr);
 
   /*!
    * @brief Method that first computes the pose \b cMo using the linear approaches of Dementhon and Lagrange
@@ -324,7 +326,7 @@ public:
    * The number of threads used can then be set with setNbParallelRansacThreads().
    * Filter flag can be used  with setRansacFilterFlag().
    */
-  bool poseRansac(vpHomogeneousMatrix &cMo, bool (*func)(const vpHomogeneousMatrix &) = nullptr);
+  bool poseRansac(vpHomogeneousMatrix &cMo, funcCheckValidityPose func = nullptr);
 
   /*!
    * Compute the pose using virtual visual servoing approach and
@@ -406,7 +408,7 @@ public:
   /*!
    * Get the number of inliers.
    */
-  unsigned int getRansacNbInliers() const { return (unsigned int)ransacInliers.size(); }
+  unsigned int getRansacNbInliers() const { return static_cast<unsigned int>(ransacInliers.size()); }
 
   /**
    * Get the vector of indexes corresponding to inliers.
@@ -437,10 +439,9 @@ public:
    */
   vpMatrix getCovarianceMatrix() const
   {
-    if (!computeCovariance)
-      vpTRACE("Warning : The covariance matrix has not been computed. See "
-        "setCovarianceComputation() to do it.");
-
+    if (!computeCovariance) {
+      std::cout << "Warning: The covariance matrix has not been computed. See setCovarianceComputation() to do it." << std::endl;
+    }
     return covarianceMatrix;
   }
 
@@ -645,8 +646,9 @@ public:
                         const unsigned int &numberOfInlierToReachAConsensus, const double &threshold,
                         unsigned int &ninliers, std::vector<vpPoint> &listInliers, vpHomogeneousMatrix &cMo,
                         const int &maxNbTrials = 10000, bool useParallelRansac = true, unsigned int nthreads = 0,
-                        bool (*func)(const vpHomogeneousMatrix &) = nullptr);
+                        funcCheckValidityPose func = nullptr);
 
+#ifdef VISP_HAVE_HOMOGRAPHY
   /*!
    * Carries out the camera pose the image of a rectangle and
    * the intrinsic parameters, the length on x axis is known but the
@@ -668,6 +670,7 @@ public:
    */
   static double poseFromRectangle(vpPoint &p1, vpPoint &p2, vpPoint &p3, vpPoint &p4, double lx,
                                   vpCameraParameters &cam, vpHomogeneousMatrix &cMo);
+#endif
 
   // Check if std:c++17 or higher.
   // Here we cannot use (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_17) in the declaration of the class
@@ -693,7 +696,7 @@ public:
     const std::map<DataId, vpImagePoint> &ips, const vpCameraParameters &camera_intrinsics,
     std::optional<vpHomogeneousMatrix> cMo_init = std::nullopt, bool enable_vvs = true)
   {
-    if (cMo_init && !enable_vvs) {
+    if (cMo_init && (!enable_vvs)) {
       throw(vpException(
         vpException::fatalError,
         "It doesn't make sense to use an initialized pose without enabling VVS to compute the pose from 4 points"));
@@ -782,6 +785,8 @@ protected:
   int calculArbreDementhon(vpMatrix &b, vpColVector &U, vpHomogeneousMatrix &cMo);
 
 private:
+  void callLagrangePose(vpHomogeneousMatrix &cMo);
+
   //! Define the maximum number of iteration in VVS
   int vvsIterMax;
   //! Variable used in the Dementhon approach
@@ -803,7 +808,7 @@ private:
   double ransacThreshold;
   //! Minimal distance point to plane to consider if the point belongs or not
   //! to the plane
-  double distanceToPlaneForCoplanarityTest;
+  double distToPlaneForCoplanarityTest;
   //! RANSAC flag to remove or not degenerate points
   RANSAC_FILTER_FLAGS ransacFlag;
   //! List of points used for the RANSAC (std::vector is contiguous whereas
@@ -828,7 +833,7 @@ private:
      */
     vpRansacFunctor(const vpHomogeneousMatrix &cMo_, unsigned int ransacNbInlierConsensus_, const int ransacMaxTrials_,
       double ransacThreshold_, unsigned int initial_seed_, bool checkDegeneratePoints_,
-      const std::vector<vpPoint> &listOfUniquePoints_, bool (*func_)(const vpHomogeneousMatrix &))
+      const std::vector<vpPoint> &listOfUniquePoints_, funcCheckValidityPose func_)
       : m_best_consensus(), m_checkDegeneratePoints(checkDegeneratePoints_), m_cMo(cMo_), m_foundSolution(false),
       m_func(func_), m_listOfUniquePoints(listOfUniquePoints_), m_nbInliers(0), m_ransacMaxTrials(ransacMaxTrials_),
       m_ransacNbInlierConsensus(ransacNbInlierConsensus_), m_ransacThreshold(ransacThreshold_),
@@ -865,7 +870,7 @@ private:
     bool m_checkDegeneratePoints; //!< Flag to check for degenerate points
     vpHomogeneousMatrix m_cMo; //!< Estimated pose
     bool m_foundSolution; //!< Solution found
-    bool (*m_func)(const vpHomogeneousMatrix &); //!< Pointer to ransac function
+    funcCheckValidityPose m_func; //!< Pointer to ransac function
     std::vector<vpPoint> m_listOfUniquePoints; //!< List of unique points
     unsigned int m_nbInliers; //!< Number of inliers
     int m_ransacMaxTrials; //!< Ransac max trial number
@@ -880,5 +885,7 @@ private:
     bool poseRansacImpl();
   };
 };
+
+END_VISP_NAMESPACE
 
 #endif

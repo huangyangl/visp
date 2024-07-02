@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,17 @@
   \brief Plot curves.
 */
 
-#ifndef vpPlot_H
-#define vpPlot_H
+#ifndef VP_PLOT_H
+#define VP_PLOT_H
 
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDisplay.h>
 #include <visp3/gui/vpPlotGraph.h>
 
 #if defined(VISP_HAVE_DISPLAY)
+
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpPlot
  * \ingroup group_gui_plotter
@@ -104,7 +107,7 @@
  * #endif
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpPlot
 {
 public:
@@ -195,6 +198,8 @@ private:
   void initNbGraph(unsigned int nbGraph);
   void displayGrid();
 };
+
+END_VISP_NAMESPACE
 #endif
 
 #endif

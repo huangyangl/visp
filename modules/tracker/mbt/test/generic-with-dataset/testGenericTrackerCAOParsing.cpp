@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Test MBT CAO parsing.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testGenericTrackerCAOParsing.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -42,6 +44,10 @@
 
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 static std::string ipath = vpIoTools::getViSPImagesDataPath();
 
@@ -64,7 +70,7 @@ TEST_CASE("vpMbGenericTracker load CAO model Linux line ending", "[vpMbGenericTr
 TEST_CASE("vpMbGenericTracker load CAO model Windows line ending", "[vpMbGenericTracker CAO parsing]")
 {
   const std::string cao_filename =
-      vpIoTools::createFilePath(ipath, "mbt-cao/cylinder_cao_model_windows_line_ending.cao");
+    vpIoTools::createFilePath(ipath, "mbt-cao/cylinder_cao_model_windows_line_ending.cao");
   vpMbGenericTracker tracker;
   const bool verbose = true;
   REQUIRE_NOTHROW(tracker.loadModel(cao_filename, verbose));

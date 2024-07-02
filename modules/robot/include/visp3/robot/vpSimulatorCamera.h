@@ -31,20 +31,22 @@
  * Defines the simplest robot : a free flying camera.
  */
 
-#ifndef vpSimulatorCamera_H
-#define vpSimulatorCamera_H
-
 /*!
  * \file vpSimulatorCamera.h
  * \brief class that defines the simplest robot : a free flying camera
  */
 
+#ifndef vpSimulatorCamera_H
+#define vpSimulatorCamera_H
+
 #include <visp3/core/vpColVector.h>
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMatrix.h>
 #include <visp3/robot/vpRobot.h>
 #include <visp3/robot/vpRobotSimulator.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpSimulatorCamera
  *
@@ -69,6 +71,10 @@
  * The following code shows how to control this robot in position and velocity.
  * \code
  * #include <visp3/robot/vpSimulatorCamera.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -98,7 +104,7 @@
  *
  * To know how this class can be used to achieve a visual servoing simulation,
  * you can follow the \ref tutorial-ibvs.
- */
+*/
 class VISP_EXPORT vpSimulatorCamera : public vpRobotSimulator
 {
 protected:
@@ -111,22 +117,22 @@ public:
   /** @name Inherited functionalities from vpSimulatorCamera */
   //@{
   void get_cVe(vpVelocityTwistMatrix &cVe) const;
-  void get_eJe(vpMatrix &eJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
 
   vpHomogeneousMatrix getPosition() const;
   void getPosition(vpHomogeneousMatrix &wMc) const;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
   void setPosition(const vpHomogeneousMatrix &wMc);
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
   //@}
 
 private:
-  void init() vp_override;
+  void init() VP_OVERRIDE;
 
   // Non implemented virtual pure functions
-  void get_fJe(vpMatrix & /*_fJe */) vp_override { };
-  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */) vp_override { };
-  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */) vp_override { };
+  void get_fJe(vpMatrix & /*_fJe */) VP_OVERRIDE { };
+  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */) VP_OVERRIDE { };
+  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */) VP_OVERRIDE { };
 };
-
+END_VISP_NAMESPACE
 #endif

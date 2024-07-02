@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test for Viper650 6 dof robot.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testViper650.cpp
@@ -48,6 +46,9 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   try {
 
     std::cout << "a test for vpViper650 class..." << std::endl;
@@ -61,8 +62,8 @@ int main()
     std::cout << cam << std::endl;
 
     std::cout << "-- Settings associated to the Marlin F033C camera without "
-                 "distortion ---"
-              << std::endl;
+      "distortion ---"
+      << std::endl;
     viper650.init(vpViper650::TOOL_MARLIN_F033C_CAMERA);
 
     std::cout << viper650 << std::endl;
@@ -70,8 +71,8 @@ int main()
     std::cout << cam << std::endl;
 
     std::cout << "-- Settings associated to the Marlin F033C camera with "
-                 "distortion ------"
-              << std::endl;
+      "distortion ------"
+      << std::endl;
     viper650.init(vpViper650::TOOL_MARLIN_F033C_CAMERA, vpCameraParameters::perspectiveProjWithDistortion);
     std::cout << viper650 << std::endl;
     viper650.getCameraParameters(cam, 640, 480);
@@ -101,16 +102,17 @@ int main()
     vpRotationMatrix R;
     fMe.extract(R);
     vpRzyzVector r;
-    r.buildFrom(R);
+    r.build(R);
 
     std::cout << "fMe:" << std::endl
-              << "\tt: " << t.t() << std::endl
-              << "\trzyz (rad): " << r.t() << std::endl
-              << "\trzyz (deg): " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2])
-              << std::endl;
+      << "\tt: " << t.t() << std::endl
+      << "\trzyz (rad): " << r.t() << std::endl
+      << "\trzyz (deg): " << vpMath::deg(r[0]) << " " << vpMath::deg(r[1]) << " " << vpMath::deg(r[2])
+      << std::endl;
 
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e.getStringMessage() << std::endl;
     return EXIT_FAILURE;
   }

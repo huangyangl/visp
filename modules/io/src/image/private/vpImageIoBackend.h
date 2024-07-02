@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@
 #define _vpImageIoBackend_h_
 
 #include <visp3/core/vpImage.h>
+
+BEGIN_VISP_NAMESPACE
 
 // Portable FloatMap format (PFM)
 // Portable Graymap format (PGM)
@@ -132,5 +134,7 @@ void readPNGfromMemStb(const std::vector<unsigned char> &buffer, vpImage<vpRGBa>
 void writePNGtoMemStb(const vpImage<unsigned char> &I, std::vector<unsigned char> &buffer);
 void writePNGtoMemStb(const vpImage<vpRGBa> &I, std::vector<unsigned char> &buffer, bool saveAlpha);
 #endif
+
+END_VISP_NAMESPACE
 
 #endif

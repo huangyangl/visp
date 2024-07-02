@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,15 @@
  * Windows 32 display using D3D
  */
 
+#ifndef VP_DISPLAY_D3D_H
+#define VP_DISPLAY_D3D_H
+
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDisplay.h>
 #if (defined(VISP_HAVE_D3D9))
-
-#ifndef VPDISPLAYD3D_HH
-#define VPDISPLAYD3D_HH
-
 #include <visp3/gui/vpDisplayWin32.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
  * \class vpDisplayD3D
@@ -58,6 +59,10 @@
  * \code
  * #include <visp3/gui/vpDisplayD3D.h>
  * #include <visp3/io/vpImageIo.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -96,7 +101,7 @@
  * #endif
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpDisplayD3D : public vpDisplayWin32
 {
 public:
@@ -110,5 +115,7 @@ public:
                vpScaleType type = SCALE_DEFAULT);
 
 };
+
+END_VISP_NAMESPACE
 #endif
 #endif

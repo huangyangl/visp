@@ -38,9 +38,12 @@
 #ifndef _vpFeatureMomentCInvariant_h_
 #define _vpFeatureMomentCInvariant_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
 #ifdef VISP_MOMENTS_COMBINE_MATRICES
+BEGIN_VISP_NAMESPACE
+
 /*!
  * \class vpFeatureMomentCInvariant
  *
@@ -85,7 +88,7 @@
  *
  * An example of how to use vpFeatureMomentCInvariant in a complete visual
  * servoing example is given in vpFeatureMomentCommon.
- */
+*/
 class VISP_EXPORT vpFeatureMomentCInvariant : public vpFeatureMoment
 {
 public:
@@ -104,12 +107,12 @@ public:
     : vpFeatureMoment(moments, A, B, C, featureMoments, 16)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentCInvariant";
   }
@@ -117,7 +120,7 @@ public:
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentCInvariant";
   }
@@ -179,8 +182,9 @@ public:
    */
   static unsigned int selectPy() { return 1 << 13; }
 };
-
+END_VISP_NAMESPACE
 #else
+BEGIN_VISP_NAMESPACE
 class vpMomentDatabase;
 
 /*!
@@ -249,18 +253,18 @@ public:
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 16), LI(16)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentCInvariant";
   }
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentCInvariant";
   }
@@ -329,5 +333,6 @@ public:
 
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpFeatureMomentCInvariant &featcinv);
 };
+END_VISP_NAMESPACE
 #endif
 #endif

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Simulator based on Coin3d.
- *
- * Authors:
- * Anthony Saunier
- *
-*****************************************************************************/
+ */
 /*!
   \file vpSimulator.cpp
   \brief Implementation of a simulator based on Coin3d (www.coin3d.org).
@@ -46,6 +41,7 @@
 #ifdef VISP_HAVE_COIN3D_AND_GUI
 
 #include <visp3/ar/vpSimulator.h>
+#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpTime.h>
 
 #include <visp3/core/vpImage.h>
@@ -71,6 +67,7 @@
 #include <Inventor/nodes/SoGroup.h>            /* Groupement de noeuds (sans separation)*/
 #include <Inventor/nodes/SoMaterial.h>         /* Matiere (couleur) des objets.     */
 
+BEGIN_VISP_NAMESPACE
 // Positions of all of the vertices:
 //
 static float pyramidVertexes[5][3] = { {0.33f, 0.33f, 0.f},
@@ -1002,7 +999,7 @@ void vpSimulator::getInternalImage(vpImage<unsigned char> &I)
   vpImageConvert::RGBToGrey(bufferView, I.bitmap, internal_width, internal_height, true);
   get = 1;
 }
-
+END_VISP_NAMESPACE
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_ar.a(vpSimulator.cpp.o) has no symbols
 void dummy_vpSimulator() { };

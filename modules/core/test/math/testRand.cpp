@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,11 @@
  *
  * Description:
  * Test pseudo random number generator.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testRand.cpp
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -42,6 +44,10 @@
 #include <visp3/core/vpGaussRand.h>
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpTime.h>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 namespace
 {
@@ -104,13 +110,12 @@ protected:
 
 public:
   //! Default constructor.
-  explicit vpUniRandOld(const long seed = 0)
+  VP_EXPLICIT vpUniRandOld(const long seed = 0)
     : a(16807), m(2147483647), q(127773), r(2836), normalizer(2147484721.0), x((seed) ? seed : 739806647)
-  {
-  }
+  { }
 
   //! Default destructor.
-  virtual ~vpUniRandOld(){};
+  virtual ~vpUniRandOld() { };
 
   //! Operator that allows to get a random value.
   double operator()() { return draw1(); }
@@ -249,7 +254,7 @@ TEST_CASE("Check uniform draw", "[visp_rand]")
 
     double pi_error = pi - M_PI;
     std::cout << "Old ViSP vpUniRand implementation calculated pi: " << pi << " in " << chrono.getDurationMs() << " ms"
-              << std::endl;
+      << std::endl;
     std::cout << "pi error: " << pi_error << std::endl;
 
     CHECK(pi == Approx(M_PI).margin(0.005));

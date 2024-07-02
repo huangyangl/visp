@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,13 @@
  *
  * Description:
  * Visual feature manipulation (segment).
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testFeatureSegment.cpp
+
+  Shows how to build a task with a segment visual feature.
+*/
 
 #include <fstream>
 #include <iostream>
@@ -58,15 +62,11 @@
 #include <visp3/visual_features/vpFeatureSegment.h>
 #include <visp3/vs/vpServo.h> //visual servoing task
 
-/*!
-
-  \example testFeatureSegment.cpp
-
-  Shows how to build a task with a segment visual feature.
-
-*/
 int main(int argc, const char **argv)
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   try {
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
     int opt_no_display = 0;
@@ -75,7 +75,7 @@ int main(int argc, const char **argv)
     int opt_normalized = 1;
 
     // Parse the command line to set the variables
-    vpParseArgv::vpArgvInfo argTable [] = {
+    vpParseArgv::vpArgvInfo argTable[] = {
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
       {"-d", vpParseArgv::ARGV_CONSTANT_INT, 0, (char *)&opt_no_display, "Disable display and graphics viewer."},
 #endif

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,15 @@
  * Interface with the image for feature display.
  */
 
-#ifndef vpFeatureDisplay_H
-#define vpFeatureDisplay_H
-
 /*!
   \file vpFeatureDisplay.h
   \brief interface with the image for feature display
 */
+
+#ifndef VP_FEATURE_DISPLAY_H
+#define VP_FEATURE_DISPLAY_H
+
+#include <visp3/core/vpConfig.h>
 
 // Color / image / display
 #include <visp3/core/vpColor.h>
@@ -47,6 +49,7 @@
 // Meter/pixel conversion
 #include <visp3/core/vpCameraParameters.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpFeatureDisplay
 
@@ -82,5 +85,5 @@ public:
   static void displayPoint(double x, double y, const vpCameraParameters &cam, const vpImage<vpRGBa> &I,
                            const vpColor &color = vpColor::green, unsigned int thickness = 1);
 };
-
+END_VISP_NAMESPACE
 #endif

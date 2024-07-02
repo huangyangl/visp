@@ -44,6 +44,7 @@
 #include <iostream>
 #include <map>
 
+BEGIN_VISP_NAMESPACE
 class vpMoment;
 class vpMomentObject;
 
@@ -72,6 +73,10 @@ class vpMomentObject;
  * #include <visp3/core/vpMomentGravityCenter.h>
  * #include <visp3/core/vpMomentObject.h>
  * #include <visp3/core/vpPoint.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -123,7 +128,7 @@ class vpMomentObject;
  * Consequently, a database can contain at most one moment of each type. Often it
  * is useful to update all moments with the same object. Shortcuts
  * (vpMomentDatabase::updateAll) are provided for that matter.
- */
+*/
 class VISP_EXPORT vpMomentDatabase
 {
 private:
@@ -158,5 +163,5 @@ public:
   friend class vpMoment;
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMomentDatabase &v);
 };
-
+END_VISP_NAMESPACE
 #endif

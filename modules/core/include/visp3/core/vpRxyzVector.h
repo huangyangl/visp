@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@
  * Rxyz(phi,theta,psi) = Rot(x,phi)Rot(y,theta)Rot(z,psi).
  */
 
-#ifndef _vpRxyzVector_h_
-#define _vpRxyzVector_h_
-
 /*!
   \file vpRxyzVector.h
 
@@ -44,8 +41,14 @@
   Rxyz(phi,theta,psi) = Rot(x,phi)Rot(y,theta)Rot(z,psi)
  */
 
+#ifndef VP_RXYZ_VECTOR_H
+#define VP_RXYZ_VECTOR_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpRotationMatrix.h>
 #include <visp3/core/vpRotationVector.h>
+
+BEGIN_VISP_NAMESPACE
 
 class vpRotationVector;
 class vpRotationMatrix;
@@ -142,6 +145,10 @@ class vpThetaUVector;
   #include <visp3/core/vpRotationMatrix.h>
   #include <visp3/core/vpRxyzVector.h>
 
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
   int main()
   {
     vpRxyzVector rxyz;
@@ -155,7 +162,7 @@ class vpThetaUVector;
     vpRotationMatrix R(rxyz);
 
     // Extract the Euler angles around x,y,z axis from a rotation matrix
-    rxyz.buildFrom(R);
+    rxyz.build(R);
 
     // Print the extracted Euler angles. Values are the same than the
     // one used for initialization
@@ -180,22 +187,33 @@ public:
   vpRxyzVector(double phi, double theta, double psi);
 
   // initialize a Rxyz vector from a rotation matrix
-  explicit vpRxyzVector(const vpRotationMatrix &R);
+  VP_EXPLICIT vpRxyzVector(const vpRotationMatrix &R);
 
   // initialize a Rxyz vector from a ThetaU vector
-  explicit vpRxyzVector(const vpThetaUVector &tu);
-  explicit vpRxyzVector(const vpColVector &rxyz);
-  explicit vpRxyzVector(const std::vector<double> &rxyz);
+  VP_EXPLICIT vpRxyzVector(const vpThetaUVector &tu);
+  VP_EXPLICIT vpRxyzVector(const vpColVector &rxyz);
+  VP_EXPLICIT vpRxyzVector(const std::vector<double> &rxyz);
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
   // convert a rotation matrix into Rxyz vector
-  vpRxyzVector buildFrom(const vpRotationMatrix &R);
+  VP_DEPRECATED vpRxyzVector buildFrom(const vpRotationMatrix &R);
 
   // convert a ThetaU vector into a Rxyz vector
-  vpRxyzVector buildFrom(const vpThetaUVector &tu);
-  vpRxyzVector buildFrom(const vpColVector &rxyz);
-  vpRxyzVector buildFrom(const std::vector<double> &rxyz);
+  VP_DEPRECATED vpRxyzVector buildFrom(const vpThetaUVector &tu);
+  VP_DEPRECATED vpRxyzVector buildFrom(const vpColVector &rxyz);
+  VP_DEPRECATED vpRxyzVector buildFrom(const std::vector<double> &rxyz);
 
-  void buildFrom(double phi, double theta, double psi);
+  VP_DEPRECATED void buildFrom(double phi, double theta, double psi);
+#endif
+  // convert a rotation matrix into Rxyz vector
+  vpRxyzVector &build(const vpRotationMatrix &R);
+
+  // convert a ThetaU vector into a Rxyz vector
+  vpRxyzVector &build(const vpThetaUVector &tu);
+  vpRxyzVector &build(const vpColVector &rxyz);
+  vpRxyzVector &build(const std::vector<double> &rxyz);
+
+  vpRxyzVector &build(const double &phi, const double &theta, const double &psi);
 
   vpRxyzVector &operator=(const vpColVector &rxyz);
   vpRxyzVector &operator=(double x);
@@ -204,5 +222,5 @@ public:
   vpRxyzVector &operator=(const std::initializer_list<double> &list);
 #endif
 };
-
+END_VISP_NAMESPACE
 #endif

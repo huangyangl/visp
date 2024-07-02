@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,9 +46,11 @@
 #include <visp3/core/vpHistogram.h>
 #include <visp3/core/vpImageConvert.h>
 
+BEGIN_VISP_NAMESPACE
 #if defined(VISP_HAVE_THREADS)
 #include <thread>
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace
 {
 struct vpHistogram_Param_t
@@ -172,6 +173,7 @@ void computeHistogramThread(vpHistogram_Param_t *histogram_param)
   }
 }
 } // namespace
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 #endif
 
 bool compare_vpHistogramPeak(vpHistogramPeak first, vpHistogramPeak second);
@@ -511,7 +513,7 @@ void vpHistogram::display(const vpImage<unsigned char> &I, const vpColor &color,
   Smoothes the histogram.
 
   A simple average scheme is used where each value \f$h(i)\f$ in the
-  histogram is replaced by the average of itself and the neighbours.
+  histogram is replaced by the average of itself and the neighbors.
 
   \f[h(i) = \sum_{j=i-\frac{fsize}{2}}^{i+\frac{fsize}{2}} h(j) \f]
 
@@ -519,7 +521,7 @@ void vpHistogram::display(const vpImage<unsigned char> &I, const vpColor &color,
   around each point used to compute the mean value.
 
   \exception vpImageException::notInitializedError : Histogram array
-  not initialsed. Means that the histogram was not calculated before.
+  not initialised. Means that the histogram was not calculated before.
 
   \sa calculate()
 
@@ -527,7 +529,6 @@ void vpHistogram::display(const vpImage<unsigned char> &I, const vpColor &color,
 void vpHistogram::smooth(unsigned int fsize)
 {
   if (m_histogram == nullptr) {
-    vpERROR_TRACE("Histogram array not initialised\n");
     throw(vpImageException(vpImageException::notInitializedError, "Histogram array not initialised"));
   }
 
@@ -567,7 +568,6 @@ void vpHistogram::smooth(unsigned int fsize)
 unsigned vpHistogram::getPeaks(std::list<vpHistogramPeak> &peaks)
 {
   if (m_histogram == nullptr) {
-    vpERROR_TRACE("Histogram array not initialised\n");
     throw(vpImageException(vpImageException::notInitializedError, "Histogram array not initialised"));
   }
 
@@ -589,7 +589,6 @@ unsigned vpHistogram::getPeaks(std::list<vpHistogramPeak> &peaks)
     if ((prev_slope > 0) && (next_slope == 0)) {
       sum_level += i + 1;
       ++cpt;
-      // continue;
     }
     else {
       // Peak detection
@@ -843,7 +842,6 @@ bool vpHistogram::getPeaks(unsigned char dist, vpHistogramPeak &peakl, vpHistogr
 unsigned vpHistogram::getValey(std::list<vpHistogramValey> &valey)
 {
   if (m_histogram == nullptr) {
-    vpERROR_TRACE("Histogram array not initialised\n");
     throw(vpImageException(vpImageException::notInitializedError, "Histogram array not initialised"));
   }
 
@@ -1194,3 +1192,4 @@ bool vpHistogram::write(const char *filename)
 
   return true;
 }
+END_VISP_NAMESPACE

@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,27 @@
  * Provide some simple operation on column vectors.
  */
 
-#ifndef _vpColVector_h_
-#define _vpColVector_h_
+/*!
+ * \file vpColVector.h
+ * \brief definition of column vector class as well
+ * as a set of operations on these vector
+ */
+
+#ifndef VP_COLVECTOR_H
+#define VP_COLVECTOR_H
+
+#include <visp3/core/vpConfig.h>
+
+#ifdef VISP_HAVE_NLOHMANN_JSON
+#include <nlohmann/json.hpp>
+#endif
+BEGIN_VISP_NAMESPACE
+class vpMatrix;
+class vpRowVector;
+class vpRotationVector;
+class vpTranslationVector;
+class vpPoseVector;
+END_VISP_NAMESPACE
 
 #include <visp3/core/vpArray2D.h>
 #include <visp3/core/vpMath.h>
@@ -40,18 +59,7 @@
 #include <visp3/core/vpRotationVector.h>
 #include <visp3/core/vpRowVector.h>
 
-class vpMatrix;
-class vpRowVector;
-class vpRotationVector;
-class vpTranslationVector;
-class vpPoseVector;
-
-/*!
- * \file vpColVector.h
- * \brief definition of column vector class as well
- * as a set of operations on these vector
- */
-
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpColVector
  * \ingroup group_core_matrices
@@ -67,6 +75,10 @@ class vpPoseVector;
  * The code below shows how to create a 3-element column vector of doubles, set the element values and access them:
  * \code
  * #include <visp3/code/vpColVector.h
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -90,6 +102,10 @@ class vpPoseVector;
  * \code
  * #include <visp3/code/vpColVector.h
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpColVector v;
@@ -102,6 +118,10 @@ class vpPoseVector;
  * \code
  * #include <visp3/code/vpColVector.h
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpColVector v({-1, -2.1, -3});
@@ -110,6 +130,10 @@ class vpPoseVector;
  * \endcode
  * The vector could also be initialized using operator=(const std::initializer_list< double > &)
  * \code
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpColVector v;
@@ -124,6 +148,10 @@ class vpPoseVector;
  * and reload the values from this JSON file.
  * \code
  * #include <visp3/core/vpColVector.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -158,7 +186,7 @@ class vpPoseVector;
  * $ cat col-vector.json
  * {"cols":1,"data":[1.0,2.0,3.0,4.0],"rows":4,"type":"vpColVector"}
  * \endcode
- */
+*/
 class VISP_EXPORT vpColVector : public vpArray2D<double>
 {
   friend class vpMatrix;
@@ -174,7 +202,7 @@ public:
    * \warning Elements are not  initialized. If you want to set an initial value use
    * vpColVector(unsigned int, double).
    */
-  explicit vpColVector(unsigned int n) : vpArray2D<double>(n, 1) { }
+  VP_EXPLICIT vpColVector(unsigned int n) : vpArray2D<double>(n, 1) { }
 
   /*!
    * Construct a column vector of size n. Each element is set to \e val.
@@ -206,17 +234,17 @@ public:
    * Constructor that initialize a column vector from a 3-dim (Euler or
    * \f$\theta {\bf u}\f$) or 4-dim (quaternion) rotation vector.
    */
-  vpColVector(const vpRotationVector &v);
+  VP_EXPLICIT vpColVector(const vpRotationVector &v);
 
   /*!
    * Constructor that initialize a column vector from a 6-dim pose vector.
    */
-  vpColVector(const vpPoseVector &p);
+  VP_EXPLICIT vpColVector(const vpPoseVector &p);
 
   /*!
    * Constructor that initialize a column vector from a 3-dim translation vector.
    */
-  vpColVector(const vpTranslationVector &t);
+  VP_EXPLICIT vpColVector(const vpTranslationVector &t);
 
   /*!
    * Constructor that creates a column vector from a m-by-1 matrix `M`.
@@ -224,7 +252,7 @@ public:
    * \exception vpException::dimensionError If the matrix is not a m-by-1
    * matrix.
    */
-  vpColVector(const vpMatrix &M);
+  VP_EXPLICIT vpColVector(const vpMatrix &M);
 
   /*!
    * Constructor that takes column `j` of matrix `M`.
@@ -234,12 +262,12 @@ public:
   /*!
    * Constructor that creates a column vector from a std vector of double.
    */
-  vpColVector(const std::vector<double> &v);
+  VP_EXPLICIT vpColVector(const std::vector<double> &v);
 
   /*!
    * Constructor that creates a column vector from a std vector of float.
    */
-  vpColVector(const std::vector<float> &v);
+  VP_EXPLICIT vpColVector(const std::vector<float> &v);
 
 #if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   /*!
@@ -270,7 +298,9 @@ public:
       free(rowPtrs);
       rowPtrs = nullptr;
     }
-    rowNum = colNum = dsize = 0;
+    rowNum = 0;
+    colNum = 0;
+    dsize = 0;
   }
 
   /*!
@@ -284,6 +314,10 @@ public:
    * The following code shows how to use this function:
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -311,6 +345,10 @@ public:
    * The following code
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -366,7 +404,7 @@ public:
    */
   vpColVector extract(unsigned int r, unsigned int colsize) const
   {
-    if (r >= rowNum || r + colsize > rowNum) {
+    if ((r >= rowNum) || ((r + colsize) > rowNum)) {
       throw(vpException(vpException::fatalError,
                         "Cannot extract a (%dx1) column vector from a (%dx1) "
                         "column vector starting at index %d",
@@ -425,6 +463,10 @@ public:
    * \code
    * #include <visp3/core/vpColVector.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector v(4);
@@ -455,6 +497,10 @@ public:
    * The following example shows how to use this function:
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -488,6 +534,10 @@ public:
    * \code
    * #include <visp3/core/vpColVector.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector v(3);
@@ -516,6 +566,10 @@ public:
    * The following code
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -645,6 +699,10 @@ public:
    * \code
    * #include <visp3/core/vpColVector.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector c;
@@ -716,6 +774,15 @@ public:
    * \return The resulting matrix.
    */
   vpMatrix operator*(const vpRowVector &v) const;
+
+  /*!
+   * Multiply a column vector by a matrix.
+   *
+   * \param M : Matrix.
+   *
+   * \return The resulting matrix.
+   */
+  vpMatrix operator*(const vpMatrix &M) const;
 
   /*!
    * Operator that allows to multiply each element of a column vector by a
@@ -859,6 +926,10 @@ public:
    * \code
    * #include <visp3/core/vpColVector.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector A, B(5);
@@ -881,6 +952,10 @@ public:
    * The following example shows how to use this operator.
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -906,6 +981,10 @@ public:
    * \code
    * #include <visp3/code/vpColVector.h
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector v;
@@ -925,6 +1004,10 @@ public:
    * This operator could be used to set column vector elements:
    * \code
    * #include <visp3/code/vpColVector.h
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -988,6 +1071,10 @@ public:
    * The following example shows how to use this method.
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -1203,6 +1290,10 @@ public:
    * \code
    * #include <visp3/core/vpColVector.h>
    *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
+   *
    * int main()
    * {
    *   vpColVector v(10);
@@ -1258,6 +1349,10 @@ public:
    * Example:
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -1352,7 +1447,7 @@ public:
    * \deprecated Provided only for compat with previous releases.
    * This function does nothing.
    */
-  vp_deprecated void init() { }
+  VP_DEPRECATED void init() { }
 
   /*!
    * \deprecated Provided only for compat with previous releases. Use rather
@@ -1365,6 +1460,10 @@ public:
    * The following example shows how to use this function:
    * \code
    * #include <visp3/core/vpColVector.h>
+   *
+   * #ifdef ENABLE_VISP_NAMESPACE
+   * using namespace VISP_NAMESPACE_NAME;
+   * #endif
    *
    * int main()
    * {
@@ -1389,12 +1488,12 @@ public:
    * v: 0 10 11 3
    * \endcode
    */
-  vp_deprecated void insert(const vpColVector &v, unsigned int i);
+  VP_DEPRECATED void insert(const vpColVector &v, unsigned int i);
 
   /*!
    * \deprecated You should rather use extract().
    */
-  vp_deprecated vpColVector rows(unsigned int first_row, unsigned int last_row) const
+  VP_DEPRECATED vpColVector rows(unsigned int first_row, unsigned int last_row) const
   {
     return vpColVector(*this, first_row - 1, last_row - first_row + 1);
   }
@@ -1402,17 +1501,17 @@ public:
   /*!
    * \deprecated You should rather use stack(const vpColVector &)
    */
-  vp_deprecated void stackMatrices(const vpColVector &r) { stack(r); }
+  VP_DEPRECATED void stackMatrices(const vpColVector &r) { stack(r); }
 
   /*!
    * \deprecated You should rather use stack(const vpColVector &A, const vpColVector &B)
    */
-  vp_deprecated static vpColVector stackMatrices(const vpColVector &A, const vpColVector &B) { return stack(A, B); }
+  VP_DEPRECATED static vpColVector stackMatrices(const vpColVector &A, const vpColVector &B) { return stack(A, B); }
 
   /*!
    * \deprecated You should rather use stack(const vpColVector &A, const vpColVector &B, vpColVector &C)
    */
-  vp_deprecated static void stackMatrices(const vpColVector &A, const vpColVector &B, vpColVector &C)
+  VP_DEPRECATED static void stackMatrices(const vpColVector &A, const vpColVector &B, vpColVector &C)
   {
     stack(A, B, C);
   }
@@ -1430,7 +1529,7 @@ public:
    * \param r : The index of the row to begin to insert data.
    * \param c : Not used.
    */
-  vp_deprecated void insert(const vpColVector &v, unsigned int r, unsigned int c = 0);
+  VP_DEPRECATED void insert(const vpColVector &v, unsigned int r, unsigned int c = 0);
 
   /*!
    * \deprecated This function is deprecated. You should rather use frobeniusNorm().
@@ -1441,7 +1540,7 @@ public:
    *
    * \sa frobeniusNorm(), infinityNorm()
    */
-  vp_deprecated double euclideanNorm() const;
+  VP_DEPRECATED double euclideanNorm() const;
   //@}
 #endif
 };
@@ -1455,6 +1554,7 @@ VISP_EXPORT
 #endif
 vpColVector operator*(const double &x, const vpColVector &v);
 
+
 #ifdef VISP_HAVE_NLOHMANN_JSON
 inline void to_json(nlohmann::json &j, const vpColVector &v)
 {
@@ -1462,6 +1562,7 @@ inline void to_json(nlohmann::json &j, const vpColVector &v)
   to_json(j, *asArray);
   j["type"] = "vpColVector";
 }
+
 inline void from_json(const nlohmann::json &j, vpColVector &v)
 {
   vpArray2D<double> *asArray = (vpArray2D<double>*) & v;
@@ -1470,8 +1571,6 @@ inline void from_json(const nlohmann::json &j, vpColVector &v)
     throw vpException(vpException::badValue, "From JSON, tried to read a 2D array into a vpColVector");
   }
 }
-
-
 #endif
-
+END_VISP_NAMESPACE
 #endif

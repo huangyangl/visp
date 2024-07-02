@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ const char *numpy_fn_doc_image = R"doc(
  * Image 2D indexing
  */
 template<typename T, typename NpRep>
-void define_get_item_2d_image(py::class_<vpImage<T>> &pyClass)
+void define_get_item_2d_image(py::class_<vpImage<T>, std::shared_ptr<vpImage<T>>> &pyClass)
 {
   pyClass.def("__getitem__", [](const vpImage<T> &self, std::pair<int, int> pair) -> T {
     int i = pair.first, j = pair.second;
@@ -98,7 +98,7 @@ void define_get_item_2d_image(py::class_<vpImage<T>> &pyClass)
  */
 template<typename T>
 typename std::enable_if<std::is_fundamental<T>::value, void>::type
-bindings_vpImage(py::class_<vpImage<T>> &pyImage)
+bindings_vpImage(py::class_<vpImage<T>, std::shared_ptr<vpImage<T>>> &pyImage)
 {
   pyImage.def_buffer([](vpImage<T> &image) -> py::buffer_info {
     return make_array_buffer<T, 2>(image.bitmap, { image.getHeight(), image.getWidth() }, false);
@@ -113,7 +113,7 @@ bindings_vpImage(py::class_<vpImage<T>> &pyImage)
     vpImage<T> result(shape[0], shape[1]);
     copy_data_from_np(np_array, result.bitmap);
     return result;
-  }), R"doc(
+                       }), R"doc(
 Construct an image by **copying** a 2D numpy array.
 
 :param np_array: The numpy array to copy.
@@ -138,7 +138,7 @@ Construct an image by **copying** a 2D numpy array.
 
 template<typename T>
 typename std::enable_if<std::is_same<vpRGBa, T>::value, void>::type
-bindings_vpImage(py::class_<vpImage<T>> &pyImage)
+bindings_vpImage(py::class_<vpImage<T>, std::shared_ptr<vpImage<T>>> &pyImage)
 {
   using NpRep = unsigned char;
   static_assert(sizeof(T) == 4 * sizeof(NpRep));
@@ -158,7 +158,7 @@ bindings_vpImage(py::class_<vpImage<T>> &pyImage)
     vpImage<T> result(shape[0], shape[1]);
     copy_data_from_np(np_array, (NpRep *)result.bitmap);
     return result;
-  }), R"doc(
+                       }), R"doc(
 Construct an image by **copying** a 3D numpy array. this numpy array should be of the form :math:`H \times W \times 4`
 where the 4 denotes the red, green, blue and alpha components of the image.
 
@@ -182,7 +182,7 @@ where the 4 denotes the red, green, blue and alpha components of the image.
 }
 template<typename T>
 typename std::enable_if<std::is_same<vpRGBf, T>::value, void>::type
-bindings_vpImage(py::class_<vpImage<T>> &pyImage)
+bindings_vpImage(py::class_<vpImage<T>, std::shared_ptr<vpImage<T>>> &pyImage)
 {
   using NpRep = float;
   static_assert(sizeof(T) == 3 * sizeof(NpRep));
@@ -203,7 +203,7 @@ bindings_vpImage(py::class_<vpImage<T>> &pyImage)
     vpImage<T> result(shape[0], shape[1]);
     copy_data_from_np(np_array, (NpRep *)result.bitmap);
     return result;
-  }), R"doc(
+                       }), R"doc(
 Construct an image by **copying** a 3D numpy array. this numpy array should be of the form :math:`H \times W \times 3`
 where the 3 denotes the red, green and blue components of the image.
 

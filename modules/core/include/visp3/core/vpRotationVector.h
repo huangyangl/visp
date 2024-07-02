@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,23 @@
  * Generic rotation vector (cannot be used as is !).
  */
 
-#ifndef _vpRotationVector_h_
-#define _vpRotationVector_h_
-
 /*!
   \file vpRotationVector.h
   \brief class that consider the case of a generic rotation vector
   (cannot be used as is !)
 */
 
+#ifndef VP_ROTATION_VECTOR_H
+#define VP_ROTATION_VECTOR_H
+
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpArray2D.h>
+
+BEGIN_VISP_NAMESPACE
 
 class vpRowVector;
 class vpColVector;
@@ -68,26 +71,30 @@ class vpColVector;
   vpRxyzVector.
 
   \code
-#include <iostream>
-#include <visp3/core/vpMath.h>
-#include <visp3/core/vpRxyzVector.h>
+  #include <iostream>
+  #include <visp3/core/vpMath.h>
+  #include <visp3/core/vpRxyzVector.h>
 
-int main()
-{
-  vpRxyzVector r;         // By default initialized to zero
-  // Rotation around x set to 45 degres converted in radians
-  r[0] = vpMath::rad(45);
-  // Rotation around y set to PI radians
-  r[1] = M_PI;
-  // Rotation around z set to 0 radians
-  r[2] = 0;
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
-  std::cout << "Rxyz rotation vector: " << r << std::endl;
+  int main()
+  {
+    vpRxyzVector r;         // By default initialized to zero
+    // Rotation around x set to 45 degres converted in radians
+    r[0] = vpMath::rad(45);
+    // Rotation around y set to PI radians
+    r[1] = M_PI;
+    // Rotation around z set to 0 radians
+    r[2] = 0;
 
-  double rx = r[0];       // Get the value of the angle around x axis
-  double ry = r[1];       // Get the value of the angle around y axis
-  double rz = r[2];       // Get the value of the angle around z axis
-}
+    std::cout << "Rxyz rotation vector: " << r << std::endl;
+
+    double rx = r[0];       // Get the value of the angle around x axis
+    double ry = r[1];       // Get the value of the angle around y axis
+    double rz = r[2];       // Get the value of the angle around z axis
+  }
   \endcode
 
 */
@@ -100,7 +107,7 @@ public:
 
   //! Constructor that constructs a vector of size n and initialize all values
   //! to zero.
-  explicit vpRotationVector(unsigned int n) : vpArray2D<double>(n, 1), m_index(0) { }
+  VP_EXPLICIT vpRotationVector(unsigned int n) : vpArray2D<double>(n, 1), m_index(0) { }
 
   /*!
     Copy operator.
@@ -127,7 +134,8 @@ public:
   vpRotationVector &operator=(const vpRotationVector &v)
   {
     resize(v.size(), 1);
-    for (unsigned int i = 0; i < v.size(); ++i) {
+    unsigned int v_size = v.size();
+    for (unsigned int i = 0; i < v_size; ++i) {
       data[i] = v.data[i];
     }
     return *this;
@@ -154,6 +162,6 @@ protected:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 VISP_EXPORT
 #endif
-vpColVector operator*(const double &x, const vpRotationVector &v);
-
+VISP_NAMESPACE_ADDRESSING vpColVector operator*(const double &x, const VISP_NAMESPACE_ADDRESSING vpRotationVector &v);
+END_VISP_NAMESPACE
 #endif

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +55,6 @@
 #include <visp3/gui/vpDisplayOpenCV.h>
 
 // debug / exception
-#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpDisplayException.h>
 
 #include <opencv2/core/core_c.h> // for CV_FILLED versus cv::FILLED
@@ -75,6 +73,8 @@
 #include <windows.h>
 #endif
 
+BEGIN_VISP_NAMESPACE
+
 std::vector<std::string> vpDisplayOpenCV::m_listTitles = std::vector<std::string>();
 unsigned int vpDisplayOpenCV::m_nbWindows = 0;
 
@@ -89,13 +89,13 @@ unsigned int vpDisplayOpenCV::m_nbWindows = 0;
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 
 */
@@ -124,13 +124,13 @@ vpDisplayOpenCV::vpDisplayOpenCV(vpImage<unsigned char> &I, vpScaleType scaleTyp
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 
 */
@@ -156,13 +156,13 @@ vpDisplayOpenCV::vpDisplayOpenCV(vpImage<unsigned char> &I, int x, int y, const 
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayOpenCV::vpDisplayOpenCV(vpImage<vpRGBa> &I, vpScaleType scaleType)
@@ -188,13 +188,13 @@ vpDisplayOpenCV::vpDisplayOpenCV(vpImage<vpRGBa> &I, vpScaleType scaleType)
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayOpenCV::vpDisplayOpenCV(vpImage<vpRGBa> &I, int x, int y, const std::string &title, vpScaleType scaleType)
@@ -220,15 +220,19 @@ vpDisplayOpenCV::vpDisplayOpenCV(vpImage<vpRGBa> &I, int x, int y, const std::st
   To initialize the display size, you need to call init().
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayOpenCV.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayOpenCV.h>
 
-int main()
-{
-  vpDisplayOpenCV d(100, 200, "My display");
-  vpImage<unsigned char> I(240, 384);
-  d.init(I);
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayOpenCV d(100, 200, "My display");
+    vpImage<unsigned char> I(240, 384);
+    d.init(I);
+  }
   \endcode
 */
 vpDisplayOpenCV::vpDisplayOpenCV(int x, int y, const std::string &title)
@@ -276,15 +280,19 @@ vpDisplayOpenCV::vpDisplayOpenCV(int x, int y, const std::string &title)
   init(vpImage<vpRGBa> &, int, int, const std::string &).
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayOpenCV.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayOpenCV.h>
 
-int main()
-{
-  vpDisplayOpenCV d;
-  vpImage<unsigned char> I(240, 384);
-  d.init(I, 100, 200, "My display");
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayOpenCV d;
+    vpImage<unsigned char> I(240, 384);
+    d.init(I, 100, 200, "My display");
+  }
   \endcode
 */
 vpDisplayOpenCV::vpDisplayOpenCV()
@@ -475,7 +483,10 @@ void vpDisplayOpenCV::init(unsigned int w, unsigned int h, int x, int y, const s
 
   \sa displayText()
 */
-void vpDisplayOpenCV::setFont(const std::string & /* font */) { vpERROR_TRACE("Not yet implemented"); }
+void vpDisplayOpenCV::setFont(const std::string & /* font */)
+{
+  // Not yet implemented
+}
 
 /*!
   Set the window title.
@@ -486,11 +497,7 @@ void vpDisplayOpenCV::setFont(const std::string & /* font */) { vpERROR_TRACE("N
  */
 void vpDisplayOpenCV::setTitle(const std::string & /* title */)
 {
-  //  static bool warn_displayed = false;
-  //  if (! warn_displayed) {
-  //    vpTRACE("Not implemented");
-  //    warn_displayed = true;
-  //  }
+  // Not implemented
 }
 
 /*!
@@ -744,7 +751,10 @@ void vpDisplayOpenCV::displayImageROI(const vpImage<vpRGBa> &I, const vpImagePoi
 
   \sa init(), closeDisplay()
 */
-void vpDisplayOpenCV::displayImage(const unsigned char * /* I */) { vpTRACE(" not implemented "); }
+void vpDisplayOpenCV::displayImage(const unsigned char * /* I */)
+{
+  // not implemented
+}
 
 /*!
 
@@ -812,11 +822,7 @@ void vpDisplayOpenCV::flushDisplayROI(const vpImagePoint & /*iP*/, const unsigne
 */
 void vpDisplayOpenCV::clearDisplay(const vpColor & /* color */)
 {
-  static bool warn_displayed = false;
-  if (!warn_displayed) {
-    vpTRACE("Not implemented");
-    warn_displayed = true;
-  }
+  // Not implemented
 }
 
 /*!
@@ -1789,7 +1795,9 @@ void vpDisplayOpenCV::overlay(std::function<void(cv::Mat &)> overlay_function, d
   }
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpDisplayOpenCV.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpDisplayOpenCV.cpp.o) has no symbols
 void dummy_vpDisplayOpenCV() { };
 #endif

@@ -47,6 +47,7 @@
 #include <visp3/core/vpException.h>
 #include <visp3/visual_features/vpBasicFeature.h>
 
+BEGIN_VISP_NAMESPACE
 class vpMomentObject;
 class vpMomentDatabase;
 class vpFeatureMomentDatabase;
@@ -118,6 +119,10 @@ class vpMoment;
  * #include <visp3/visual_features/vpFeatureMoment.h>
  * #include <visp3/visual_features/vpFeatureMomentBasic.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpPoint p;
@@ -152,7 +157,7 @@ class vpMoment;
  *   std::cout << fmb.interaction(1,1) << std::endl;
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpFeatureMoment : public vpBasicFeature
 {
 protected:
@@ -208,15 +213,15 @@ public:
   //@{
   virtual void compute_interaction(void);
 
-  vpBasicFeature *duplicate() const vp_override;
+  vpBasicFeature *duplicate() const VP_OVERRIDE;
   void display(const vpCameraParameters &cam, const vpImage<unsigned char> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
   void display(const vpCameraParameters &cam, const vpImage<vpRGBa> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
 
   int getDimension(unsigned int select = FEATURE_ALL) const;
-  void init(void) vp_override;
-  vpMatrix interaction(unsigned int select = FEATURE_ALL) vp_override;
+  void init(void) VP_OVERRIDE;
+  vpMatrix interaction(unsigned int select = FEATURE_ALL) VP_OVERRIDE;
 
   void linkTo(vpFeatureMomentDatabase &featureMoments);
 
@@ -231,7 +236,7 @@ public:
    */
   virtual const std::string name() const = 0;
 
-  void print(unsigned int select = FEATURE_ALL) const vp_override;
+  void print(unsigned int select = FEATURE_ALL) const VP_OVERRIDE;
   virtual void printDependencies(std::ostream &os) const;
 
   void update(double A, double B, double C);
@@ -277,5 +282,5 @@ public:
    */
   virtual const std::string name() const { return std::string(); }
 };
-
+END_VISP_NAMESPACE
 #endif

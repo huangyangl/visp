@@ -37,8 +37,10 @@
 #ifndef _vpMomentAreaNormalized_h_
 #define _vpMomentAreaNormalized_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMoment.h>
 
+BEGIN_VISP_NAMESPACE
 class vpMomentObject;
 class vpMomentCentered;
 
@@ -82,6 +84,10 @@ class vpMomentCentered;
  * #include <visp3/core/vpMomentGravityCenter.h>
  * #include <visp3/core/vpMomentObject.h>
  * #include <visp3/core/vpPoint.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -128,7 +134,7 @@ class vpMomentCentered;
  * \code
  * An:1.41421
  * \endcode
- */
+*/
 class VISP_EXPORT vpMomentAreaNormalized : public vpMoment
 {
 private:
@@ -170,7 +176,7 @@ public:
    * \deprecated Use rather getDesiredArea()
    * Retrieves the desired surface \e a* as specified in the constructor.
    */
-  vp_deprecated double getDesiredSurface() const { return desiredSurface; }
+  VP_DEPRECATED double getDesiredSurface() const { return desiredSurface; }
   //@}
 #endif
 
@@ -181,5 +187,5 @@ public:
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpMomentAreaNormalized &v);
   void printDependencies(std::ostream &os) const;
 };
-
+END_VISP_NAMESPACE
 #endif

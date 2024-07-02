@@ -85,12 +85,16 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
+
   try {
     // Log file creation in /tmp/$USERNAME/log.dat
     // This file contains by line:
     // - the 6 computed cam velocities (m/s, rad/s) to achieve the task
-    // - the 6 mesured joint velocities (m/s, rad/s)
-    // - the 6 mesured joint positions (m, rad)
+    // - the 6 measured joint velocities (m/s, rad/s)
+    // - the 6 measured joint positions (m, rad)
     // - the 2 values of s - s*
     std::string username;
     // Get the user login name
@@ -105,7 +109,8 @@ int main()
       try {
         // Create the dirname
         vpIoTools::makeDirectory(logdirname);
-      } catch (...) {
+      }
+      catch (...) {
         std::cerr << std::endl << "ERROR:" << std::endl;
         std::cerr << "  Cannot create " << logdirname << std::endl;
         return EXIT_FAILURE;
@@ -168,7 +173,7 @@ int main()
 
     vpTRACE("sets the desired position of the visual feature ");
     vpFeaturePoint pd;
-    pd.buildFrom(0, 0, 1);
+    pd.build(0, 0, 1);
 
     vpTRACE("define the task");
     vpTRACE("\t we want an eye-in-hand control law");
@@ -257,7 +262,8 @@ int main()
     task.print();
 
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch a ViSP exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

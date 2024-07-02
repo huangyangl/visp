@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test Intel RealSense acquisition with librealsense2 (OpenCV demo).
- *
-*****************************************************************************/
+ */
 /*!
   \example testRealSense2_D435_opencv.cpp
   Test Intel RealSense D435 acquisition with librealsense2 (OpenCV demo).
@@ -155,6 +153,9 @@ void frame_to_mat(const rs2::frame &f, cv::Mat &img)
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   const int width = 640, height = 480, fps = 60;
   vpRealSense2 rs;
   rs2::config config;

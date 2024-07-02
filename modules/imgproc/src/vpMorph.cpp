@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #include <visp3/core/vpImageTools.h>
 #include <visp3/imgproc/vpImgproc.h>
 
-namespace vp
+namespace VISP_NAMESPACE_NAME
 {
 
 void fillHoles(vpImage<unsigned char> &I
@@ -102,7 +102,8 @@ void fillHoles(vpImage<unsigned char> &I
   }
 
   // Perform flood fill
-  vp::floodFill(flood_fill_mask, vpImagePoint(0, 0), 0, 255);
+  const unsigned char newVal = 255;
+  floodFill(flood_fill_mask, vpImagePoint(0, 0), 0, newVal);
 
   // Get current mask
   vpImage<unsigned char> mask(I.getHeight(), I.getWidth());
@@ -159,4 +160,5 @@ void reconstruct(const vpImage<unsigned char> &marker, const vpImage<unsigned ch
     }
   } while (h_kp1_eq_h_k == false);
 }
-};
+
+} // namespace

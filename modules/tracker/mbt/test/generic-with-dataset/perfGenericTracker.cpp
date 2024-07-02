@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +29,11 @@
  *
  * Description:
  * Benchmark generic tracker.
- *
-*****************************************************************************/
+ */
 
+/*!
+  \example perfGenericTracker.cpp
+ */
 #include <visp3/core/vpConfig.h>
 
 #if defined(VISP_HAVE_CATCH2)
@@ -47,6 +48,10 @@
 // #define DEBUG_DISPLAY // uncomment to check that the tracking is correct
 #ifdef DEBUG_DISPLAY
 #include <visp3/gui/vpDisplayX.h>
+#endif
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
 #endif
 
 namespace

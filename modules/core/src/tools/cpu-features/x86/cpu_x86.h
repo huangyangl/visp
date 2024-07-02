@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@
  */
 
 #pragma once
-#ifndef _cpu_x86_H
-#define _cpu_x86_H
+#ifndef CPU_X86_H
+#define CPU_X86_H
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,8 +53,9 @@ namespace FeatureDetector
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-struct cpu_x86 {
-  //  Vendor
+struct cpu_x86
+{
+//  Vendor
   bool Vendor_AMD;
   bool Vendor_Intel;
 
@@ -108,7 +109,7 @@ public:
 
   void print() const;
 
-  static void cpuid(int32_t out[4], int32_t x);
+  static void cpuid(uint32_t out[4], uint32_t x);
   static std::string get_vendor_string();
 
 private:

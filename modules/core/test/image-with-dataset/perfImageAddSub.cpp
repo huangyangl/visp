@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image addition / subtraction.
- *
-*****************************************************************************/
+ */
 
 #include <visp3/core/vpConfig.h>
 
@@ -50,6 +48,9 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 TEST_CASE("Benchmark vpImageTools::imageAdd()", "[benchmark]")
 {
   const std::string filepath = vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Klimt/Klimt.pgm");
@@ -146,11 +147,11 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()         // Get Catch's composite command line parser
-             | Opt(runBenchmark)   // bind variable to a new option, with a hint string
-                   ["--benchmark"] // the option names it will respond to
-             ("run benchmark?");   // description string for the help output
+    | Opt(runBenchmark)   // bind variable to a new option, with a hint string
+    ["--benchmark"] // the option names it will respond to
+    ("run benchmark?");   // description string for the help output
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line

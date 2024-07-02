@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,8 +66,9 @@
 #include <queue>
 #include <visp3/imgproc/vpImgproc.h>
 
-namespace vp
+namespace VISP_NAMESPACE_NAME
 {
+
 void floodFill(vpImage<unsigned char> &I, const vpImagePoint &seedPoint, const unsigned char oldValue,
                const unsigned char newValue, const vpImageMorphology::vpConnexityType &connexity)
 {
@@ -159,4 +160,5 @@ void floodFill(vpImage<unsigned char> &I, const vpImagePoint &seedPoint, const u
     }
   }
 }
-};
+
+} // namespace

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +38,11 @@ namespace
 {
 // Helper to apply the scale to the raw values of the filters
 template <typename FilterType>
-static void scaleFilter(vpArray2D<FilterType> &filter, const float &scale)
+static void scaleFilter(
+#ifdef ENABLE_VISP_NAMESPACE
+  visp::
+#endif
+  vpArray2D<FilterType> &filter, const float &scale)
 {
   const unsigned int nbRows = filter.getRows();
   const unsigned int nbCols = filter.getCols();
@@ -50,6 +53,38 @@ static void scaleFilter(vpArray2D<FilterType> &filter, const float &scale)
   }
 }
 };
+#endif
+
+BEGIN_VISP_NAMESPACE
+#ifdef VISP_HAVE_NLOHMANN_JSON
+void from_json(const nlohmann::json &j, vpCannyEdgeDetection &detector)
+{
+  std::string filteringAndGradientName = vpImageFilter::vpCannyFiltAndGradTypeToStr(detector.m_filteringAndGradientType);
+  filteringAndGradientName = j.value("filteringAndGradientType", filteringAndGradientName);
+  detector.m_filteringAndGradientType = vpImageFilter::vpCannyFiltAndGradTypeFromStr(filteringAndGradientName);
+  detector.m_gaussianKernelSize = j.value("gaussianSize", detector.m_gaussianKernelSize);
+  detector.m_gaussianStdev = j.value("gaussianStdev", detector.m_gaussianStdev);
+  detector.m_lowerThreshold = j.value("lowerThreshold", detector.m_lowerThreshold);
+  detector.m_lowerThresholdRatio = j.value("lowerThresholdRatio", detector.m_lowerThresholdRatio);
+  detector.m_gradientFilterKernelSize = j.value("gradientFilterKernelSize", detector.m_gradientFilterKernelSize);
+  detector.m_upperThreshold = j.value("upperThreshold", detector.m_upperThreshold);
+  detector.m_upperThresholdRatio = j.value("upperThresholdRatio", detector.m_upperThresholdRatio);
+}
+
+void to_json(nlohmann::json &j, const vpCannyEdgeDetection &detector)
+{
+  std::string filteringAndGradientName = vpImageFilter::vpCannyFiltAndGradTypeToStr(detector.m_filteringAndGradientType);
+  j = nlohmann::json {
+          {"filteringAndGradientType", filteringAndGradientName},
+          {"gaussianSize", detector.m_gaussianKernelSize},
+          {"gaussianStdev", detector.m_gaussianStdev},
+          {"lowerThreshold", detector.m_lowerThreshold},
+          {"lowerThresholdRatio", detector.m_lowerThresholdRatio},
+          {"gradientFilterKernelSize", detector.m_gradientFilterKernelSize},
+          {"upperThreshold", detector.m_upperThreshold},
+          {"upperThresholdRatio", detector.m_upperThresholdRatio}
+  };
+}
 #endif
 
 // // Initialization methods
@@ -264,7 +299,7 @@ vpCannyEdgeDetection::computeFilteringAndGradient(const vpImage<unsigned char> &
  * \brief Get the interpolation weights and offsets.
  *
  * \param[in] gradientOrientation : The positive value of the angle of the edge, expressed in radians.
- * Its value is between 0 and M_PIf radians.
+ * Its value is between 0 and M_PI_FLOAT radians.
  * \param[out] alpha : The weight of the first point used for the interpolation.
  * \param[out] beta : The weight of the second point used for the interpolation.
  * \param[out] dRowGradAlpha : The offset along the row attached to the alpha weight.
@@ -280,38 +315,38 @@ getInterpolWeightsAndOffsets(const float &gradientOrientation,
 )
 {
   float thetaMin = 0.f;
-  if (gradientOrientation < M_PI_4f) {
+  if (gradientOrientation < M_PI_4_FLOAT) {
     // Angles between 0 and 45 deg rely on the horizontal and diagonal points
     dColGradAlpha = 1;
     dColGradBeta = 1;
     dRowGradAlpha = 0;
     dRowGradBeta = -1;
   }
-  else if ((gradientOrientation >= M_PI_4f) && (gradientOrientation < M_PI_2f)) {
+  else if ((gradientOrientation >= M_PI_4_FLOAT) && (gradientOrientation < M_PI_2_FLOAT)) {
     // Angles between 45 and 90 deg rely on the diagonal and vertical points
-    thetaMin = M_PI_4f;
+    thetaMin = M_PI_4_FLOAT;
     dColGradAlpha = 1;
     dColGradBeta = 0;
     dRowGradAlpha = -1;
     dRowGradBeta = -1;
   }
-  else if ((gradientOrientation >= M_PI_2f) && (gradientOrientation < (3.f * M_PI_4f))) {
+  else if ((gradientOrientation >= M_PI_2_FLOAT) && (gradientOrientation < (3.f * M_PI_4_FLOAT))) {
     // Angles between 90 and 135 deg rely on the vertical and diagonal points
-    thetaMin = M_PI_2f;
+    thetaMin = M_PI_2_FLOAT;
     dColGradAlpha = 0;
     dColGradBeta = -1;
     dRowGradAlpha = -1;
     dRowGradBeta = -1;
   }
-  else if ((gradientOrientation >= (3.f * M_PI_4f)) && (gradientOrientation < M_PIf)) {
+  else if ((gradientOrientation >= (3.f * M_PI_4_FLOAT)) && (gradientOrientation < M_PI_FLOAT)) {
     // Angles between 135 and 180 deg rely on the vertical and diagonal points
-    thetaMin = 3.f * M_PI_4f;
+    thetaMin = 3.f * M_PI_4_FLOAT;
     dColGradAlpha = -1;
     dColGradBeta = -1;
     dRowGradAlpha = -1;
     dRowGradBeta = 0;
   }
-  beta = (gradientOrientation - thetaMin) / M_PI_4f;
+  beta = (gradientOrientation - thetaMin) / M_PI_4_FLOAT;
   alpha = 1.f - beta;
 }
 
@@ -343,7 +378,7 @@ getManhattanGradient(const vpImage<float> &dIx, const vpImage<float> &dIy, const
 }
 
 /**
- * @brief Get the gradient orientation, expressed in radians, between 0 and M_PIf radians.
+ * @brief Get the gradient orientation, expressed in radians, between 0 and M_PI_FLOAT radians.
  * If the gradient orientation is negative, we add M_PI radians in
  * order to keep the same orientation but in the positive direction.
  *
@@ -361,14 +396,14 @@ getGradientOrientation(const vpImage<float> &dIx, const vpImage<float> &dIy, con
   float dy = dIy[row][col];
 
   if (std::abs(dx) < std::numeric_limits<float>::epsilon()) {
-    gradientOrientation = M_PI_2f;
+    gradientOrientation = M_PI_2_FLOAT;
   }
   else {
     // -dy because the y-axis of the image is oriented towards the bottom of the screen
     // while we later work with a y-axis oriented towards the top when getting the theta quadrant.
     gradientOrientation = static_cast<float>(std::atan2(-dy, dx));
     if (gradientOrientation < 0.f) {
-      gradientOrientation += M_PIf; // + M_PI in order to be between 0 and M_PIf
+      gradientOrientation += M_PI_FLOAT; // + M_PI in order to be between 0 and M_PI_FLOAT
     }
   }
   return gradientOrientation;
@@ -478,8 +513,10 @@ vpCannyEdgeDetection::recursiveSearchForStrongEdge(const std::pair<unsigned int,
   bool test_col = false;
   bool test_drdc = false;
   bool edge_in_image_limit = false;
-  for (int dr = -1; (dr <= 1) && (!hasFoundStrongEdge); ++dr) {
-    for (int dc = -1; (dc <= 1) && (!hasFoundStrongEdge); ++dc) {
+  int dr = -1;
+  while ((dr <= 1) && (!hasFoundStrongEdge)) {
+    int dc = -1;
+    while ((dc <= 1) && (!hasFoundStrongEdge)) {
       // reset the check for the edge on image limit
       edge_in_image_limit = false;
 
@@ -515,7 +552,9 @@ vpCannyEdgeDetection::recursiveSearchForStrongEdge(const std::pair<unsigned int,
           // continue - nothing to do
         }
       }
+      ++dc;
     }
+    ++dr;
   }
   if (hasFoundStrongEdge) {
     m_edgePointsCandidates[coordinates] = STRONG_EDGE;
@@ -523,3 +562,4 @@ vpCannyEdgeDetection::recursiveSearchForStrongEdge(const std::pair<unsigned int,
   }
   return hasFoundStrongEdge;
 }
+END_VISP_NAMESPACE

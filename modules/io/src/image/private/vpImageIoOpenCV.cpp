@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@
 #if ((VISP_HAVE_OPENCV_VERSION >= 0x030000) && defined(HAVE_OPENCV_IMGCODECS)) || ((VISP_HAVE_OPENCV_VERSION < 0x030000) \
     && defined(HAVE_OPENCV_HIGHGUI) && defined(HAVE_OPENCV_IMGPROC))
 
+BEGIN_VISP_NAMESPACE
 /*!
   Read the contents of the image file, allocate memory
   for the corresponding gray level image, if necessary convert the data in
@@ -301,5 +302,7 @@ void writePNGtoMemOpenCV(const vpImage<vpRGBa> &I_color, std::vector<unsigned ch
     }
   }
 }
+
+END_VISP_NAMESPACE
 
 #endif

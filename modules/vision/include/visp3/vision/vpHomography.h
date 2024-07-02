@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@
  * some tools for homography computation.
  */
 
-#ifndef vpHomography_hh
-#define vpHomography_hh
+#ifndef VP_HOMOGRAPHY_H
+#define VP_HOMOGRAPHY_H
 
 #include <list>
 #include <vector>
@@ -50,6 +50,8 @@
 #include <visp3/core/vpMatrix.h>
 #include <visp3/core/vpPlane.h>
 #include <visp3/core/vpPoint.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
  * \class vpHomography
@@ -93,6 +95,10 @@
  * #include <visp3/core/vpMath.h>
  * #include <visp3/core/vpMeterPixelConversion.h>
  * #include <visp3/vision/vpHomography.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -163,7 +169,7 @@
   }
   \endcode
  *
- */
+*/
 class VISP_EXPORT vpHomography : public vpArray2D<double>
 {
 public:
@@ -184,7 +190,8 @@ public:
   //! Construction from translation and rotation and a plane.
   vpHomography(const vpPoseVector &arb, const vpPlane &bP);
 
-  //! Construction from translation and rotation and a plane
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+//! Construction from translation and rotation and a plane
   void buildFrom(const vpRotationMatrix &aRb, const vpTranslationVector &atb, const vpPlane &bP);
   //! Construction from translation and rotation and a plane
   void buildFrom(const vpThetaUVector &tu, const vpTranslationVector &atb, const vpPlane &bP);
@@ -192,6 +199,15 @@ public:
   void buildFrom(const vpPoseVector &arb, const vpPlane &bP);
   //! Construction from homogeneous matrix and a plane
   void buildFrom(const vpHomogeneousMatrix &aMb, const vpPlane &bP);
+#endif
+//! Construction from translation and rotation and a plane
+  vpHomography &build(const vpRotationMatrix &aRb, const vpTranslationVector &atb, const vpPlane &bP);
+  //! Construction from translation and rotation and a plane
+  vpHomography &build(const vpThetaUVector &tu, const vpTranslationVector &atb, const vpPlane &bP);
+  //! Construction from translation and rotation  and a plane
+  vpHomography &build(const vpPoseVector &arb, const vpPlane &bP);
+  //! Construction from homogeneous matrix and a plane
+  vpHomography &build(const vpHomogeneousMatrix &aMb, const vpPlane &bP);
 
   /*!
    * Transform an homography from pixel space to calibrated domain.
@@ -611,7 +627,6 @@ public:
                      double weights_threshold = 0.4, unsigned int niter = 4, bool normalization = true);
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-  //! build the homography from aMb and Rb
   static void build(vpHomography &aHb, const vpHomogeneousMatrix &aMb, const vpPlane &bP);
 
   static void computeDisplacement(const vpHomography &aHb, const vpColVector &nd, vpRotationMatrix &aRb,
@@ -645,7 +660,7 @@ public:
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
 private:
-  static const double m_sing_threshold; // = 0.0001;
+  static const double m_sing_threshold; /* equals 0.0001 */
   static const double m_threshold_rotation;
   static const double m_threshold_displacement;
   vpHomogeneousMatrix m_aMb;
@@ -688,5 +703,7 @@ private:
 
   static void initRansac(unsigned int n, double *xb, double *yb, double *xa, double *ya, vpColVector &x);
 };
+
+END_VISP_NAMESPACE
 
 #endif

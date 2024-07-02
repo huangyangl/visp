@@ -52,6 +52,7 @@
 #include <visp3/gui/vpDisplayX.h>
 #endif
 
+BEGIN_VISP_NAMESPACE
 vpMbDepthDenseTracker::vpMbDepthDenseTracker()
   : m_depthDenseHiddenFacesDisplay(), m_depthDenseListOfActiveFaces(), m_denseDepthNbFeatures(0), m_depthDenseFaces(),
   m_depthDenseSamplingStepX(2), m_depthDenseSamplingStepY(2), m_error_depthDense(), m_L_depthDense(),
@@ -181,7 +182,7 @@ void vpMbDepthDenseTracker::computeVVS()
       if (computeCovariance) {
         L_true = m_L_depthDense;
         if (!isoJoIdentity) {
-          cVo.buildFrom(m_cMo);
+          cVo.build(m_cMo);
           LVJ_true = (m_L_depthDense * cVo * oJo);
         }
       }
@@ -193,7 +194,7 @@ void vpMbDepthDenseTracker::computeVVS()
         // cannot be estimated. This is particularly useful when considering
         // circles (rank 5) and cylinders (rank 4)
         if (isoJoIdentity) {
-          cVo.buildFrom(m_cMo);
+          cVo.build(m_cMo);
 
           vpMatrix K; // kernel
           unsigned int rank = (m_L_depthDense * cVo).kernel(K);
@@ -824,3 +825,4 @@ void vpMbDepthDenseTracker::initCylinder(const vpPoint & /*p1*/, const vpPoint &
 void vpMbDepthDenseTracker::initFaceFromCorners(vpMbtPolygon &polygon) { addFace(polygon, false); }
 
 void vpMbDepthDenseTracker::initFaceFromLines(vpMbtPolygon &polygon) { addFace(polygon, true); }
+END_VISP_NAMESPACE

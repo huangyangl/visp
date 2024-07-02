@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,9 @@
  * An argument parser that can both use JSON files and command line arguments as inputs.
  */
 
-#ifndef _vpJsonArgumentParser_h_
-#define _vpJsonArgumentParser_h_
+#ifndef VP_JSON_ARGUMENT_PARSER_H
+#define VP_JSON_ARGUMENT_PARSER_H
+
 #include <visp3/core/vpConfig.h>
 
 #if defined(VISP_HAVE_NLOHMANN_JSON)
@@ -66,6 +67,9 @@ nlohmann::json convertCommandLineArgument<std::string>(const std::string &arg)
   nlohmann::json j = arg;
   return j;
 }
+
+BEGIN_VISP_NAMESPACE
+
 /*!
   \class vpJsonArgumentParser
   \ingroup module_io_cmd_parser
@@ -78,53 +82,53 @@ nlohmann::json convertCommandLineArgument<std::string>(const std::string &arg)
 
   A very basic program that uses both a JSON file and command line arguments can be found below:
   \code{.cpp}
-    #include <visp3/io/vpJsonArgumentParser.h>
-    #include <iostream>
-    int main(int argc, char* argv[])
-    {
-      double d = 1.0;
-      std::string s = "Default";
+  #include <visp3/io/vpJsonArgumentParser.h>
+  #include <iostream>
+  int main(int argc, char* argv[])
+  {
+    double d = 1.0;
+    std::string s = "Default";
 
-      vpJsonArgumentParser parser("Example program for arguments with vpJsonArgumentParser", "config", "/");
+    vpJsonArgumentParser parser("Example program for arguments with vpJsonArgumentParser", "config", "/");
 
-      parser.add_argument("scalar", d, true, "An important value: must be defined by the user")
-            .add_argument("string", s, false, "An optional value: if left unspecified, will default to its initialized value (\"Default\")")
-            .parse(argc, argv);
+    parser.add_argument("scalar", d, true, "An important value: must be defined by the user")
+          .add_argument("string", s, false, "An optional value: if left unspecified, will default to its initialized value (\"Default\")")
+          .parse(argc, argv);
 
-      std::cout << "Scalar = " << d << std::endl;
-      std::cout << "String = " << s << std::endl;
-    }
+    std::cout << "Scalar = " << d << std::endl;
+    std::cout << "String = " << s << std::endl;
+  }
   \endcode
   Compiling this sample and calling the program with the arguments from the command line would yield:
   \code{.sh}
-    $ ./program scalar 2.0 string "A new value"
-    Scalar = 2.0
-    String = a new value
-    $ ./program scalar 2.0
-    Scalar = 2.0
-    String = default
+  $ ./program scalar 2.0 string "A new value"
+  Scalar = 2.0
+  String = a new value
+  $ ./program scalar 2.0
+  Scalar = 2.0
+  String = default
   \endcode
   Here the arguments are specified from the command line. Since the "string" argument is optional, it does not have to be specified.
 
   For programs with more arguments it is helpful to use a JSON file that contains a base configuration. For the program above, a JSON file could look like:
   \code{.json}
-    {
-      "scalar": 3.0,
-      "string": "Some base value"
-    }
+  {
+    "scalar": 3.0,
+    "string": "Some base value"
+  }
   \endcode
   we could then call the program with:
   \code{.sh}
-    $ ./program config my_settings.json
-    Scalar = 3.0
-    String = Some base value
+  $ ./program config my_settings.json
+  Scalar = 3.0
+  String = Some base value
   \endcode
 
   The values contained in the JSON file can be overridden with command line arguments
   \code{.sh}
-    $ ./program config my_settings.json scalar 5
-    Scalar = 5.0
-    String = Some base value
+  $ ./program config my_settings.json scalar 5
+  Scalar = 5.0
+  String = Some base value
   \endcode
 
   The program can also be called with the "-h" or "--help" argument to display the help associated to the arguments, as well as an example json configuration file
@@ -177,7 +181,7 @@ public:
   template<typename T>
   vpJsonArgumentParser &addArgument(const std::string &name, T &parameter, const bool required = true, const std::string &help = "No description")
   {
-    const auto getter = [name, this](nlohmann::json &j, bool create) -> nlohmann::json *{
+    const auto getter = [name, this](nlohmann::json &j, bool create) -> nlohmann::json * {
       size_t pos = 0;
       nlohmann::json *f = &j;
       std::string token;
@@ -260,6 +264,8 @@ private:
   std::map<std::string, std::function<std::string()>> helpers; // Functions that output the usage and description of command line arguments: used when the help flag is given as argument
   nlohmann::json exampleJson; // Example JSON argument file: displayed when user calls for help
 };
+
+END_VISP_NAMESPACE
 
 #endif // VISP_HAVE_NLOHMANN_JSON
 

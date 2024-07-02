@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,13 +36,19 @@
  * \brief Moving edges
  */
 
-#ifndef _vpMe_h_
-#define _vpMe_h_
+#ifndef VP_ME_H
+#define VP_ME_H
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpImage.h>
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpMatrix.h>
 
+#ifdef VISP_HAVE_NLOHMANN_JSON
+#include <nlohmann/json.hpp>
+#endif
+
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpMe
  * \ingroup module_me
@@ -57,6 +63,10 @@
  * and reload the values from this JSON file.
  * \code
  * #include <visp3/me/vpMe.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -119,7 +129,7 @@
  * {"maskSign":0,"maskSize":5,"minSampleStep":4.0,"mu":[0.5,0.5],"nMask":180,"ntotalSample":0,"pointsToTrack":200,
  *  "range":5,"sampleStep":10.0,"strip":2,"threshold":20.0,"thresholdMarginRatio":-1.0,"minThreshold":-1.0,"thresholdType":"normalized"}
  * \endcode
- */
+*/
 class VISP_EXPORT vpMe
 {
 public:
@@ -134,31 +144,6 @@ public:
     //! with values in [0 ; 255].
     NORMALIZED_THRESHOLD = 1
   } vpLikelihoodThresholdType;
-
-private:
-  vpLikelihoodThresholdType m_likelihood_threshold_type; //!< Likelihood threshold type
-  //! Old likelihood ratio threshold (to be avoided) or easy-to-use normalized threshold: minimal contrast
-  double m_threshold;
-  double m_thresholdMarginRatio; //!< The ratio of the initial contrast to use to initialize the contrast threshold of the vpMeSite.
-  double m_minThreshold; //!< The minimum moving-edge threshold in grey level used when the contrast threshold of the vpMeSites is automatically computed.
-  bool m_useAutomaticThreshold; //!< Set to true if the user wants to automatically compute the vpMeSite contrast thresholds, false if the user wants to use a global threshold.
-  double m_mu1;       //!< Contrast continuity parameter (left boundary)
-  double m_mu2;       //!< Contrast continuity parameter (right boundary)
-  double m_min_samplestep;
-  unsigned int m_anglestep;
-  int m_mask_sign;
-  unsigned int m_range; //! Seek range - on both sides of the reference pixel
-  double m_sample_step; //! Distance between sampled points in pixels
-  int m_ntotal_sample;
-  int m_points_to_track; //!< Expected number of points to track
-  //! Convolution masks' size in pixels (masks are square)
-  unsigned int m_mask_size;
-  //! The number of convolution masks available for tracking ; defines resolution
-  unsigned int m_mask_number;
-  //! Strip: defines a "security strip" such that when seeking extremities
-  //! cannot return a new extremity which is too close to the frame borders
-  int m_strip;
-  vpMatrix *m_mask; //!< Array of matrices defining the different masks (one for every angle step).
 
 public:
   /*!
@@ -195,8 +180,9 @@ public:
    */
   void checkSamplestep(double &sample_step)
   {
-    if (sample_step < m_min_samplestep)
+    if (sample_step < m_min_samplestep) {
       sample_step = m_min_samplestep;
+    }
   }
 
   /*!
@@ -518,6 +504,31 @@ public:
    */
   void setLikelihoodThresholdType(const vpLikelihoodThresholdType likelihood_threshold_type) { m_likelihood_threshold_type = likelihood_threshold_type; }
 
+private:
+  vpLikelihoodThresholdType m_likelihood_threshold_type; //!< Likelihood threshold type
+  //! Old likelihood ratio threshold (to be avoided) or easy-to-use normalized threshold: minimal contrast
+  double m_threshold;
+  double m_thresholdMarginRatio; //!< The ratio of the initial contrast to use to initialize the contrast threshold of the vpMeSite.
+  double m_minThreshold; //!< The minimum moving-edge threshold in grey level used when the contrast threshold of the vpMeSites is automatically computed.
+  bool m_useAutomaticThreshold; //!< Set to true if the user wants to automatically compute the vpMeSite contrast thresholds, false if the user wants to use a global threshold.
+  double m_mu1;       //!< Contrast continuity parameter (left boundary)
+  double m_mu2;       //!< Contrast continuity parameter (right boundary)
+  double m_min_samplestep;
+  unsigned int m_anglestep;
+  int m_mask_sign;
+  unsigned int m_range; //! Seek range - on both sides of the reference pixel
+  double m_sample_step; //! Distance between sampled points in pixels
+  int m_ntotal_sample;
+  int m_points_to_track; //!< Expected number of points to track
+  //! Convolution masks' size in pixels (masks are square)
+  unsigned int m_mask_size;
+  //! The number of convolution masks available for tracking ; defines resolution
+  unsigned int m_mask_number;
+  //! Strip: defines a "security strip" such that when seeking extremities
+  //! cannot return a new extremity which is too close to the frame borders
+  int m_strip;
+  vpMatrix *m_mask; //!< Array of matrices defining the different masks (one for every angle step).
+
 #ifdef VISP_HAVE_NLOHMANN_JSON
   /*!
    * @brief Convert a vpMe object to a JSON representation.
@@ -577,9 +588,8 @@ public:
   friend void from_json(const nlohmann::json &j, vpMe &me);
 #endif
 };
-#ifdef VISP_HAVE_NLOHMANN_JSON
-#include <nlohmann/json.hpp>
 
+#ifdef VISP_HAVE_NLOHMANN_JSON
 NLOHMANN_JSON_SERIALIZE_ENUM(vpMe::vpLikelihoodThresholdType, {
   {vpMe::vpLikelihoodThresholdType::OLD_THRESHOLD, "old"},
   {vpMe::vpLikelihoodThresholdType::NORMALIZED_THRESHOLD, "normalized"}
@@ -643,4 +653,5 @@ inline void from_json(const nlohmann::json &j, vpMe &me)
 
 #endif
 
+END_VISP_NAMESPACE
 #endif

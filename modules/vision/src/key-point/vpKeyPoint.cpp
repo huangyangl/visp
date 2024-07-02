@@ -43,6 +43,9 @@
 #include <pugixml.hpp>
 #endif
 
+BEGIN_VISP_NAMESPACE
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace
 {
 // Specific Type transformation functions
@@ -61,6 +64,8 @@ inline vpImagePoint matchRansacToVpImage(const std::pair<cv::KeyPoint, cv::Point
 }
 
 } // namespace
+
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 vpKeyPoint::vpKeyPoint(const vpFeatureDetectorType &detectorType, const vpFeatureDescriptorType &descriptorType,
                        const std::string &matcherName, const vpFilterMatchingType &filterType)
@@ -4215,6 +4220,8 @@ void vpKeyPoint::PyramidAdaptedFeatureDetector::detectImpl(const cv::Mat &image,
 }
 #endif
 #endif
+
+END_VISP_NAMESPACE
 
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_vision.a(vpKeyPoint.cpp.o) has no symbols

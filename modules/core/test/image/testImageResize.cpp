@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test image resize.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testImageResize.cpp
@@ -52,6 +50,9 @@ static unsigned int g_input_height = 5;
 static unsigned int g_output_width = 4;
 static unsigned int g_output_height = 3;
 
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 TEST_CASE("Nearest neighbor interpolation", "[image_resize]")
 {
   SECTION("unsigned char")
@@ -136,20 +137,20 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()                           // Get Catch's composite command line parser
-             | Opt(g_input_width, "g_input_width")   // bind variable to a new option, with a hint string
-                   ["--iw"]                          // the option names it will respond to
-             ("Input image width.")                  // description string for the help output
-             | Opt(g_input_height, "g_input_height") // bind variable to a new option, with a hint string
-                   ["--ih"]                          // the option names it will respond to
-             ("Input image height.") |
-             Opt(g_output_width, "g_output_width") // bind variable to a new option, with a hint string
-                 ["--ow"]                          // the option names it will respond to
-             ("Output image width.") |
-             Opt(g_output_height, "g_output_height") // bind variable to a new option, with a hint string
-                 ["--oh"]                            // the option names it will respond to
-             ("Output image height.");
+    | Opt(g_input_width, "g_input_width")   // bind variable to a new option, with a hint string
+    ["--iw"]                          // the option names it will respond to
+    ("Input image width.")                  // description string for the help output
+    | Opt(g_input_height, "g_input_height") // bind variable to a new option, with a hint string
+    ["--ih"]                          // the option names it will respond to
+    ("Input image height.") |
+    Opt(g_output_width, "g_output_width") // bind variable to a new option, with a hint string
+    ["--ow"]                          // the option names it will respond to
+    ("Output image width.") |
+    Opt(g_output_height, "g_output_height") // bind variable to a new option, with a hint string
+    ["--oh"]                            // the option names it will respond to
+    ("Output image height.");
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line

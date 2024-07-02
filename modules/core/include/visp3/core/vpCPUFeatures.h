@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,16 +31,17 @@
  * CPU features (hardware capabilities).
  */
 
-#ifndef _vpCPUFeatures_h_
-#define _vpCPUFeatures_h_
-
 /*!
   \file vpCPUFeatures.h
   \brief Check CPU features (hardware capabilities).
 */
 
+#ifndef VP_CPU_FEATURES_H
+#define VP_CPU_FEATURES_H
+
 #include <visp3/core/vpConfig.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \ingroup group_core_cpu_features
   \brief Check CPU features (hardware capabilities).
@@ -48,14 +49,18 @@
   The example below shows how to check or get CPU capabilities.
 
   \code
-#include <visp3/core/vpCPUFeatures.h>
+  #include <visp3/core/vpCPUFeatures.h>
 
-int main()
-{
-  std::cout << "checkSSE2: " << vpCPUFeatures::checkSSE2() << std::endl;
-  std::cout << "CPU info: " << vpCPUFeatures::printCPUInfo() << std::endl;
-  return 0;
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    std::cout << "checkSSE2: " << vpCPUFeatures::checkSSE2() << std::endl;
+    std::cout << "CPU info: " << vpCPUFeatures::printCPUInfo() << std::endl;
+    return 0;
+  }
   \endcode
 */
 
@@ -77,5 +82,5 @@ VISP_EXPORT size_t getCPUCacheL3();
 #endif
 VISP_EXPORT void printCPUInfo();
 } // namespace vpCPUFeatures
-
+END_VISP_NAMESPACE
 #endif

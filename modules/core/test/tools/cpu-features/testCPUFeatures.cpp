@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +29,11 @@
  *
  * Description:
  * Print CPU features.
- *
-*****************************************************************************/
+ */
 
+/*!
+  \example testCPUFeatures.cpp
+ */
 #include <cstdlib>
 #include <iostream>
 #include <visp3/core/vpCPUFeatures.h>
@@ -64,13 +65,16 @@
 
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   vpCPUFeatures::printCPUInfo();
   std::cout << "checkSSE2: " << vpCPUFeatures::checkSSE2() << " ; VISP_HAVE_SSE2: " << VALUE(VISP_HAVE_SSE2)
-            << std::endl;
+    << std::endl;
   std::cout << "checkSSE3: " << vpCPUFeatures::checkSSE3() << " ; VISP_HAVE_SSE3: " << VALUE(VISP_HAVE_SSE3)
-            << std::endl;
+    << std::endl;
   std::cout << "checkSSSE3: " << vpCPUFeatures::checkSSSE3() << " ; VISP_HAVE_SSSE3: " << VALUE(VISP_HAVE_SSSE3)
-            << std::endl;
+    << std::endl;
 
   return EXIT_SUCCESS;
 }

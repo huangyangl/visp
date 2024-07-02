@@ -44,6 +44,7 @@
 #include <visp3/robot/vpRobotException.h>
 #include <visp3/robot/vpSimulatorCamera.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   Default constructor that sets the transformation between
   world frame and camera frame to identity.
@@ -113,14 +114,14 @@ vpHomogeneousMatrix vpSimulatorCamera::getPosition() const { return (this->wMc_)
   Get the current position of the camera.
 
   \param frame : Control frame type in which to get the position, either :
-  - in the camera cartesien frame,
+  - in the camera cartesian frame,
   - joint (articular) coordinates of each axes
-  - in a reference or fixed cartesien frame attached to the robot base
-  - in a mixt cartesien frame (translation in reference frame, and rotation in
+  - in a reference or fixed cartesian frame attached to the robot base
+  - in a mixt cartesian frame (translation in reference frame, and rotation in
   camera frame)
 
   \param position : Measured position of the robot:
-  - in camera cartesien frame, a 6 dimension vector, set to 0.
+  - in camera cartesian frame, a 6 dimension vector, set to 0.
 
   - in articular, a 6 dimension vector corresponding to the articular
   position of each dof, first the 3 translations, then the 3
@@ -146,7 +147,7 @@ void vpSimulatorCamera::getPosition(const vpRobot::vpControlFrameType frame, vpC
     vpRotationMatrix wRc;
     this->wMc_.extract(wRc);
     vpRxyzVector rxyz;
-    rxyz.buildFrom(wRc);
+    rxyz.build(wRc);
 
     for (unsigned int i = 0; i < 3; i++) {
       q[i] = this->wMc_[i][3]; // translation x,y,z
@@ -238,3 +239,4 @@ void vpSimulatorCamera::setPosition(const vpHomogeneousMatrix &wMc)
 
   this->wMc_ = wMc;
 }
+END_VISP_NAMESPACE

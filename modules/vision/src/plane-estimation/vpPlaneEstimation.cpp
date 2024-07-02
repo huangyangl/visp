@@ -46,6 +46,9 @@
 #include <visp3/core/vpPixelMeterConversion.h>
 #include <visp3/core/vpRobust.h>
 
+BEGIN_VISP_NAMESPACE
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 // Local helpers
 namespace
 {
@@ -193,6 +196,7 @@ vpPlane estimatePlaneEquationSVD(const std::vector<double> &point_cloud, vpColVe
 
 } // namespace
 
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 std::optional<vpPlane>
 vpPlaneEstimation::estimatePlane(const vpImage<uint16_t> &I_depth_raw, double depth_scale,
                                  const vpCameraParameters &depth_intrinsics, const vpPolygon &roi,
@@ -298,5 +302,5 @@ vpPlaneEstimation::estimatePlane(const vpImage<uint16_t> &I_depth_raw, double de
     return estimatePlaneEquationSVD(pt_cloud);
   }
 }
-
+END_VISP_NAMESPACE
 #endif

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,20 +29,19 @@
  *
  * Description:
  * Windows 32 display using GDI
- *
- * Authors:
- * Bruno Renier
- *
-*****************************************************************************/
+ */
+
+#ifndef VP_DISPLAY_GDI_H
+#define VP_DISPLAY_GDI_H
+
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDisplay.h>
 
 #if (defined(VISP_HAVE_GDI))
 
-#ifndef vpDisplayGDI_HH
-#define vpDisplayGDI_HH
-
 #include <visp3/gui/vpDisplayWin32.h>
+
+BEGIN_VISP_NAMESPACE
 
 /*!
  * \class vpDisplayGDI
@@ -59,6 +57,10 @@
  * \code
  * #include <visp3/gui/vpDisplayGDI.h>
  * #include <visp3/io/vpImageIo.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main()
  * {
@@ -124,7 +126,7 @@
  * }
  * \endcode
  */
-class VISP_EXPORT vpDisplayGDI : public vpDisplayWin32
+  class VISP_EXPORT vpDisplayGDI : public vpDisplayWin32
 {
 public:
   vpDisplayGDI();
@@ -137,5 +139,6 @@ public:
                vpScaleType type = SCALE_DEFAULT);
 };
 
+END_VISP_NAMESPACE
 #endif
 #endif

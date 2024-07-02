@@ -77,15 +77,24 @@ class HeaderFile():
   def get_header_dependencies(self, headers: List['HeaderFile']) -> List['HeaderFile']:
     if len(self.depends) == 0:
       return []
+
+    user_required_headers = []
+    all_user_required_header_names = self.submodule.config.get('header_additional_dependencies')
+    if all_user_required_header_names is not None:
+      user_required_headers = all_user_required_header_names.get(self.path.name, [])
+
     header_deps = []
     for header in headers:
       if header == self:
         continue
       is_dependency = False
-      for d in self.depends:
-        if d in header.contains:
-          is_dependency = True
-          break
+      if header.path.name in user_required_headers:
+        is_dependency = True
+      else:
+        for d in self.depends:
+          if d in header.contains:
+            is_dependency = True
+            break
       if is_dependency:
         header_deps.append(header)
         upper_dependencies = header.get_header_dependencies(headers)
@@ -235,23 +244,18 @@ class HeaderFile():
       logging.info(f'Parsing subnamespace {namespace_prefix + sub_ns}')
       self.parse_sub_namespace(bindings_container, ns.namespaces[sub_ns], namespace_prefix + sub_ns + '::', False)
 
-  def generate_class(self, bindings_container: BindingsContainer, cls: ClassScope, header_env: HeaderEnvironment) -> SingleObjectBindings:
+  def generate_class(self, bindings_container: BindingsContainer, cls: ClassScope, header_env: HeaderEnvironment, owner='submodule') -> None:
     '''
     Generate the bindings for a single class:
     This method will generate one Python class per template instanciation.
     If the class has no template argument, then a single python class is generated
 
     If it is templated, the mapping (template argument types => Python class name) must be provided in the JSON config file
+    Subclasses are also generated
     '''
-    def generate_class_with_potiental_specialization(name_python: str, owner_specs: 'OrderedDict[str, str]', cls_config: Dict) -> str:
+    def generate_class_with_potiental_specialization(name_python: str, owner_specs: 'OrderedDict[str, str]', cls_config: Dict) -> None:
       '''
       Generate the bindings of a single class, handling a potential template specialization.
-      The handled information is:
-        - The inheritance of this class
-        - Its public fields that are not pointers
-        - Its constructors
-        - Most of its operators
-        - Its public methods
       '''
       python_ident = f'py{name_python}'
       name_cpp = get_typename(cls.class_decl.typename, owner_specs, header_env.mapping)
@@ -301,12 +305,22 @@ class HeaderFile():
       # Reference public base classes when creating pybind class binding
       base_class_strs = list(map(lambda base_class: get_typename(base_class.typename, owner_specs, header_env.mapping),
                             filter(lambda b: b.access == 'public', cls.class_decl.bases)))
-      class_template_str = ', '.join([name_cpp] + base_class_strs)
+
+      # Add trampoline class if defined
+      # Trampoline classes allow classes defined in Python to override virtual methods declared in C++
+      # For now (and probably forever?) trampolines should be defined by hand.
+      trampoline_name = cls_config['trampoline']
+      if trampoline_name is not None:
+        base_class_strs.append(trampoline_name)
+
+      # py::class template contains the class, its holder type, and its base clases.
+      # The default holder type is std::unique_ptr. when the cpp function argument is a shared_ptr, Pybind will raise an error when calling the method.
+      py_class_template_str = ', '.join([name_cpp, f'std::shared_ptr<{name_cpp}>'] + base_class_strs)
       doc_param = [] if class_doc is None else [class_doc.documentation]
       buffer_protocol_arg = ['py::buffer_protocol()'] if cls_config['use_buffer_protocol'] else []
-      cls_argument_strs = ['submodule', f'"{name_python}"'] + doc_param + buffer_protocol_arg
+      cls_argument_strs = [owner, f'"{name_python}"'] + doc_param + buffer_protocol_arg
 
-      class_decl = f'\tpy::class_ {python_ident} = py::class_<{class_template_str}>({", ".join(cls_argument_strs)});'
+      class_decl = f'\tpy::class_ {python_ident} = py::class_<{py_class_template_str}>({", ".join(cls_argument_strs)});'
 
       # Definitions
       # Skip constructors for classes that have pure virtual methods since they cannot be instantiated
@@ -343,7 +357,7 @@ class HeaderFile():
       operators, basic_methods = split_methods_with_config(non_constructors, lambda m: get_name(m.name) in cpp_operator_names)
 
       # Constructors definitions
-      if not contains_pure_virtual_methods:
+      if not contains_pure_virtual_methods or trampoline_name is not None:
         for method, method_config in constructors:
           method_name = get_name(method.name)
           params_strs = [get_type(param.type, owner_specs, header_env.mapping) for param in method.parameters]
@@ -424,7 +438,7 @@ class HeaderFile():
             method_spec_dict = OrderedDict(k for k in zip(method_template_names, method_spec))
             new_specs.update(method_spec_dict)
             method_str, method_data = define_method(method, method_config, True,
-                                                                new_specs, self, header_env, class_def_names)
+                                                    new_specs, self, header_env, class_def_names)
             add_to_method_dict(method_data.py_name, MethodBinding(method_str, is_static=method.static,
                                                                   is_lambda=f'{name_cpp}::*' not in method_str,
                                                                   is_operator=False, is_constructor=False,
@@ -432,7 +446,7 @@ class HeaderFile():
             generated_methods.append(method_data)
         else:
           method_str, method_data = define_method(method, method_config, True,
-                                                              owner_specs, self, header_env, class_def_names)
+                                                  owner_specs, self, header_env, class_def_names)
           add_to_method_dict(method_data.py_name, MethodBinding(method_str, is_static=method.static,
                                                                 is_lambda=f'{name_cpp}::*' not in method_str,
                                                                 is_operator=False, is_constructor=False,
@@ -490,36 +504,63 @@ class HeaderFile():
         logging.error(error_generating_overloads)
         raise RuntimeError('Error generating overloads:\n' + '\n'.join(error_generating_overloads))
 
+      # Generate members
+
+      # Publicist "pattern": expose protected attributes to python via a derived class.
+      # See: https://pybind11.readthedocs.io/en/stable/advanced/classes.html#binding-protected-member-functions
+      use_publicist = cls_config['use_publicist']
+      publicist_name = f'Publicist{name_python}'
+      publicist_str = None
+      if use_publicist:
+        publicist_str = f'class {publicist_name}: public {name_cpp} {{\n'
+        publicist_str += 'public:\n'
+
+
       field_dict = {}
       for field in cls.fields:
         if field.name in cls_config['ignored_attributes']:
           logging.info(f'Ignoring field in class/struct {name_cpp}: {field.name}')
           continue
-        if field.access == 'public':
+        if field.access == 'public' or (field.access == 'protected' and use_publicist):
           if is_unsupported_argument_type(field.type):
             continue
 
           field_type = get_type(field.type, owner_specs, header_env.mapping)
-          logging.info(f'Found field in class/struct {name_cpp}: {field_type} {field.name}')
-
           field_name_python = field.name.lstrip('m_')
+          logging.info(f'Found field in class/struct {name_cpp}: {field_type} {field.name}')
 
           def_str = 'def_'
           def_str += 'readonly' if field.type.const else 'readwrite'
           if field.static:
             def_str += '_static'
 
-          field_str = f'{python_ident}.{def_str}("{field_name_python}", &{name_cpp}::{field.name});'
+          field_exposing_class = name_cpp if field.access == 'public' else publicist_name
+
+          if field.access == 'protected':
+            publicist_str += f'\tusing {name_cpp}::{field.name};\n'
+
+          field_str = f'{python_ident}.{def_str}("{field_name_python}", &{field_exposing_class}::{field.name});'
           field_dict[field_name_python] = field_str
 
-      classs_binding_defs = ClassBindingDefinitions(field_dict, methods_dict)
+      if use_publicist:
+        publicist_str += '};'
+      classs_binding_defs = ClassBindingDefinitions(field_dict, methods_dict, publicist_str)
       bindings_container.add_bindings(SingleObjectBindings(class_def_names, class_decl, classs_binding_defs, GenerationObjectType.Class))
 
-    name_cpp_no_template = '::'.join([seg.name for seg in cls.class_decl.typename.segments])
+      for subclass in cls.classes:
+        if subclass.class_decl.access != 'public':
+          continue
+        if name_is_anonymous(subclass.class_decl.typename):
+          logging.warning(f'Class {name_cpp} has a subclass that is hidden behind a typedef that was not generated!')
+          continue
+        self.generate_class(bindings_container, subclass, header_env, python_ident)
+
+
+    name_cpp_no_template = get_name(cls.class_decl.typename)
     logging.info(f'Parsing class "{name_cpp_no_template}"')
 
     if self.submodule.class_should_be_ignored(name_cpp_no_template):
-      return ''
+      return
 
     cls_config = self.submodule.get_class_config(name_cpp_no_template)
 
@@ -533,10 +574,9 @@ class HeaderFile():
     if len(set(refs_or_ptr_fields).difference(set(acknowledged_pointer_fields))) > 0:
       self.submodule.report.add_pointer_or_ref_holder(name_cpp_no_template, refs_or_ptr_fields)
 
-
     if cls.class_decl.template is None:
       name_python = name_cpp_no_template.replace('vp', '')
-      return generate_class_with_potiental_specialization(name_python, {}, cls_config)
+      generate_class_with_potiental_specialization(name_python, {}, cls_config)
     else:
       if cls_config is None or 'specializations' not in cls_config or len(cls_config['specializations']) == 0:
         logging.warning(f'Could not find template specialization for class {name_cpp_no_template}: skipping!')

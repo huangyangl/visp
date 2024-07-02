@@ -31,17 +31,18 @@
  * Adaptive gain.
  */
 
-#ifndef _vpAdaptiveGain_h_
-#define _vpAdaptiveGain_h_
-
 /*!
  * \file vpAdaptiveGain.h
  * \brief Adaptive gain
  */
 
+#ifndef _vpAdaptiveGain_h_
+#define _vpAdaptiveGain_h_
+
 #include <iostream>
 #include <visp3/core/vpConfig.h>
 
+BEGIN_VISP_NAMESPACE
 class vpColVector;
 
 /*!
@@ -78,6 +79,10 @@ class vpColVector;
  * #include <visp3/vs/vpAdaptiveGain.h>
  * #include <visp3/vs/vpServo.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpAdaptiveGain lambda(4, 0.4, 30);   // lambda(0)=4, lambda(oo)=0.4 and lambda'(0)=30
@@ -111,7 +116,7 @@ class vpColVector;
  *   }
  * }
  * \endcode
- */
+*/
 
 class VISP_EXPORT vpAdaptiveGain
 {
@@ -146,7 +151,7 @@ public:
    *
    * \param c : Value of the constant gain. A typical value is 0.5.
    */
-  explicit vpAdaptiveGain(double c);
+  VP_EXPLICIT vpAdaptiveGain(double c);
 
   /*!
    * Constructor that initializes the gain as adaptive.
@@ -303,5 +308,5 @@ public:
    */
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpAdaptiveGain &lambda);
 };
-
+END_VISP_NAMESPACE
 #endif

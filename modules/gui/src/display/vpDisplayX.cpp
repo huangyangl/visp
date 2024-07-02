@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +29,7 @@
  *
  * Description:
  * Image display.
- *
- * Authors:
- * Anthony Saunier
- *
-*****************************************************************************/
+ */
 
 /*!
   \file vpDisplayX.cpp
@@ -55,7 +50,6 @@
 #include <visp3/gui/vpDisplayX.h>
 
 // debug / exception
-#include <visp3/core/vpDebug.h>
 #include <visp3/core/vpDisplayException.h>
 
 // math
@@ -65,6 +59,8 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+BEGIN_VISP_NAMESPACE
 
 // Work around to use this class with Eigen3
 #ifdef Success
@@ -201,11 +197,13 @@ public:
 
         while (i < size) {
           unsigned char nivGris = src_8[i];
-          if (nivGris > nivGrisMax)
+          if (nivGris > nivGrisMax) {
             dst_8[i] = 255;
-          else
+          }
+          else {
             dst_8[i] = nivGris;
-          i++;
+          }
+          ++i;
         }
       }
       else {
@@ -474,11 +472,11 @@ public:
               *(dst_8 + j) = 255;
             else
               *(dst_8 + j) = nivGris;
-            j++;
+            ++j;
           }
           src_8 = src_8 + iwidth;
           dst_8 = dst_8 + width;
-          i++;
+          ++i;
         }
 
         XPutImage(display, pixmap, context, Ximage, (int)iP.get_u(), (int)iP.get_v(), (int)iP.get_u(), (int)iP.get_v(),
@@ -572,11 +570,11 @@ public:
               *(dst_32 + 4 * j + 1) = val;
               *(dst_32 + 4 * j + 2) = val;
               *(dst_32 + 4 * j + 3) = val;
-              j++;
+              ++j;
             }
             src_8 = src_8 + iwidth;
             dst_32 = dst_32 + 4 * width;
-            i++;
+            ++i;
           }
         }
         else {
@@ -590,11 +588,11 @@ public:
               *(dst_32 + 4 * j + 1) = val;
               *(dst_32 + 4 * j + 2) = val;
               *(dst_32 + 4 * j + 3) = vpRGBa::alpha_default;
-              j++;
+              ++j;
             }
             src_8 = src_8 + iwidth;
             dst_32 = dst_32 + 4 * width;
-            i++;
+            ++i;
           }
         }
 
@@ -728,11 +726,11 @@ public:
               *(dst_32 + 4 * j + 2) = (src_32 + j)->G;
               *(dst_32 + 4 * j + 3) = (src_32 + j)->B;
 
-              j++;
+              ++j;
             }
             src_32 = src_32 + iwidth;
             dst_32 = dst_32 + 4 * width;
-            i++;
+            ++i;
           }
 
         }
@@ -746,11 +744,11 @@ public:
               *(dst_32 + 4 * j + 2) = (src_32 + j)->R;
               *(dst_32 + 4 * j + 3) = (src_32 + j)->A;
 
-              j++;
+              ++j;
             }
             src_32 = src_32 + iwidth;
             dst_32 = dst_32 + 4 * width;
-            i++;
+            ++i;
           }
         }
 
@@ -1175,19 +1173,15 @@ public:
     }
 
     if ((display = XOpenDisplay(nullptr)) == nullptr) {
-      vpERROR_TRACE("Can't connect display on server %s.\n", XDisplayName(nullptr));
-      throw(vpDisplayException(vpDisplayException::connexionError, "Can't connect display on server."));
+      throw(vpDisplayException(vpDisplayException::connexionError, "Can't connect display on server %s.", XDisplayName(nullptr)));
     }
 
     screen = DefaultScreen(display);
     lut = DefaultColormap(display, screen);
     screen_depth = (unsigned int)DefaultDepth(display, screen);
 
-    vpTRACE("Screen depth: %d\n", screen_depth);
-
     if ((window = XCreateSimpleWindow(display, RootWindow(display, screen), win_x, win_y, win_width, win_height, 1,
                                       BlackPixel(display, screen), WhitePixel(display, screen))) == 0) {
-      vpERROR_TRACE("Can't create window.");
       throw(vpDisplayException(vpDisplayException::cannotOpenWindowError, "Can't create window."));
     }
 
@@ -1215,8 +1209,7 @@ public:
         xcolor.pad = 0;
         xcolor.red = xcolor.green = xcolor.blue = 256 * i;
         if (XAllocColor(display, lut, &xcolor) == 0) {
-          vpERROR_TRACE("Can't allocate 256 colors. Only %d allocated.", i);
-          throw(vpDisplayException(vpDisplayException::colorAllocError, "Can't allocate 256 colors."));
+          throw(vpDisplayException(vpDisplayException::colorAllocError, "Can't allocate 256 colors. Only %d allocated.", i));
         }
         colortable[i] = xcolor.pixel;
       }
@@ -1561,7 +1554,6 @@ public:
     context = XCreateGC(display, window, GCPlaneMask | GCFillStyle | GCForeground | GCBackground, &values);
 
     if (context == nullptr) {
-      vpERROR_TRACE("Can't create graphics context.");
       throw(vpDisplayException(vpDisplayException::XWindowsError, "Can't create graphics context"));
     }
 
@@ -1632,13 +1624,13 @@ private:
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayX::vpDisplayX(vpImage<unsigned char> &I, vpScaleType scaleType) : vpDisplay(), m_impl(new Impl())
@@ -1660,13 +1652,13 @@ vpDisplayX::vpDisplayX(vpImage<unsigned char> &I, vpScaleType scaleType) : vpDis
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayX::vpDisplayX(vpImage<unsigned char> &I, int x, int y, const std::string &title, vpScaleType scaleType)
@@ -1686,13 +1678,13 @@ vpDisplayX::vpDisplayX(vpImage<unsigned char> &I, int x, int y, const std::strin
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayX::vpDisplayX(vpImage<vpRGBa> &I, vpScaleType scaleType) : vpDisplay(), m_impl(new Impl())
@@ -1713,13 +1705,13 @@ vpDisplayX::vpDisplayX(vpImage<vpRGBa> &I, vpScaleType scaleType) : vpDisplay(),
     is fully displayed in the screen;
   - vpDisplay::SCALE_DEFAULT or vpDisplay::SCALE_1, the display size is the
   same than the image size.
-  - vpDisplay::SCALE_2, the display size is downscaled by 2 along the lines
+  - vpDisplay::SCALE_2, the display size is down scaled by 2 along the lines
   and the columns.
-  - vpDisplay::SCALE_3, the display size is downscaled by 3 along the lines
+  - vpDisplay::SCALE_3, the display size is down scaled by 3 along the lines
   and the columns.
-  - vpDisplay::SCALE_4, the display size is downscaled by 4 along the lines
+  - vpDisplay::SCALE_4, the display size is down scaled by 4 along the lines
   and the columns.
-  - vpDisplay::SCALE_5, the display size is downscaled by 5 along the lines
+  - vpDisplay::SCALE_5, the display size is down scaled by 5 along the lines
   and the columns.
 */
 vpDisplayX::vpDisplayX(vpImage<vpRGBa> &I, int x, int y, const std::string &title, vpScaleType scaleType)
@@ -1739,15 +1731,19 @@ vpDisplayX::vpDisplayX(vpImage<vpRGBa> &I, int x, int y, const std::string &titl
   To initialize the display size, you need to call init().
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayX.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayX.h>
 
-int main()
-{
-  vpDisplayX d(100, 200, "My display");
-  vpImage<unsigned char> I(240, 384);
-  d.init(I);
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayX d(100, 200, "My display");
+    vpImage<unsigned char> I(240, 384);
+    d.init(I);
+  }
   \endcode
 */
 vpDisplayX::vpDisplayX(int x, int y, const std::string &title) : vpDisplay(), m_impl(new Impl())
@@ -1766,15 +1762,19 @@ vpDisplayX::vpDisplayX(int x, int y, const std::string &title) : vpDisplay(), m_
   init(vpImage<vpRGBa> &, int, int, const std::string &).
 
   \code
-#include <visp3/core/vpImage.h>
-#include <visp3/gui/vpDisplayX.h>
+  #include <visp3/core/vpImage.h>
+  #include <visp3/gui/vpDisplayX.h>
 
-int main()
-{
-  vpDisplayX d;
-  vpImage<unsigned char> I(240, 384);
-  d.init(I, 100, 200, "My display");
-}
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
+
+  int main()
+  {
+    vpDisplayX d;
+    vpImage<unsigned char> I(240, 384);
+    d.init(I, 100, 200, "My display");
+  }
   \endcode
 */
 vpDisplayX::vpDisplayX() : vpDisplay(), m_impl(new Impl()) { }
@@ -2501,7 +2501,7 @@ bool vpDisplayX::getClickUp(vpImagePoint &ip, vpMouseButton::vpMouseButtonType &
 /*
   Gets the displayed image (including the overlay plane)
   and returns an RGBa image. If a scale factor is set using setScale(), the
-  size of the image is the size of the downscaled image.
+  size of the image is the size of the down scaled image.
 
   \param I : Image to get.
 */
@@ -2660,7 +2660,9 @@ bool vpDisplayX::getPointerPosition(vpImagePoint &ip)
   return ret;
 }
 
+END_VISP_NAMESPACE
+
 #elif !defined(VISP_BUILD_SHARED_LIBS)
-// Work around to avoid warning: libvisp_core.a(vpDisplayX.cpp.o) has no symbols
+// Work around to avoid warning: libvisp_gui.a(vpDisplayX.cpp.o) has no symbols
 void dummy_vpDisplayX() { };
 #endif

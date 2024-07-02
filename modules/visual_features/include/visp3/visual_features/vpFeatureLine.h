@@ -31,20 +31,22 @@
  * 2D line visual feature.
  */
 
-#ifndef _vpFeatureLine_h_
-#define _vpFeatureLine_h_
-
 /*!
  * \file vpFeatureLine.h
  * \brief Class that defines 2D line visual feature
  */
 
+#ifndef _vpFeatureLine_h_
+#define _vpFeatureLine_h_
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpMatrix.h>
 #include <visp3/visual_features/vpBasicFeature.h>
 
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpRGBa.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpFeatureLine
  * \ingroup group_visual_features
@@ -92,6 +94,10 @@
  * #include <visp3/visual_features/vpFeatureLine.h>
  * #include <visp3/vs/vpServo.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpServo task; // Visual servoing task
@@ -110,14 +116,14 @@
  *   double Cd = 1;
  *   double Dd = -1;
  *   // Set the line feature thanks to the desired parameters.
- *   sd.buildfrom(rhod, thetad, Ad,Bd, Cd, Dd);
+ *   sd.build(rhod, thetad, Ad,Bd, Cd, Dd);
  *
  *   vpFeatureLine s; //The current line feature.
  *   // Sets the current features rho and theta
  *   double rho;    // You have to compute the value of rho.
  *   double theta;  // You have to compute the value of theta.
  *   // Set the line feature thanks to the current parameters.
- *   s.buildfrom(rho, theta);
+ *   s.build(rho, theta);
  *   // In this case the parameters A, B, C, D are not needed because the interaction matrix is computed
  *   // with the desired visual feature.
  *
@@ -135,7 +141,7 @@
  *     // The new parameters rho and theta must be computed here.
  *
  *     // Update the current line visual feature
- *     s.buildfrom(rho, theta);
+ *     s.build(rho, theta);
  *
  *     // Compute the control law
  *     vpColVector v = task.computeControlLaw(); // camera velocity
@@ -153,6 +159,10 @@
  * #include <visp3/core/vpMatrix.h>
  * #include <visp3/visual_features/vpFeatureLine.h>
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main()
  * {
  *   vpFeatureLine sd; //The desired line feature.
@@ -162,7 +172,7 @@
  *   // Sets the parameters which describe the equation of a plane in the camera frame : AX+BY+CZ+D=0.
  *   double Ad = 0; double Bd = 0; double Cd = 1; double Dd = -1;
  *   // Set the line feature thanks to the desired parameters.
- *   sd.buildfrom(rhod, thetad, Ad,Bd, Cd, Dd);
+ *   sd.build(rhod, thetad, Ad,Bd, Cd, Dd);
  *
  *   vpFeatureLine s; // The current line feature.
  *   // Sets the current features rho and theta
@@ -174,7 +184,7 @@
  *   double C;  // You have to compute the value of C.
  *   double D;  // You have to compute the value of D. D must not be equal to zero !
  *   // Set the line feature thanks to the current parameters.
- *   s.buildfrom(rho, theta, A, B, C, D);
+ *   s.build(rho, theta, A, B, C, D);
  *
  *   // Compute the interaction matrix L_s for the current line feature
  *   vpMatrix L = s.interaction();
@@ -185,7 +195,7 @@
  *   s.error(s_star);
  * }
  * \endcode
- */
+*/
 class VISP_EXPORT vpFeatureLine : public vpBasicFeature
 {
   /*!
@@ -200,15 +210,19 @@ private:
 public:
   vpFeatureLine();
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
   void buildFrom(double rho, double theta);
   void buildFrom(double rho, double theta, double A, double B, double C, double D);
+#endif
+  vpFeatureLine &build(const double &rho, const double &theta);
+  vpFeatureLine &build(const double &rho, const double &theta, const double &A, const double &B, const double &C, const double &D);
 
   void display(const vpCameraParameters &cam, const vpImage<unsigned char> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
   void display(const vpCameraParameters &cam, const vpImage<vpRGBa> &I, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) const vp_override;
-  vpFeatureLine *duplicate() const vp_override;
-  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) vp_override;
+               unsigned int thickness = 1) const VP_OVERRIDE;
+  vpFeatureLine *duplicate() const VP_OVERRIDE;
+  vpColVector error(const vpBasicFeature &s_star, unsigned int select = FEATURE_ALL) VP_OVERRIDE;
 
   /*!
    * Return the \f$ \rho \f$ subset value of the visual feature \f$ s \f$.
@@ -220,9 +234,9 @@ public:
    */
   double getTheta() const { return s[1]; }
 
-  void init() vp_override;
-  vpMatrix interaction(unsigned int select = FEATURE_ALL) vp_override;
-  void print(unsigned int select = FEATURE_ALL) const vp_override;
+  void init() VP_OVERRIDE;
+  vpMatrix interaction(unsigned int select = FEATURE_ALL) VP_OVERRIDE;
+  void print(unsigned int select = FEATURE_ALL) const VP_OVERRIDE;
 
   void setRhoTheta(double rho, double theta);
   void setABCD(double A, double B, double C, double D);
@@ -231,5 +245,5 @@ public:
   static unsigned int selectRho();
   static unsigned int selectTheta();
 };
-
+END_VISP_NAMESPACE
 #endif

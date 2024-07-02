@@ -38,10 +38,13 @@
 #ifndef _vpFeatureMomentCentered_h_
 #define _vpFeatureMomentCentered_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 #include <visp3/visual_features/vpFeatureMomentBasic.h>
 
+BEGIN_VISP_NAMESPACE
 class vpMomentDatabase;
+
 /*!
  * \class vpFeatureMomentCentered
  *
@@ -70,7 +73,7 @@ class vpMomentDatabase;
  * - vpFeatureMomentBasic
  * - vpFeatureMomentGravityCenter
  * - vpMomentGravityCenter
- */
+*/
 class VISP_EXPORT vpFeatureMomentCentered : public vpFeatureMoment
 {
 protected:
@@ -86,11 +89,11 @@ public:
   vpFeatureMomentCentered(vpMomentDatabase &moments, double A, double B, double C,
                           vpFeatureMomentDatabase *featureMoments = nullptr);
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   /* Add function due to pure virtual definition in vpBasicFeature.h */
-  vpMatrix interaction(unsigned int /* select = FEATURE_ALL */) vp_override
+  vpMatrix interaction(unsigned int /* select = FEATURE_ALL */) VP_OVERRIDE
   {
     throw vpException(vpException::functionNotImplementedError, "Not implemented!");
   }
@@ -101,7 +104,7 @@ public:
   /*!
    * Associated moment name
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentCentered";
   }
@@ -109,12 +112,12 @@ public:
   /*!
    * Feature name
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentCentered";
   }
 
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpFeatureMomentCentered &v);
 };
-
+END_VISP_NAMESPACE
 #endif

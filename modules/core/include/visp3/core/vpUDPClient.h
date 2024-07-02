@@ -51,6 +51,7 @@
 
 #define VP_MAX_UDP_PAYLOAD 508
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpUDPClient
  *
@@ -83,6 +84,10 @@
  * #include <cstdlib>
  * #include <iostream>
  * #include <visp3/core/vpUDPClient.h>
+ *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
  *
  * int main() {
  *   try {
@@ -130,6 +135,10 @@
  *   vpDataType_t(double dbl, int i) : double_val(dbl), int_val(i) {}
  * };
  *
+ * #ifdef ENABLE_VISP_NAMESPACE
+ * using namespace VISP_NAMESPACE_NAME;
+ * #endif
+ *
  * int main() {
  *   try {
  *     std::string servername = "127.0.0.1";
@@ -160,7 +169,7 @@
  * \endcode
  *
  * \sa vpUDPServer
- */
+*/
 class VISP_EXPORT vpUDPClient
 {
 public:
@@ -194,6 +203,6 @@ private:
 
   void close();
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

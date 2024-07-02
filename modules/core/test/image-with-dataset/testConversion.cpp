@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,13 @@
  *
  * Description:
  * Test for image conversions.
- *
-*****************************************************************************/
+ */
+
+/*!
+  \example testConversion.cpp
+
+  \brief Manipulation of image conversions.
+*/
 
 #include <iomanip>
 #include <stdlib.h>
@@ -50,11 +54,13 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #endif
 
-/*!
-  \example testConversion.cpp
+#if defined(VISP_HAVE_YARP)
+#include <yarp/sig/ImageFile.h>
+#endif
 
-  \brief Manipulation of image conversions.
-*/
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 // List of allowed command line options
 #define GETOPTARGS "cdi:o:n:h"
@@ -655,8 +661,169 @@ int main(int argc, const char **argv)
       std::cout << "   Resulting image saved in: " << filename << std::endl;
       vpImageIo::write(I_bgr2gray_flip_crop_no_continuous_sse, filename);
 #endif
-      std::cout << "Test succeed" << std::endl;
+      std::cout << "   Test succeed" << std::endl;
     }
+
+#if defined(VISP_HAVE_YARP)
+    /////////////////////////
+    // Convert a ViSP to Yarp uchar image
+    ////////////////////////
+    std::cout << "** Test ViSP to Yarp image conversion by copy" << std::endl;
+    {
+      bool convert_by_copy = true;
+      filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
+      std::cout << "   Reading the gray image with ViSP: " << filename << std::endl;
+      vpImage<unsigned char> I;
+      // Read an image on a disk
+      vpImageIo::read(I, filename);
+
+      yarp::sig::ImageOf< yarp::sig::PixelMono > *Iyarp = new yarp::sig::ImageOf<yarp::sig::PixelMono >();
+      // Convert the vpImage\<unsigned char\> to a yarp::sig::ImageOf\<yarp::sig::PixelMono\>
+      vpImageConvert::convert(I, Iyarp, convert_by_copy);
+      // Write the image
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_copy.pgm");
+      std::cout << "   Converted Yarp image saved in: " << filename << std::endl;
+      yarp::sig::file::write(*Iyarp, filename, yarp::sig::file::FORMAT_PGM);
+
+      std::cout << "   Reading the gray image with Yarp: " << filename << std::endl;
+      yarp::sig::ImageOf< yarp::sig::PixelMono > *IIyarp = new yarp::sig::ImageOf<yarp::sig::PixelMono >();
+      yarp::sig::file::read(*IIyarp, filename, yarp::sig::file::FORMAT_PGM);
+      vpImage<unsigned char> II;
+      vpImageConvert::convert(IIyarp, II, convert_by_copy);
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_copy_visp.pgm");
+      std::cout << "   Converted image in ViSP saved in: " << filename << std::endl;
+      vpImageIo::write(II, filename);
+      if (I != II) {
+        std::cout << "   Yarp gray conversion test failed" << std::endl;
+        return EXIT_FAILURE;
+      }
+      std::cout << std::endl;
+    }
+    {
+      bool convert_by_copy = true;
+      filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
+      std::cout << "   Reading the color image with ViSP: " << filename << std::endl;
+      vpImage<vpRGBa> I;
+      // Read an image on a disk
+      vpImageIo::read(I, filename);
+
+      yarp::sig::ImageOf< yarp::sig::PixelRgba > *Iyarp = new yarp::sig::ImageOf<yarp::sig::PixelRgba >();
+      // Convert the vpImage\<vpRGBa\> to a yarp::sig::ImageOf\<yarp::sig::PixelRgba\>
+      vpImageConvert::convert(I, Iyarp, convert_by_copy);
+      // Write the image
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_copy.ppm");
+      std::cout << "   Converted image saved in: " << filename << std::endl;
+      yarp::sig::file::write(*Iyarp, filename, yarp::sig::file::FORMAT_PPM);
+
+      std::cout << "   Reading the color image with Yarp: " << filename << std::endl;
+      yarp::sig::ImageOf< yarp::sig::PixelRgba > *IIyarp = new yarp::sig::ImageOf<yarp::sig::PixelRgba >();
+      yarp::sig::file::read(*IIyarp, filename, yarp::sig::file::FORMAT_PPM);
+      vpImage<vpRGBa> II;
+      vpImageConvert::convert(IIyarp, II, convert_by_copy);
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_copy_visp.ppm");
+      std::cout << "   Converted image in ViSP saved in: " << filename << std::endl;
+      vpImageIo::write(II, filename);
+      if (I != II) {
+        std::cout << "   Yarp color conversion test failed" << std::endl;
+        return EXIT_FAILURE;
+      }
+      std::cout << std::endl;
+    }
+
+    std::cout << "** Test ViSP to Yarp image conversion without copy" << std::endl;
+    {
+      bool convert_by_copy = false;
+      filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
+      std::cout << "   Reading the gray image with ViSP: " << filename << std::endl;
+      vpImage<unsigned char> I;
+      // Read an image on a disk
+      vpImageIo::read(I, filename);
+
+      yarp::sig::ImageOf< yarp::sig::PixelMono > *Iyarp = new yarp::sig::ImageOf<yarp::sig::PixelMono >();
+      // Convert the vpImage\<unsigned char\> to a yarp::sig::ImageOf\<yarp::sig::PixelMono\>
+      vpImageConvert::convert(I, Iyarp, convert_by_copy);
+      // Write the image
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy.pgm");
+      std::cout << "   Converted Yarp image saved in: " << filename << std::endl;
+      yarp::sig::file::write(*Iyarp, filename, yarp::sig::file::FORMAT_PGM);
+
+      std::cout << "   Reading the gray image with Yarp: " << filename << std::endl;
+      yarp::sig::ImageOf< yarp::sig::PixelMono > *IIyarp = new yarp::sig::ImageOf<yarp::sig::PixelMono >();
+      yarp::sig::file::read(*IIyarp, filename, yarp::sig::file::FORMAT_PGM);
+      vpImage<unsigned char> II;
+      vpImageConvert::convert(IIyarp, II, convert_by_copy);
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy_visp.pgm");
+      std::cout << "   Converted image in ViSP saved in: " << filename << std::endl;
+      vpImageIo::write(II, filename);
+      if (I != II) {
+        std::cout << "   Yarp gray conversion test failed" << std::endl;
+        return EXIT_FAILURE;
+      }
+      else {
+        std::cout << "   Yarp gray conversion test succeed" << std::endl;
+      }
+      std::cout << std::endl;
+    }
+    {
+      bool convert_by_copy = false;
+      filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
+      std::cout << "   Reading the color image with ViSP: " << filename << std::endl;
+      vpImage<vpRGBa> I;
+      // Read an image on a disk
+      vpImageIo::read(I, filename);
+
+      yarp::sig::ImageOf< yarp::sig::PixelRgba > *Iyarp = new yarp::sig::ImageOf<yarp::sig::PixelRgba >();
+      // Convert the vpImage\<vpRGBa\> to a yarp::sig::ImageOf\<yarp::sig::PixelRgba\>
+      vpImageConvert::convert(I, Iyarp, convert_by_copy);
+      // Write the image
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy.ppm");
+      std::cout << "   Converted image saved in: " << filename << std::endl;
+      yarp::sig::file::write(*Iyarp, filename, yarp::sig::file::FORMAT_PPM);
+
+      std::cout << "   Reading the color image with Yarp: " << filename << std::endl;
+      yarp::sig::ImageOf< yarp::sig::PixelRgba > *IIyarp = new yarp::sig::ImageOf<yarp::sig::PixelRgba >();
+      yarp::sig::file::read(*IIyarp, filename, yarp::sig::file::FORMAT_PPM);
+      vpImage<vpRGBa> II;
+      vpImageConvert::convert(IIyarp, II, convert_by_copy);
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy_visp.ppm");
+      std::cout << "   Converted image in ViSP saved in: " << filename << std::endl;
+      vpImageIo::write(II, filename);
+      if (I != II) {
+        std::cout << "   Yarp RGBa color conversion test failed" << std::endl;
+        return EXIT_FAILURE;
+      }
+      else {
+        std::cout << "   Yarp RGBa color conversion test succeed" << std::endl;
+      }
+
+      yarp::sig::ImageOf< yarp::sig::PixelRgb > *IIIyarp = new yarp::sig::ImageOf<yarp::sig::PixelRgb >();
+      // Convert the vpImage\<vpRGBa\> to a yarp::sig::ImageOf\<yarp::sig::PixelRgb\>
+      vpImageConvert::convert(I, IIIyarp);
+      // Write the image
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy_rgb.ppm");
+      std::cout << "   Converted RGB image saved in: " << filename << std::endl;
+      yarp::sig::file::write(*Iyarp, filename, yarp::sig::file::FORMAT_PPM);
+
+      std::cout << "   Reading the RGB color image with Yarp: " << filename << std::endl;
+      yarp::sig::file::read(*IIIyarp, filename, yarp::sig::file::FORMAT_PPM);
+      vpImage<vpRGBa> III;
+      vpImageConvert::convert(IIIyarp, III);
+      filename = vpIoTools::createFilePath(opath, "Klimt_yarp_without_copy_visp_rgb.ppm");
+      std::cout << "   Converted RGB image in ViSP saved in: " << filename << std::endl;
+      vpImageIo::write(II, filename);
+      if (I != III) {
+        std::cout << "   Yarp RGB color conversion test failed" << std::endl;
+        return EXIT_FAILURE;
+      }
+      else {
+        std::cout << "   Yarp RGB color conversion test succeed" << std::endl;
+      }
+
+      std::cout << std::endl;
+    }
+#endif
+
+    std::cout << "** All the tests succeed" << std::endl;
 
     return EXIT_SUCCESS;
   }

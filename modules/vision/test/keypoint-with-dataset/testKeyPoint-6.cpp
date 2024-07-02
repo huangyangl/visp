@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,12 @@
  * Test descriptor computation.
  */
 
+/*!
+  \example testKeyPoint-6.cpp
+
+  \brief   Test descriptor extraction.
+*/
+
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
@@ -49,6 +55,10 @@
 
 // List of allowed command line options
 #define GETOPTARGS "cdh"
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 void usage(const char *name, const char *badparam);
 bool getOptions(int argc, const char **argv, bool &click_allowed, bool &display);
@@ -265,7 +275,8 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
         ss << "No keypoints detected with " << detectorName << " and image:" << filename << "." << std::endl;
         throw(vpException(vpException::fatalError, ss.str()));
       }
-    } else if (*itd == "AKAZE") {
+    }
+    else if (*itd == "AKAZE") {
       detectorName = "AKAZE";
       keyPoints.setDetector(detectorName);
       keyPoints.detect(I, kpts);
@@ -275,7 +286,8 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
         ss << "No keypoints detected with " << detectorName << " and image:" << filename << "." << std::endl;
         throw(vpException(vpException::fatalError, ss.str()));
       }
-    } else if (*itd == "BoostDesc") {
+    }
+    else if (*itd == "BoostDesc") {
 #if (VISP_HAVE_OPENCV_VERSION >= 0x030200) && defined(VISP_HAVE_OPENCV_XFEATURES2D)
       cv::Ptr<cv::Feature2D> boostDesc = keyPoints.getExtractor("BoostDesc");
       // Init BIN BOOST descriptor for FAST keypoints
@@ -289,8 +301,8 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
     t = vpTime::measureTimeMs() - t;
 
     std::cout << "Descriptor: " << descriptor.rows << "x" << descriptor.cols
-              << " (rows x cols) ; type=" << getOpenCVType(descriptor.type()) << " for " << *itd << " method in " << t
-              << " ms." << std::endl;
+      << " (rows x cols) ; type=" << getOpenCVType(descriptor.type()) << " for " << *itd << " method in " << t
+      << " ms." << std::endl;
     if (descriptor.empty()) {
       std::stringstream ss;
       ss << "No descriptor extracted with " << *itd << " and image:" << filename << "." << std::endl;
@@ -332,7 +344,8 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
         ss << "No keypoints detected with " << detectorName << " and image:" << filename << "." << std::endl;
         throw(vpException(vpException::fatalError, ss.str()));
       }
-    } else if (mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] == "AKAZE") {
+    }
+    else if (mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] == "AKAZE") {
       detectorName = "AKAZE";
       keyPoints.setDetector(detectorName);
       keyPoints.detect(I, kpts);
@@ -342,7 +355,8 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
         ss << "No keypoints detected with " << detectorName << " and image:" << filename << "." << std::endl;
         throw(vpException(vpException::fatalError, ss.str()));
       }
-    } else if (mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] == "BoostDesc") {
+    }
+    else if (mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] == "BoostDesc") {
 #if (VISP_HAVE_OPENCV_VERSION >= 0x030200) && defined(VISP_HAVE_OPENCV_XFEATURES2D)
       detectorName = "FAST";
       keyPoints.setDetector(detectorName);
@@ -366,13 +380,13 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
     t = vpTime::measureTimeMs() - t;
 
     std::cout << "Descriptor: " << descriptor.rows << "x" << descriptor.cols
-              << " (rows x cols) ; type=" << getOpenCVType(descriptor.type()) << " for "
-              << mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] << " method in " << t << " ms."
-              << std::endl;
+      << " (rows x cols) ; type=" << getOpenCVType(descriptor.type()) << " for "
+      << mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i] << " method in " << t << " ms."
+      << std::endl;
     if (descriptor.empty()) {
       std::stringstream ss;
       ss << "No descriptor extracted with " << mapOfDescriptorNames[(vpKeyPoint::vpFeatureDescriptorType)i]
-         << " and image:" << filename << "." << std::endl;
+        << " and image:" << filename << "." << std::endl;
       throw(vpException(vpException::fatalError, ss.str()));
     }
 
@@ -395,11 +409,6 @@ void run_test(const std::string &env_ipath, bool opt_click_allowed, bool opt_dis
   }
 }
 
-/*!
-  \example testKeyPoint-6.cpp
-
-  \brief   Test descriptor extraction.
-*/
 int main(int argc, const char **argv)
 {
   try {
@@ -418,8 +427,8 @@ int main(int argc, const char **argv)
 
     if (env_ipath.empty()) {
       std::cerr << "Please set the VISP_INPUT_IMAGE_PATH environment "
-                   "variable value."
-                << std::endl;
+        "variable value."
+        << std::endl;
       return EXIT_FAILURE;
     }
 
@@ -437,7 +446,8 @@ int main(int argc, const char **argv)
       run_test(env_ipath, opt_click_allowed, opt_display, Iinput, I);
     }
 
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }

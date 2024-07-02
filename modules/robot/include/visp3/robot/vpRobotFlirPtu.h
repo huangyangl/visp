@@ -33,13 +33,13 @@
  *
 *****************************************************************************/
 
-#ifndef vpRobotFlirPtu_h
-#define vpRobotFlirPtu_h
-
 /*!
   \file vpRobotFlirPtu.h
   Interface for Flir Ptu Cpi robot.
 */
+
+#ifndef vpRobotFlirPtu_h
+#define vpRobotFlirPtu_h
 
 #include <visp3/core/vpConfig.h>
 
@@ -49,6 +49,7 @@
 #include <visp3/robot/vpRobot.h>
 #include <visp3/robot/vpRobotException.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
   \class vpRobotFlirPtu
   \ingroup group_robot_real_arm
@@ -99,9 +100,9 @@ public:
   void connect(const std::string &portname, int baudrate = 9600);
   void disconnect();
 
-  void get_eJe(vpMatrix &eJe) vp_override;
+  void get_eJe(vpMatrix &eJe) VP_OVERRIDE;
   vpMatrix get_eJe();
-  void get_fJe(vpMatrix &fJe) vp_override;
+  void get_fJe(vpMatrix &fJe) VP_OVERRIDE;
   vpMatrix get_fJe();
   vpMatrix get_fMe();
 
@@ -112,13 +113,13 @@ public:
   vpHomogeneousMatrix get_eMc() const { return m_eMc; }
   vpVelocityTwistMatrix get_cVe() const;
 
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
 
   std::string getNetworkIP();
   std::string getNetworkGateway();
   std::string getNetworkHostName();
 
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
   vpColVector getPanPosLimits();
   vpColVector getTiltPosLimits();
   vpColVector getPanTiltVelMax();
@@ -130,13 +131,13 @@ public:
     If your tool is a camera, this transformation is obtained by hand-eye calibration.
    */
   void set_eMc(vpHomogeneousMatrix &eMc) { m_eMc = eMc; }
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) VP_OVERRIDE;
   void setPanPosLimits(const vpColVector &pan_limits);
   void setTiltPosLimits(const vpColVector &tilt_limits);
 
   void setPositioningVelocity(double velocity);
   vpRobot::vpRobotStateType setRobotState(vpRobot::vpRobotStateType newState);
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
   void stopMotion();
 
   static void emergencyStop(int signo);
@@ -166,6 +167,6 @@ protected:
   int m_njoints;
   double m_positioning_velocity;
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

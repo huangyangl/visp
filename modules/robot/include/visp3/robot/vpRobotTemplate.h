@@ -31,32 +31,33 @@
  * Defines a robot just to show which function you must implement.
  */
 
-#ifndef vpRobotTemplate_h
-#define vpRobotTemplate_h
-
 /*!
  * \file vpRobotTemplate.h
  * Defines a robot just to show which function you must implement.
  */
+
+#ifndef vpRobotTemplate_h
+#define vpRobotTemplate_h
 
 #include <visp3/core/vpConfig.h>
 
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/robot/vpRobot.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpRobotTemplate
  * \ingroup group_robot_real_template
  * \brief Class that defines a robot just to show which function you must implement.
- */
+*/
 class VISP_EXPORT vpRobotTemplate : public vpRobot
 {
 public:
   vpRobotTemplate();
-  virtual ~vpRobotTemplate() vp_override;
+  virtual ~vpRobotTemplate() VP_OVERRIDE;
 
-  void get_eJe(vpMatrix &eJe_) vp_override;
-  void get_fJe(vpMatrix &fJe_) vp_override;
+  void get_eJe(vpMatrix &eJe_) VP_OVERRIDE;
+  void get_fJe(vpMatrix &fJe_) VP_OVERRIDE;
 
   /*!
    * Return constant transformation between end-effector and tool frame.
@@ -64,19 +65,19 @@ public:
    */
   vpHomogeneousMatrix get_eMc() const { return m_eMc; }
 
-  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) vp_override;
+  void getDisplacement(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) VP_OVERRIDE;
 
   /*!
    * Set constant transformation between end-effector and tool frame.
    * If your tool is a camera, this transformation is obtained by hand-eye calibration.
    */
   void set_eMc(vpHomogeneousMatrix &eMc) { m_eMc = eMc; }
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) vp_override;
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) vp_override;
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) VP_OVERRIDE;
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &vel) VP_OVERRIDE;
 
 protected:
-  void init() vp_override;
+  void init() VP_OVERRIDE;
   void getJointPosition(vpColVector &q);
   void setCartVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &v);
   void setJointVelocity(const vpColVector &qdot);
@@ -84,5 +85,5 @@ protected:
 protected:
   vpHomogeneousMatrix m_eMc; //!< Constant transformation between end-effector and tool (or camera) frame
 };
-
+END_VISP_NAMESPACE
 #endif

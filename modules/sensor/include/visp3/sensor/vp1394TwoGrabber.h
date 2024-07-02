@@ -58,6 +58,20 @@
 
 #if defined(VISP_HAVE_DC1394)
 
+/*
+ * Interface with libdc1394 2.x
+ */
+#include <string.h>
+
+#include <dc1394/control.h>
+#include <dc1394/utils.h>
+#include <dc1394/vendor/avt.h>
+
+#include <visp3/core/vpFrameGrabber.h>
+#include <visp3/core/vpImage.h>
+#include <visp3/core/vpRGBa.h>
+
+BEGIN_VISP_NAMESPACE
 /*!
   \class vp1394TwoGrabber
 
@@ -87,6 +101,10 @@
     #include <visp3/core/vpImage.h>
     #include <visp3/io/vpImageIo.h>
     #include <visp3/sensor/vp1394TwoGrabber.h>
+
+    #ifdef ENABLE_VISP_NAMESPACE
+    using namespace VISP_NAMESPACE_NAME;
+    #endif
 
     int main()
     {
@@ -127,6 +145,10 @@
     #include <visp3/io/vpImageIo.h>
     #include <visp3/sensor/vp1394TwoGrabber.h>
 
+    #ifdef ENABLE_VISP_NAMESPACE
+    using namespace VISP_NAMESPACE_NAME;
+    #endif
+
     int main()
     {
     #if defined(VISP_HAVE_DC1394)
@@ -161,20 +183,6 @@
     \endcode
 
 */
-
-/*
- * Interface with libdc1394 2.x
- */
-#include <string.h>
-
-#include <dc1394/control.h>
-#include <dc1394/utils.h>
-#include <dc1394/vendor/avt.h>
-
-#include <visp3/core/vpFrameGrabber.h>
-#include <visp3/core/vpImage.h>
-#include <visp3/core/vpRGBa.h>
-
 class VISP_EXPORT vp1394TwoGrabber : public vpFrameGrabber
 {
 
@@ -354,7 +362,7 @@ private:
   //#endif
 
 public:
-  explicit vp1394TwoGrabber(bool reset = true);
+  VP_EXPLICIT vp1394TwoGrabber(bool reset = true);
   virtual ~vp1394TwoGrabber();
 
   void acquire(vpImage<unsigned char> &I);
@@ -460,6 +468,6 @@ private:
   dc1394camera_list_t *list;
 #endif
 };
-
+END_VISP_NAMESPACE
 #endif
 #endif

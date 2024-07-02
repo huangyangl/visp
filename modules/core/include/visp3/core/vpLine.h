@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,19 +31,21 @@
  * Line feature.
  */
 
-#ifndef vpLine_H
-#define vpLine_H
-
 /*!
  * \file vpLine.h
  * \brief  class that defines what is a line
  */
 
+#ifndef VP_LINE_H
+#define VP_LINE_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
 #include <visp3/core/vpMatrix.h>
 
 #include <visp3/core/vpForwardProjection.h>
 
+BEGIN_VISP_NAMESPACE
 /*!
  * \class vpLine
  * \ingroup group_core_geometry
@@ -96,26 +98,26 @@
  * in the vpTracker::p public attribute, where \e p is a vector defined
  * as: \f[ p = \left[\begin{array}{c} \rho \\ \theta \end{array}\right] \f]
  * To compute these parameters use projection(). To get the corresponding values use get_p().
- */
+*/
 class VISP_EXPORT vpLine : public vpForwardProjection
 {
 public:
   vpLine();
 
-  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const vp_override;
-  void changeFrame(const vpHomogeneousMatrix &cMo) vp_override;
+  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const VP_OVERRIDE;
+  void changeFrame(const vpHomogeneousMatrix &cMo) VP_OVERRIDE;
 
   void display(const vpImage<unsigned char> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1) vp_override;
+               unsigned int thickness = 1) VP_OVERRIDE;
   void display(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
-               const vpColor &color = vpColor::green, unsigned int thickness = 1) vp_override;
+               const vpColor &color = vpColor::green, unsigned int thickness = 1) VP_OVERRIDE;
 
   void display(const vpImage<vpRGBa> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
                unsigned int thickness = 1);
   void display(const vpImage<vpRGBa> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
                const vpColor &color = vpColor::green, unsigned int thickness = 1);
 
-  vpLine *duplicate() const vp_override;
+  vpLine *duplicate() const VP_OVERRIDE;
 
 
   /*!
@@ -165,12 +167,12 @@ public:
 
   void setWorldCoordinates(const vpColVector &oP1, const vpColVector &oP2);
 
-  void setWorldCoordinates(const vpColVector &oP) vp_override;
-  void projection() vp_override;
-  void projection(const vpColVector &cP, vpColVector &p) const vp_override;
+  void setWorldCoordinates(const vpColVector &oP) VP_OVERRIDE;
+  void projection() VP_OVERRIDE;
+  void projection(const vpColVector &cP, vpColVector &p) const VP_OVERRIDE;
 
 protected:
-  void init() vp_override;
+  void init() VP_OVERRIDE;
 };
-
+END_VISP_NAMESPACE
 #endif

@@ -39,8 +39,10 @@
 #ifndef _vpFeatureMomentAreaNormalized_h_
 #define _vpFeatureMomentAreaNormalized_h_
 
+#include <visp3/core/vpConfig.h>
 #include <visp3/visual_features/vpFeatureMoment.h>
 
+BEGIN_VISP_NAMESPACE
 #ifdef VISP_MOMENTS_COMBINE_MATRICES
 class vpMomentDatabase;
 
@@ -95,12 +97,12 @@ public:
     : vpFeatureMoment(database, A_, B_, C_, featureMoments, 1)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentAreaNormalized";
   }
@@ -108,7 +110,7 @@ public:
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentAreaNormalized";
   }
@@ -197,12 +199,12 @@ public:
     : vpFeatureMoment(data_base, A_, B_, C_, featureMoments, 1)
   { }
 
-  void compute_interaction() vp_override;
+  void compute_interaction() VP_OVERRIDE;
 
   /*!
    * Associated moment name.
    */
-  const std::string momentName() const vp_override
+  const std::string momentName() const VP_OVERRIDE
   {
     return "vpMomentAreaNormalized";
   }
@@ -210,10 +212,11 @@ public:
   /*!
    * Feature name.
    */
-  const std::string name() const vp_override
+  const std::string name() const VP_OVERRIDE
   {
     return "vpFeatureMomentAreaNormalized";
   }
 };
 #endif
+END_VISP_NAMESPACE
 #endif

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +29,7 @@
  *
  * Description:
  * Test line fitting.
- *
-*****************************************************************************/
+ */
 
 /*!
   \example testLineFitting.cpp
@@ -47,6 +45,10 @@
 
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 namespace
 {
@@ -121,7 +123,7 @@ TEST_CASE("Line fitting - Gaussian noise", "[line_fitting]")
     double y = a * x + b;
     imPts.push_back(vpImagePoint(y + gauss(), x + gauss()));
     std::cout << "x: " << x << " ; y: " << y << " ; imPts: (" << imPts.back().get_u() << ", " << imPts.back().get_v()
-              << ")" << std::endl;
+      << ")" << std::endl;
   }
 
   double A = 0, B = 0, C = 0;

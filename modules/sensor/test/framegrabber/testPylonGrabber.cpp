@@ -1,5 +1,4 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
  * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
@@ -30,14 +29,10 @@
  *
  * Description:
  * Basler cameras video capture using Pylon SDK.
- *
- * Authors:
- * Wenfeng CAI
- *
-*****************************************************************************/
+ */
 
 /*!
-  \file testPylonGrabber.cpp
+  \example testPylonGrabber.cpp
 
   \brief  Acquire images using Pylon library.
 */
@@ -53,11 +48,12 @@
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
 #include <visp3/sensor/vpPylonFactory.h>
-/*!
-  \example testPylonGrabber.cpp
-*/
+
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   try {
     std::cout << "Basler camera test with Pylon in progress..." << std::endl;
 
@@ -121,17 +117,23 @@ int main()
     filename = outputpath + "/imagetest2.pgm";
     std::cout << "Write image: " << filename << std::endl;
     vpImageIo::write(I, filename);
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     vpCERROR << e.what() << std::endl;
-  } catch (const std::exception &e) {
+  }
+  catch (const std::exception &e) {
     vpCERROR << e.what() << std::endl;
-  } catch (...) {
+  }
+  catch (...) {
     vpCERROR << "Failure: exit" << std::endl;
   }
 }
 #else
 int main()
 {
+#ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+#endif
   vpTRACE("Basler Pylon grabber capabilities are not available...\n"
           "You should install pylon SDK to use this binary.");
 }

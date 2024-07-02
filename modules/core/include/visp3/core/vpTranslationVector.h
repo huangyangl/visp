@@ -1,6 +1,6 @@
 /*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2024 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,18 +31,21 @@
  * Translation vector.
  */
 
-#ifndef vpTRANSLATIONVECTOR_H
-#define vpTRANSLATIONVECTOR_H
-
 /*!
  * \file vpTranslationVector.h
  * \brief Class that consider the case of a translation vector.
  */
 
+#ifndef VP_TRANSLATION_VECTOR_H
+#define VP_TRANSLATION_VECTOR_H
+
+#include <visp3/core/vpConfig.h>
 #include <visp3/core/vpArray2D.h>
 #include <visp3/core/vpHomogeneousMatrix.h>
-#include <visp3/core/vpMatrix.h>
 #include <visp3/core/vpPoseVector.h>
+
+BEGIN_VISP_NAMESPACE
+class vpMatrix;
 
 /*!
   \class vpTranslationVector
@@ -69,7 +72,7 @@
   \endcode
   You can also initialize the vector using operator<<(double):
   \code
-  t << 0, 0.1, 05;
+  t << 0, 0.1, 0.5;
   \endcode
   Or you can also initialize the vector from a list of doubles if ViSP is build with c++11 enabled:
   \code
@@ -90,6 +93,10 @@
   #include <visp3/core/vpHomogeneousMatrix.h>
   #include <visp3/core/vpRotationMatrix.h>
   #include <visp3/core/vpTranslationVector.h>
+
+  #ifdef ENABLE_VISP_NAMESPACE
+  using namespace VISP_NAMESPACE_NAME;
+  #endif
 
   int main()
   {
@@ -118,14 +125,20 @@ public:
   vpTranslationVector() : vpArray2D<double>(3, 1), m_index(0) { }
   vpTranslationVector(double tx, double ty, double tz);
   vpTranslationVector(const vpTranslationVector &tv);
-  explicit vpTranslationVector(const vpHomogeneousMatrix &M);
-  explicit vpTranslationVector(const vpPoseVector &p);
-  explicit vpTranslationVector(const vpColVector &v);
+  VP_EXPLICIT vpTranslationVector(const vpHomogeneousMatrix &M);
+  VP_EXPLICIT vpTranslationVector(const vpPoseVector &p);
+  VP_EXPLICIT vpTranslationVector(const vpColVector &v);
 
-  vpTranslationVector buildFrom(double tx, double ty, double tz);
-  vpTranslationVector buildFrom(const vpHomogeneousMatrix &M);
-  vpTranslationVector buildFrom(const vpPoseVector &p);
-  vpTranslationVector buildFrom(const vpColVector &v);
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
+  VP_DEPRECATED vpTranslationVector buildFrom(double tx, double ty, double tz);
+  VP_DEPRECATED vpTranslationVector buildFrom(const vpHomogeneousMatrix &M);
+  VP_DEPRECATED vpTranslationVector buildFrom(const vpPoseVector &p);
+  VP_DEPRECATED vpTranslationVector buildFrom(const vpColVector &v);
+#endif
+  vpTranslationVector &build(const double &tx, const double &ty, const double &tz);
+  vpTranslationVector &build(const vpHomogeneousMatrix &M);
+  vpTranslationVector &build(const vpPoseVector &p);
+  vpTranslationVector &build(const vpColVector &v);
 
   double frobeniusNorm() const;
 
@@ -193,12 +206,12 @@ public:
       @name Deprecated functions
   */
   //@{
-  vp_deprecated double euclideanNorm() const;
+  VP_DEPRECATED double euclideanNorm() const;
   //}
 #endif
 
 protected:
   unsigned int m_index; // index used for operator<< and operator, to fill a vector
 };
-
+END_VISP_NAMESPACE
 #endif

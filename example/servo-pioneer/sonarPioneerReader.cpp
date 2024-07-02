@@ -49,12 +49,16 @@
 int main()
 {
   std::cout << "\nThis example requires Aria 3rd party library. You should "
-               "install it.\n"
-            << std::endl;
+    "install it.\n"
+    << std::endl;
   return EXIT_SUCCESS;
 }
 
 #else
+
+#ifdef ENABLE_VISP_NAMESPACE
+using namespace VISP_NAMESPACE_NAME;
+#endif
 
 ArSonarDevice sonar;
 vpRobotPioneer *robot;
@@ -236,7 +240,7 @@ int main(int argc, char **argv)
     // Create a display to show sensor data
     if (isInitialized == false) {
       I.resize((unsigned int)half_size * 2, (unsigned int)half_size * 2);
-      I = 255;
+      I = 255u;
 
 #if defined(VISP_HAVE_X11)
       d = new vpDisplayX;
@@ -290,7 +294,8 @@ int main(int argc, char **argv)
               try {
                 // Create the dirname
                 vpIoTools::makeDirectory(opath);
-              } catch (...) {
+              }
+              catch (...) {
                 std::cerr << std::endl << "ERROR:" << std::endl;
                 std::cerr << "  Cannot create " << opath << std::endl;
                 return EXIT_FAILURE;
@@ -341,7 +346,8 @@ int main(int argc, char **argv)
     // exit
     ArLog::log(ArLog::Normal, "simpleMotionCommands: Exiting.");
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }
