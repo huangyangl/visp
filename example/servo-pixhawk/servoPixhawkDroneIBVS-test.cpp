@@ -30,10 +30,14 @@
 #include <visp3/vs/vpServoDisplay.h>
 //rtsp server 20240618
 #include <opencv2/opencv.hpp>
+//非阻塞input
+#include <fcntl.h>
+#include <unistd.h>
 
 // Comment next line to disable sending commands to the robot
 #define CONTROL_UAV
-#define HAVE_DISP_DEV  //显示或关闭显示功能！！！！！！！！！！！！！！！！！！！！
+#define HAVE_DISP_DEV  //显示或关闭显示功能！！！！！！！！！！！！！！！！！！
+//#define DISP_OverLayImg  //显示叠加图像！！！！！！！！！！！！！！！！！！！！
 
 bool compareImagePoint(std::pair<size_t, vpImagePoint> p1, std::pair<size_t, vpImagePoint> p2)
 {
@@ -42,25 +46,32 @@ bool compareImagePoint(std::pair<size_t, vpImagePoint> p1, std::pair<size_t, vpI
 
 int main(int argc, char **argv)
 {
-  //IBVS误差曲线图像：rtsp推流
-  vpImage<vpRGBa> overlayImg(480, 640);
-#if defined(VISP_HAVE_X11)
-  vpDisplayX display2;
-#elif defined(VISP_HAVE_GTK)
-  vpDisplayGTK display2;
-#elif defined(VISP_HAVE_GDI)
-  vpDisplayGDI display2;
-#elif defined(HAVE_OPENCV_HIGHGUI)
-  vpDisplayOpenCV display2;
-#endif
-  display2.display(overlayImg);
-  display2.init(overlayImg, 100, 300, "overlayImg");//窗口位置[100, 300]
-
   std::cout << "argc: " <<argc<< std::endl;
   std::cout << "argv: " <<argv<< std::endl;
 
-  //rtsp part 1/3
-  bool rtsp_enable = true;//rtsp推流开关！！！！！！！！！！！！！！！！！！！！！！！！！！
+  // 设置标准输入为非阻塞模式
+  int flags = fcntl(0, F_GETFL);
+  fcntl(0, F_SETFL, flags | O_NONBLOCK);//设置非阻塞标准输入
+  char inputBuffer[32];//用于存放键盘输入数据
+
+  //显示叠加图像
+#if defined(DISP_OverLayImg)
+  vpImage<vpRGBa> overlayImg(480, 640);
+  #if defined(VISP_HAVE_X11)
+    vpDisplayX display2;
+  #elif defined(VISP_HAVE_GTK)
+    vpDisplayGTK display2;
+  #elif defined(VISP_HAVE_GDI)
+    vpDisplayGDI display2;
+  #elif defined(HAVE_OPENCV_HIGHGUI)
+    vpDisplayOpenCV display2;
+  #endif
+  display2.display(overlayImg);
+  display2.init(overlayImg, 100, 300, "overlayImg");//窗口位置[100, 300]
+#endif
+
+  //rtsp part
+  bool rtsp_enable = false;//rtsp推流开关！！！！！！！！！！！！！！！！！！！！！！！！！！
   std::string rtsp_server_url = "rtsp://127.0.0.1:554/live/0";
   std::stringstream command;
   command << "ffmpeg -loglevel error ";//log打印等级设置为：有报错时才打印到窗口
@@ -121,6 +132,9 @@ int main(int argc, char **argv)
         else if (std::string(argv[i]) == "--verbose" || std::string(argv[i]) == "-v") {
           opt_verbose = true;
         }
+        else if (std::string(argv[i]) == "--rtsp" || std::string(argv[i]) == "-r") {
+          rtsp_enable = true;
+        }
         else {
           std::cout << "Error : unknown parameter " << argv[i] << std::endl
             << "See " << argv[0] << " --help" << std::endl;
@@ -149,6 +163,8 @@ int main(int argc, char **argv)
         << "  --verbose, -v\n"
         << "      Enables verbosity (drone information messages and velocity commands\n"
         << "      are then displayed).\n\n"
+        << "  --rtsp, -r\n"
+        << "      Enables push rtsp streams.\n\n"
         << "  --help, -h\n"
         << "      Print help message.\n"
         << std::endl;
@@ -178,12 +194,13 @@ int main(int argc, char **argv)
       config.enable_stream(RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16, acq_fps);
       config.enable_stream(RS2_STREAM_INFRARED, 640, 480, RS2_FORMAT_Y8, acq_fps);
       rs.open(config);//启动相机
-      vpCameraParameters cam = rs.getCameraParameters(RS2_STREAM_COLOR);//获取相机 内参
+      vpCameraParameters cam = rs.getCameraParameters(RS2_STREAM_COLOR);//获取相机 内参！！！！！！！！！！！！！！
       if (opt_verbose) {
         cam.printParameters();
       }
 #ifdef CONTROL_UAV//这个宏定义是本例程中所有控制飞机指令的 使能
       //drone.doFlatTrim(); // Flat trim calibration  //自动校正加速度计和陀螺仪
+      drone.setTakeOffAlt(2.0);//起飞高度
       drone.takeOff(false,15,true); // Take off  //起飞，takeOff包含了：guided -> 解锁 -> 起飞 -> 位置保持！！！！！！！！！
 #endif
       vpImage<unsigned char> I(rs.getIntrinsics(RS2_STREAM_COLOR).height, rs.getIntrinsics(RS2_STREAM_COLOR).width);//定义用于二维码检测的灰度图
@@ -212,7 +229,7 @@ int main(int argc, char **argv)
       vpDetectorAprilTag::vpAprilTagFamily tagFamily = vpDetectorAprilTag::TAG_36h11;//tag图案类型
       vpDetectorAprilTag detector(tagFamily); // The detector used to detect Apritags  //定义一个检测器
       //! [DJI-F450 apriltag family]
-      detector.setAprilTagQuadDecimate(2.0);//这是tag检测算法中与【4边形识别】相关的一个参数，增加这个参数可以提高检测速率，但是准确率会下降！！！！！！！！！！！！！！！4
+      detector.setAprilTagQuadDecimate(1);//这是tag检测算法中与【4边形识别】相关的一个参数，增加这个参数可以提高检测速率，但是准确率会下降！！！！！！！！！！！！！！！4
       detector.setAprilTagNbThreads(4);//为检测器设置 线程数
       detector.setDisplayTag(true);//是否显示检测结果
 
@@ -225,12 +242,12 @@ int main(int argc, char **argv)
       task.setLambda(lambda);
 
       //! [compute cMe]
-      vpRxyzVector c1TOc_xyz(vpMath::rad(-10.0), vpMath::rad(0), 0); // c1 ~> c 的xyz轴旋转量  ！！！！！！！！！！！！！！！！！！
+      vpRxyzVector c1TOc_xyz(vpMath::rad(0.0), vpMath::rad(0), vpMath::rad(0)); // c1 ~> c 的xyz轴旋转量  ！！！！！！！！！！！！！！！！！！
       vpRotationMatrix c1Rc(c1TOc_xyz); // 旋转矩阵：c -> c1 
       vpRotationMatrix cRc1 = c1Rc.inverse(); // 旋转矩阵：c1 -> c, 旋转矩阵是正交的，因此 c1Rc^-1==c1Rc^T
       vpHomogeneousMatrix cMc1(vpTranslationVector(), cRc1); // 齐次变换矩阵：c1 -> c
-      vpRotationMatrix c1Re { 1, 0, 0, 0, 0, 1, 0, -1, 0 }; // 旋转矩阵：e -> c1 ！！！！！！！！！！！！！！
-      vpTranslationVector e0_c1(0, -0.03, -0.07); // 平移关系：e系原点在c1系中的坐标  ！！！！！！！！！！！！！！
+      vpRotationMatrix c1Re {0, 1, 0, -1, 0, 0, 0, 0, 1}; // 旋转矩阵：e -> c1 ！！！！！！！！！！！！！！{ 1, 0, 0, 0, 0, 1, 0, -1, 0 }
+      vpTranslationVector e0_c1(0, 0, -0.1); // 平移关系：e系原点在c1系中的坐标  ！！！！！！！！！！！！！！(0, -0.03, -0.07)
       vpHomogeneousMatrix c1Me(e0_c1, c1Re); // 齐次变换矩阵：e -> c1
       vpHomogeneousMatrix cMe = cMc1 * c1Me; // 齐次变换矩阵：e -> c
       vpVelocityTwistMatrix cVe(cMe);  // 伺服系统控制量Vc=[vx,vy,vz,wx,wy,wz]的坐标变换矩阵：e -> c，从飞机机体系FRD到相机系RDF
@@ -238,11 +255,17 @@ int main(int argc, char **argv)
 
       task.set_cVe(cVe);
 
+      //eJe推导：全自由度控制量Vc=[vx,vy,vz,wx,wy,wz]^T，只允许vx,vy,vz,wz可控，令[vx,vy,vz,wx,wy,wz]=[vx,vy,vz,0,0,wz]=eJe*[vx,vy,vz,wz]
+      //则可知eJe=[1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 0; 0 0 0 0; 0 0 0 1]
+      //那么IBVS伺服系统的状态空间变为：dot_S = L * cVe * eJe * Ve = L * cVe * eJe * [vx,vy,vz,wz]
+      //其中：cVe是6x6矩阵，eJe是6x4矩阵，Ve是终端系的4x1速度矢量
       vpMatrix eJe(6, 4, 0);//哪些速度自由度是可控的！！！！！！！！！！！！
       eJe[0][0] = 1;//vx可控
       eJe[1][1] = 1;//vy可控
       eJe[2][2] = 1;//vz可控
       eJe[5][3] = 1;//wz可控
+
+      task.set_eJe(eJe);//控制量的自由度（可控的速度自由度）
 
       // Desired distance to the target
       double Z_d = (opt_has_distance_to_tag ? opt_distance_to_tag : 1.); //相机到二维码的 期望控制距离！！！！！！！！！！
@@ -331,9 +354,7 @@ int main(int argc, char **argv)
 
       //** Visual servoing loop **//
       while (drone.isRunning() && runLoop) {
-
         double startTime = vpTime::measureTimeMs();
-
         // drone.getGrayscaleImage(I);
         rs.acquire(I);//获取当前图像
         condition = (startTime - time_since_last_display) > 1000. / opt_display_fps ? true : false;
@@ -413,7 +434,7 @@ int main(int argc, char **argv)
                                    vpFeatureVanishingPoint::selectAtanOneOverRho());
 
           task.set_cVe(cVe);//相机坐标系到飞机body系(FRD)的控制量转换矩阵
-          task.set_eJe(eJe);//对于eye-in-hand，eJe是单位阵
+          task.set_eJe(eJe);//控制量的自由度（可控的速度自由度）
 
           // Compute the control law. Velocities are computed in the mobile robot reference frame
           vpColVector ve = task.computeControlLaw();//根据IBVS理论计算得到飞机的6D速度控制量[u,v,w,p,q,r]
@@ -452,7 +473,7 @@ int main(int argc, char **argv)
         }
         else {//没有检测到任何AprilTags
           std::stringstream sserr;
-          sserr << "Failed to detect an Apriltag, or detected multiple ones";
+          if (condition) sserr << "Failed to detect an Apriltag, or detected multiple ones";
 #if defined(HAVE_DISP_DEV)  
           if (condition) {
             vpDisplay::displayText(I, 120, 20, sserr.str(), vpColor::red);
@@ -467,11 +488,11 @@ int main(int argc, char **argv)
         }
         //主要逻辑 end
 #if defined(HAVE_DISP_DEV)  
-        if (condition) {//绘制误差曲线！！！！！！！！！！！！！！
+        if (condition && (detector.getNbObjects() != 0)) {//绘制误差曲线！！！！！！！！！！！！！！
           {
             std::stringstream ss;
             ss << "Left click to " << (send_velocities ? "stop the robot" : "servo the robot")
-              << ", right click to quit.";
+              << ", right click to quit and land.";
             vpDisplay::displayText(I, 20, 20, ss.str(), vpColor::red);
           }
           vpDisplay::flush(I);
@@ -486,13 +507,39 @@ int main(int argc, char **argv)
             break;
 
           case vpMouseButton::button3:
-            drone.land();
+            drone.land();//右击鼠标降落
             runLoop = false;
             break;
 
           default:
             break;
           }
+        }
+
+        // 尝试读取键盘数据
+        int bytes_read = read(0, inputBuffer, sizeof(inputBuffer) - 1);
+        if (bytes_read > 0) {//有数据可读，添加终止符并处理输入数据
+            inputBuffer[bytes_read] = '\0';
+            std::cout << "Read: " << inputBuffer << std::endl;
+            if(inputBuffer[0]=='7'){//处理命令窗口输入的指令！！！！！！！！！！！
+              std::cout << "command 7: " << "stop servo and landing..." << std::endl;
+              drone.land();
+              runLoop = false;
+            } else if(inputBuffer[0]=='0'){
+              send_velocities = false;
+              std::cout << "command 0: " << "stop servo..." << std::endl;
+            } else if(inputBuffer[0]=='1'){
+              send_velocities = true;
+              std::cout << "command 1: " << "start servo..." << std::endl;
+            } else{
+              send_velocities = send_velocities;
+            }
+        } else if (bytes_read == -1) {
+            // 读取错误，可能是EAGAIN（非阻塞情况下无数据可读）
+            if (errno != EAGAIN) {
+                // 错误处理
+                std::cerr << "Error reading from stdin: " << strerror(errno) << std::endl;
+            }
         }
 
         double totalTime = vpTime::measureTimeMs() - startTime;
@@ -503,7 +550,7 @@ int main(int argc, char **argv)
           vpDisplay::displayText(I, 80, 20, sstime.str(), vpColor::red);
           vpDisplay::flush(I);
 #endif
-          //rtsp part 2/3
+          //rtsp part
           if(rtsp_enable)
           {
             if(rtsp_flag)//只执行一次
@@ -536,11 +583,15 @@ int main(int argc, char **argv)
               cv::Mat frame_overlay;
               vpImageConvert::convert(I_plot, frame_plot);
               cv::addWeighted(frame, 0.6, frame_plot, 0.4, 0, frame_overlay);//opencv中的图像叠加
-              vpImageConvert::convert(frame_overlay, overlayImg);
-              display2.display(overlayImg);
-              display2.flush(overlayImg);
 
-              //rtsp推流
+              //显示叠加图像
+              #if defined(DISP_OverLayImg)
+                vpImageConvert::convert(frame_overlay, overlayImg);
+                display2.display(overlayImg);
+                display2.flush(overlayImg);
+              #endif
+
+              //叠加图像rtsp推流
               cv::Mat frame_rtsp = frame_overlay;
               if(!frame_rtsp.empty()) 
                 fwrite(frame_rtsp.data, sizeof(char), frame_rtsp.total() * frame_rtsp.elemSize(), fp);
@@ -550,16 +601,21 @@ int main(int argc, char **argv)
         iter++;
         vpTime::wait(startTime, 1000. / acq_fps);
       }
-
+      
+      pclose(fp);//rtsp part
+      fcntl(0, F_SETFL, flags);//恢复标准输入为阻塞模式
       return EXIT_SUCCESS;
     }
     else {
+      pclose(fp);//rtsp part
+      fcntl(0, F_SETFL, flags);//恢复标准输入为阻塞模式
       std::cout << "ERROR : failed to setup drone control." << std::endl;
       return EXIT_FAILURE;
     }
   }
   catch (const vpException &e) {
-    pclose(fp);//rtsp part 3/3
+    pclose(fp);//rtsp part
+    fcntl(0, F_SETFL, flags);//恢复标准输入为阻塞模式
     std::cout << "Caught an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

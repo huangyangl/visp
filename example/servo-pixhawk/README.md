@@ -4,10 +4,12 @@ cmake ../visp -DCMAKE_BUILD_TYPE=debug -DUSE_BLAS/LAPACK=GSL
 # make 
 ~/shd/visp-ws/visp-build
 make -j6 servoPixhawkDroneIBVS-test
-# run
+# run servo-pixhawk in jetson
 cd ~/shd/visp-ws/visp-build/example/servo-pixhawk
 ./servoPixhawkDroneIBVS-test --help
-./servoPixhawkDroneIBVS-test --tag-size 0.12 --co udp://:14550
+./servoPixhawkDroneIBVS-test --tag-size 0.12 --co udp://:14550 --distance-to-tag 2 --verbose --rtsp
+# run mavproxy in jetson
+mavproxy.py --master=/dev/ttyACM0 --out=udpout:127.0.0.1:14550
 # wsl sitl
 wsl
 cd ~/code/hyl-git-repo-ws/sitl-master
