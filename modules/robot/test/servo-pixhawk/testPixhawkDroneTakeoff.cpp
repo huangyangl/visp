@@ -62,15 +62,12 @@ void usage(const std::string &bin_name)
 
 int main(int argc, char **argv)
 {
-<<<<<<< HEAD
   std::cout << "argc: " <<argc<< std::endl;
   std::cout << "argv[0]: " <<argv[0]<< std::endl;
   std::cout << "argv[1]: " <<argv[1]<< std::endl;
-=======
 #ifdef ENABLE_VISP_NAMESPACE
   using namespace VISP_NAMESPACE_NAME;
 #endif
->>>>>>> a19b3c588c6f507dd6d99c8ba783ba4113d011bb
   if (argc != 2) {
     usage(argv[0]);
     return EXIT_SUCCESS;
