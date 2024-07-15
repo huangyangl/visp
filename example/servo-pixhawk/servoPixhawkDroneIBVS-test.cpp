@@ -101,8 +101,8 @@ int main(int argc, char **argv)
     bool opt_has_distance_to_tag = false;
     int opt_display_fps = 10;//显示结果图的频率，决定condition
     bool opt_verbose = false;//是否打印详细信息
-
     int acq_fps = 30;//图像的获取频率
+    int cam_orientation = 1; //1安装在飞机正左方，2安装在飞机正下方
 
     if (argc >= 3 && std::string(argv[1]) == "--tag-size") {
       tagSize = std::atof(argv[2]); // Tag size option is required
@@ -135,6 +135,9 @@ int main(int argc, char **argv)
         else if (std::string(argv[i]) == "--rtsp" || std::string(argv[i]) == "-r") {
           rtsp_enable = true;
         }
+        else if (std::string(argv[i]) == "--cambottom" || std::string(argv[i]) == "-cb") {
+          cam_orientation = 2;
+        }
         else {
           std::cout << "Error : unknown parameter " << argv[i] << std::endl
             << "See " << argv[0] << " --help" << std::endl;
@@ -165,6 +168,8 @@ int main(int argc, char **argv)
         << "      are then displayed).\n\n"
         << "  --rtsp, -r\n"
         << "      Enables push rtsp streams.\n\n"
+        << "  --cambottom, -cb\n"
+        << "      Install the camera at the bottom, otherwise install it on the left.\n\n"
         << "  --help, -h\n"
         << "      Print help message.\n"
         << std::endl;
@@ -246,8 +251,12 @@ int main(int argc, char **argv)
       vpRotationMatrix c1Rc(c1TOc_xyz); // 旋转矩阵：c -> c1 
       vpRotationMatrix cRc1 = c1Rc.inverse(); // 旋转矩阵：c1 -> c, 旋转矩阵是正交的，因此 c1Rc^-1==c1Rc^T
       vpHomogeneousMatrix cMc1(vpTranslationVector(), cRc1); // 齐次变换矩阵：c1 -> c
-      vpRotationMatrix c1Re {0, 1, 0, -1, 0, 0, 0, 0, 1}; // 旋转矩阵：e -> c1 ！！！！！！！！！！！！！！{ 1, 0, 0, 0, 0, 1, 0, -1, 0 }
-      vpTranslationVector e0_c1(0, 0, -0.1); // 平移关系：e系原点在c1系中的坐标  ！！！！！！！！！！！！！！(0, -0.03, -0.07)
+      vpRotationMatrix c1Re; // 旋转矩阵：e -> c1 
+      vpRotationMatrix c1Re_InstallBottom {0, 1, 0, -1, 0, 0, 0, 0, 1}; // 旋转矩阵：e -> c1  相机安装在飞机正下方，相机x轴与飞机机体y轴同向
+      vpRotationMatrix c1Re_InstallLeft { 1, 0, 0, 0, 0, 1, 0, -1, 0 }; // 旋转矩阵：e -> c1  相机安装在飞机正左方，相机x轴与飞机机体x轴同向
+      if(cam_orientation==2) c1Re = c1Re_InstallBottom;
+      else c1Re = c1Re_InstallLeft;
+      vpTranslationVector e0_c1(0, 0, -0.1); // 平移关系：e系原点在c1系中的坐标  ！！！！！！！！！！！！！！
       vpHomogeneousMatrix c1Me(e0_c1, c1Re); // 齐次变换矩阵：e -> c1
       vpHomogeneousMatrix cMe = cMc1 * c1Me; // 齐次变换矩阵：e -> c
       vpVelocityTwistMatrix cVe(cMe);  // 伺服系统控制量Vc=[vx,vy,vz,wx,wy,wz]的坐标变换矩阵：e -> c，从飞机机体系FRD到相机系RDF
