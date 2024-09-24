@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     int opt_display_fps = 10;//显示结果图的频率，决定condition
     bool opt_verbose = false;//是否打印详细信息
     int acq_fps = 30;//图像的获取频率
-    int cam_orientation = 1; //1安装在飞机正左方，2安装在飞机正下方
+    int cam_orientation = 1; //1相机安装在飞机正左方，2相机安装在飞机正下方
 
     if (argc >= 3 && std::string(argv[1]) == "--tag-size") {
       tagSize = std::atof(argv[2]); // Tag size option is required

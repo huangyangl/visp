@@ -47,6 +47,7 @@ set(example_cpp
   sendMocapToPixhawk.cpp
   servoPixhawkDroneIBVS.cpp
   servoPixhawkDroneIBVS-test.cpp
+  testPixhawkConnect.cpp
 )
 
 foreach(cpp ${example_cpp})
